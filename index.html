@@ -1,0 +1,3351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0e0c">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<title>EcoSafari Go</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0e0c;
+    --card: #141918;
+    --card-border: #1f2624;
+    --green: #1fdf9a;
+    --green-dim: rgba(31,223,154,0.12);
+    --blue: #5aa9e6;
+    --text: #eef2f0;
+    --text-dim: #8b9994;
+    --danger: #ff6b6b;
+    --amber: #f5b942;
+    --radius: 14px;
+    --input-bg: #0f1412;
+    --warn-bg: #3a2a12;
+  }
+  [data-theme="light"]{
+    --bg: #f5f7f6;
+    --card: #ffffff;
+    --card-border: #e2e6e4;
+    --green: #14a874;
+    --green-dim: rgba(20,168,116,0.10);
+    --blue: #2f7fc7;
+    --text: #16201c;
+    --text-dim: #6b7873;
+    --danger: #e0483f;
+    --amber: #b8760a;
+    --input-bg: #eef1ef;
+    --warn-bg: #fdf1de;
+  }
+  [data-theme="light"] .phone{ box-shadow:0 30px 60px rgba(0,0,0,0.15), 0 0 0 2px #ddd; }
+  [data-theme="light"] .notch{ background:#000; }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  svg{width:17px; height:17px; flex-shrink:0; vertical-align:middle; display:inline-block;}
+  img{max-width:100%; max-height:100%;}
+  html,body{margin:0;padding:0;background:#e9e9e9;font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased; letter-spacing:-0.01em;}
+  .stage{display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px 0;}
+  .phone{width:375px; height:780px; background:#000; border-radius:44px; padding:14px; box-shadow:0 30px 60px rgba(0,0,0,0.35), 0 0 0 2px #1a1a1a; position:relative;}
+  .screen{width:100%; height:100%; background:var(--bg); border-radius:32px; overflow:hidden; position:relative; display:flex; flex-direction:column;}
+  .notch{position:absolute; top:14px; left:50%; transform:translateX(-50%); width:120px; height:26px; background:#000; border-radius:16px; z-index:20;}
+  .statusbar{display:flex; justify-content:space-between; align-items:center; padding:16px 24px 4px 24px; font-size:13px; font-weight:600; color:var(--text);}
+  .statusbar .right{display:flex; gap:5px; align-items:center; font-size:12px;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:6px 18px 14px 18px;}
+  .brand{display:flex; align-items:center; gap:8px; font-weight:700; color:var(--green); font-size:16px; font-family:"Fraunces", serif;}
+  .brand .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--green); display:flex;align-items:center;justify-content:center;font-size:11px;}
+  .topbar .right-icons{display:flex; align-items:center; gap:10px;}
+  .coin-pill{display:flex; align-items:center; gap:5px; background:var(--green-dim); border:1px solid rgba(31,223,154,0.35); color:var(--green); font-weight:700; font-size:12.5px; padding:5px 10px; border-radius:20px; cursor:pointer;}
+  .bell{position:relative; color:var(--text-dim); cursor:pointer;}
+  .bell .badge{position:absolute; top:-3px; right:-3px; width:8px;height:8px;border-radius:50%;background:var(--green);}
+  .net-dot{width:9px;height:9px;border-radius:50%; background:var(--green); box-shadow:0 0 0 2px rgba(31,223,154,0.2);}
+  .net-dot.off{background:var(--danger); box-shadow:0 0 0 2px rgba(255,107,107,0.2);}
+
+  .content{flex:1; overflow-y:auto; padding:0 16px 90px 16px;}
+  .content::-webkit-scrollbar{display:none;}
+
+  .section-title{text-transform:uppercase; letter-spacing:0.06em; font-size:12px; font-weight:700; color:var(--text-dim); margin:14px 0 4px 0; display:flex; justify-content:space-between; align-items:center;}
+  .section-sub{color:var(--blue); font-size:12.5px; line-height:1.5; margin:4px 0 14px 0;}
+  .add-btn{width:30px;height:30px;border-radius:50%; background:var(--green); color:#04140d; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; border:none; cursor:pointer;}
+
+  .banner-offline{background:var(--warn-bg);color:var(--amber);font-size:11.5px;padding:9px 12px;border-radius:10px;margin:10px 0 4px 0;display:flex;align-items:center;gap:7px;font-weight:600;}
+  .banner-offline svg{stroke:var(--amber);}
+
+  .card{background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius); margin-bottom:14px; overflow:hidden;}
+  .alert-card{border-left:3px solid var(--green); padding:12px 14px;}
+  .alert-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;}
+  .alert-title{color:var(--green); font-weight:700; font-size:13px; display:flex; gap:6px; align-items:center;}
+  .alert-time{color:var(--text-dim); font-size:11px;}
+  .alert-body{color:var(--blue); font-size:13px; line-height:1.5;}
+
+  .post-head{padding:12px 14px 8px 14px; display:flex; align-items:center; gap:10px;}
+  .avatar{width:34px;height:34px;border-radius:50%; background:var(--card-border); display:flex;align-items:center;justify-content:center; color:var(--text-dim); font-size:13px; font-weight:700; flex-shrink:0;}
+  .avatar.verified{ box-shadow:0 0 0 2px var(--green); color:var(--green); }
+  .verified-tag{ color:var(--amber); display:inline-flex; vertical-align:middle; }
+  .verified-tag svg{ width:13px; height:13px; }
+  .post-user{font-weight:700; font-size:13.5px; color:var(--text); display:flex; align-items:center; gap:6px;}
+  .post-loc{font-size:11.5px; color:var(--text-dim);}
+  .post-date{margin-left:auto; font-size:11px; color:var(--text-dim); text-align:right;}
+  .status-pending{color:var(--amber); font-size:9.5px; font-weight:700; background:rgba(245,185,66,0.14); padding:2px 7px; border-radius:6px;}
+  .status-queued{color:var(--text-dim); font-size:9.5px; font-weight:700; background:rgba(139,153,148,0.14); padding:2px 7px; border-radius:6px;}
+
+  .post-photo-wrap{position:relative; width:100%; height:210px; overflow:hidden; background:var(--card); isolation:isolate;}
+  .post-photo-bg{position:absolute; top:-10px; left:-10px; right:-10px; bottom:-10px; width:calc(100% + 20px); height:calc(100% + 20px); max-width:none; max-height:none; background-size:cover; background-position:center; filter:blur(20px) brightness(0.5); transform:scale(1.1);}
+  .post-photo{position:relative; width:100%; height:100%; max-width:100%; max-height:100%; object-fit:contain; display:block; z-index:1;}
+  .post-body{padding:10px 14px 14px 14px;}
+  .species{color:var(--green); font-weight:700; font-size:13.5px; margin-bottom:3px;}
+  .desc{color:var(--blue); font-size:12.5px; line-height:1.5; margin-bottom:10px;}
+  .action-row{display:flex; align-items:center; gap:14px; border-top:1px solid var(--card-border); padding-top:10px; flex-wrap:wrap;}
+  .action-btn{display:flex; align-items:center; gap:5px; color:var(--text-dim); font-size:12px; background:none; border:none; cursor:pointer; padding:0;}
+  .action-btn svg{width:16px; height:16px;}
+  .action-btn.liked{color:var(--danger);}
+  .action-btn.liked svg{stroke:var(--danger); fill:var(--danger);}
+  .action-btn.shared{color:var(--green);}
+  .action-btn.commented{color:var(--blue);}
+  .report-link{margin-left:auto; font-size:10.5px; color:var(--text-dim); cursor:pointer; background:none; border:none; text-decoration:underline;}
+  .comment-panel{margin-top:10px; padding-top:10px; border-top:1px solid var(--card-border);}
+  .comment-viewall{font-size:11.5px; color:var(--text-dim); margin-bottom:8px; cursor:pointer;}
+  .comment-item{font-size:12px; color:var(--text); margin-bottom:8px; line-height:1.4; display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .comment-item b{color:var(--green); font-weight:700; margin-right:4px;}
+  .comment-like-btn{background:none; border:none; color:var(--text-dim); font-size:10.5px; display:flex; align-items:center; gap:3px; cursor:pointer; flex-shrink:0; padding:1px 0;}
+  .comment-like-btn svg{width:12px; height:12px;}
+  .comment-like-btn.liked{color:var(--danger);}
+  .comment-like-btn.liked svg{stroke:var(--danger); fill:var(--danger);}
+  .comment-input-row{display:flex; gap:8px; margin-top:6px;}
+  .comment-input-row input{flex:1; background:var(--input-bg); border:1px solid var(--card-border); border-radius:20px; padding:8px 13px; color:var(--text); font-size:12px; outline:none;}
+  .comment-input-row button{background:var(--green); color:#04140d; border:none; border-radius:16px; padding:0 14px; font-size:12px; font-weight:700; cursor:pointer;}
+
+  .checkin-card{padding:16px;}
+  .badge-pill{display:inline-block; background:var(--card-border); color:var(--text-dim); font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:5px; letter-spacing:0.03em; margin-bottom:8px;}
+  .checkin-title{font-size:16px; font-weight:700; color:var(--text); margin-bottom:3px;}
+  .checkin-period{font-size:12.5px; color:var(--text-dim); margin-bottom:16px;}
+  .btn-primary{width:100%; background:var(--green); color:#04140d; border:none; border-radius:10px; padding:13px; font-weight:700; font-size:14px; cursor:pointer;}
+  .btn-primary:disabled{opacity:0.6; cursor:default;}
+  .btn-ghost{width:100%; background:transparent; color:var(--green); border:1px solid var(--green); border-radius:10px; padding:11px; font-weight:700; font-size:13.5px; cursor:pointer; margin-top:8px;}
+  .geo-status{font-size:12px; color:var(--text-dim); margin-top:10px; text-align:center; min-height:16px;}
+
+  .navbar{position:absolute; bottom:0; left:0; right:0; background:var(--card); border-top:1px solid var(--card-border); display:flex; padding:10px 0 18px 0; border-radius:0 0 32px 32px;}
+  .nav-item{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; color:var(--text-dim); font-size:9.5px;}
+  .nav-item.active{color:var(--green);}
+  .nav-item svg{width:20px;height:20px;}
+
+  .login-wrap{flex:1; display:flex; flex-direction:column; justify-content:center; padding:20px 28px; overflow-y:auto; min-height:0;}
+  .login-logo{display:flex; flex-direction:column; align-items:center; margin-bottom:34px;}
+  .login-logo .circle{width:56px;height:56px;border-radius:50%;border:2.5px solid var(--green); display:flex;align-items:center;justify-content:center; font-size:26px; margin-bottom:12px;}
+  .login-logo h1{color:var(--text); font-size:20px; margin:0; font-family:"Fraunces", serif; font-weight:700;}
+  .login-logo p{color:var(--text-dim); font-size:12px; margin:4px 0 0 0;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:11.5px; color:var(--text-dim); margin-bottom:6px; font-weight:600;}
+  .field input{width:100%; background:var(--card); border:1px solid var(--card-border); border-radius:10px; padding:12px 13px; color:var(--text); font-size:13.5px; outline:none;}
+  .field input:focus{border-color:var(--green);}
+  .login-hint{text-align:center; color:var(--text-dim); font-size:11px; margin-top:18px;}
+
+  .modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,0.55); z-index:30; display:flex; align-items:flex-end; opacity:0; pointer-events:none; transition:opacity .2s;}
+  .modal-overlay.open{opacity:1; pointer-events:auto;}
+  .modal{width:100%; max-height:92%; overflow-y:auto; background:var(--card); border-top:1px solid var(--card-border); border-radius:22px 22px 0 0; padding:20px 20px 26px 20px; transform:translateY(20px); transition:transform .2s;}
+  .modal-overlay.open .modal{transform:translateY(0);}
+  .modal h3{margin:0 0 14px 0; color:var(--text); font-size:15px;}
+  .modal .field input{width:100%; background:var(--input-bg); border:1px solid var(--card-border); border-radius:10px; padding:11px 12px; color:var(--text); font-size:13px; outline:none;}
+  .photo-drop{border:1.5px dashed var(--card-border); border-radius:12px; padding:22px; text-align:center; color:var(--text-dim); font-size:12px; margin-bottom:14px; cursor:pointer; display:block;}
+  .photo-drop img{max-height:110px; border-radius:8px;}
+  .photo-warning{background:rgba(245,185,66,0.12); color:var(--amber); font-size:11.5px; padding:9px 11px; border-radius:8px; margin-bottom:12px; line-height:1.4;}
+  .loc-attached-chip{background:var(--green-dim); color:var(--green); font-size:12px; font-weight:600; padding:9px 12px; border-radius:8px; display:flex; align-items:center; gap:6px;}
+  .loc-attached-chip svg{width:14px;height:14px;}
+  .no-photo-tag{background:rgba(139,153,148,0.14); color:var(--text-dim); font-size:10px; font-weight:700; padding:2px 8px; border-radius:6px;}
+
+  .toast{position:absolute; top:64px; left:50%; transform:translateX(-50%) translateY(-14px); background:var(--card); color:var(--text); font-weight:600; font-size:12.5px; line-height:1.45; padding:12px 16px; border-radius:14px; opacity:0; transition:all .25s; z-index:40; width:84%; max-width:300px; text-align:center; box-shadow:0 10px 26px rgba(0,0,0,0.28); border:1px solid var(--card-border); border-left:3px solid var(--green); pointer-events:none;}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  @keyframes fadeInUp{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);}}
+  @keyframes coinPop{0%{transform:scale(1);} 35%{transform:scale(1.35); color:var(--amber);} 100%{transform:scale(1);}}
+  .coin-pill.pop{animation:coinPop .5s ease;}
+  .toast.reward{border-left-color:var(--amber); box-shadow:0 10px 26px rgba(245,185,66,0.25);}
+  .feed-badge{display:inline-flex; align-items:center; justify-content:center; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:var(--danger); color:#fff; font-size:9.5px; font-weight:800; vertical-align:middle;}
+
+  .wallet-hero{background:linear-gradient(135deg, rgba(31,223,154,0.15), rgba(31,223,154,0.03)); border:1px solid rgba(31,223,154,0.3); border-radius:16px; padding:20px; text-align:center; margin:8px 0 18px 0;}
+  .wallet-hero .amt{font-size:34px; font-weight:800; color:var(--green);}
+  .wallet-hero .lbl{font-size:11.5px; color:var(--text-dim); letter-spacing:0.05em; text-transform:uppercase; margin-top:2px;}
+  .benefit{display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--card); border:1px solid var(--card-border); border-radius:12px; padding:12px 14px; margin-bottom:10px;}
+  .benefit-name{color:var(--text); font-size:13px; font-weight:600;}
+  .benefit-cost{color:var(--text-dim); font-size:11.5px;}
+  .redeem-btn{background:var(--green-dim); color:var(--green); border:1px solid rgba(31,223,154,0.4); border-radius:8px; padding:7px 12px; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap;}
+  .redeem-btn:disabled{opacity:0.35; cursor:default;}
+  .back-link{color:var(--text-dim); font-size:12.5px; margin-bottom:6px; cursor:pointer; display:inline-block;}
+  .voucher-code{font-family:"SF Mono",Menlo,monospace; font-size:22px; letter-spacing:3px; color:var(--green); text-align:center; background:var(--input-bg); border:1px dashed rgba(31,223,154,0.4); border-radius:10px; padding:16px; margin:14px 0;}
+
+  .badge-grid{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:6px;}
+  .badge-chip{background:var(--card); border:1px solid var(--card-border); border-radius:12px; padding:10px 6px; text-align:center; width:80px;}
+  .badge-chip .ic{font-size:21px;}
+  .badge-chip .nm{font-size:9px; color:var(--text-dim); margin-top:4px; line-height:1.25;}
+  .badge-chip.locked{opacity:0.35;}
+
+  .rank-row{display:flex; align-items:center; gap:10px; background:var(--card); border:1px solid var(--card-border); border-radius:10px; padding:10px 12px; margin-bottom:8px;}
+  .rank-row.me{border-color:rgba(31,223,154,0.5); background:var(--green-dim);}
+  .rank-pos{width:18px; font-weight:800; color:var(--text-dim); font-size:12px;}
+  .rank-name{flex:1; font-size:12.5px; color:var(--text); font-weight:600;}
+  .rank-pts{font-size:12px; color:var(--green); font-weight:700;}
+
+  .settings-row{display:flex;justify-content:space-between;align-items:center;padding:12px 2px;border-bottom:1px solid var(--card-border);font-size:12.5px;color:var(--text);cursor:pointer;}
+  .settings-row:last-child{border-bottom:none;}
+  .settings-row .chev{color:var(--text-dim);}
+  .toggle-row{display:flex; align-items:center; justify-content:space-between; padding:10px 2px; font-size:12.5px; color:var(--text);}
+  .switch{width:38px; height:22px; border-radius:12px; background:var(--card-border); position:relative; cursor:pointer; flex-shrink:0;}
+  .switch.on{background:var(--green);}
+  .switch .knob{position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:transform .15s;}
+  .switch.on .knob{transform:translateX(16px);}
+  .disclaimer-box{font-size:10.5px; color:var(--text-dim); line-height:1.5; background:var(--card); border:1px solid var(--card-border); border-radius:10px; padding:12px; margin-top:16px;}
+  .danger-btn{width:100%; background:transparent; border:1px solid var(--danger); color:var(--danger); border-radius:10px; padding:11px; font-weight:700; font-size:12.5px; cursor:pointer; margin-top:16px;}
+
+  .guide-item{background:var(--card); border:1px solid var(--card-border); border-radius:12px; padding:12px; margin-bottom:10px;}
+  .guide-actions{display:flex; gap:8px; margin-top:10px;}
+  .btn-approve{flex:1; background:var(--green); color:#04140d; border:none; border-radius:8px; padding:9px; font-weight:700; font-size:12px; cursor:pointer;}
+  .btn-reject{flex:1; background:transparent; border:1px solid var(--danger); color:var(--danger); border-radius:8px; padding:9px; font-weight:700; font-size:12px; cursor:pointer;}
+
+  .policy-text{font-size:12px; color:var(--text-dim); line-height:1.6;}
+  .policy-text h4{color:var(--text); font-size:13px; margin:14px 0 4px 0;}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen" id="screen"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* =====================================================================
+   CONEXÃO COM O SUPABASE
+   Preencha as duas linhas abaixo com os dados do seu projeto:
+   Settings -> API -> Project URL / anon public key
+   ===================================================================== */
+const SUPABASE_URL = 'https://wahmsrsnastxtqrxuufp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhaG1zcnNuYXN0eHRxcnh1dWZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxNTY3NDUsImV4cCI6MjA5OTczMjc0NX0.FvZdVGkwt76s2cMjvap1gvRJx8awHUonGXpPwb8gbpk';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const SPECIES_LIST = [
+  'Onça-Pintada (Panthera onca)','Tuiuiú (Jabiru mycteria)','Lobo-guará (Chrysocyon brachyurus)',
+  'Arara-azul (Anodorhynchus hyacinthinus)','Capivara (Hydrochoerus hydrochaeris)',
+  'Jacaré-do-pantanal (Caiman yacare)','Anta (Tapirus terrestris)',
+  'Tamanduá-bandeira (Myrmecophaga tridactyla)','Queixada (Tayassu pecari)','Tucano-toco (Ramphastos toco)'
+];
+
+const LANG = {
+  pt: {
+    nav_avistamentos:'Avistamentos', nav_checkin:'Check-In', nav_alertas:'Alertas', nav_perfil:'Perfil',
+    app_tagline:'Compartilhe avistamentos. Ganhe JaguarCoin.',
+    offline_label:'Sem conexão', offline_pending:'{n} item(ns) aguardando envio',
+    login_email_label:'E-MAIL', login_password_label:'SENHA',
+    login_email_placeholder:'seuemail@exemplo.com', login_password_placeholder:'••••••••',
+    login_button:'Entrar', login_entering:'Entrando...',
+    login_hint:'Reserva confirmada em uma pousada parceira? Seu login foi enviado por e-mail.',
+    login_forgot:'Esqueceu a senha?', login_or:'ou', login_google:'Continuar com Google',
+    login_error_fill:'Preencha e-mail e senha.', login_error_invalid:'E-mail ou senha inválidos.',
+    login_no_account:'Não tem conta?', login_create_account:'Criar conta',
+    signup_title:'Criar Conta', signup_fullname_label:'NOME COMPLETO', signup_fullname_placeholder:'Seu nome',
+    signup_email_confirm_label:'CONFIRMAR E-MAIL', signup_password_confirm_label:'CONFIRMAR SENHA',
+    signup_password_hint:'Use pelo menos 8 caracteres, com letra maiúscula, minúscula e número.',
+    signup_button:'Criar conta', signup_creating:'Criando conta...',
+    signup_have_account:'Já tem conta?', signup_go_login:'Entrar',
+    signup_email_mismatch:'Os e-mails digitados não são iguais.', signup_password_mismatch:'As senhas digitadas não são iguais.',
+    signup_weak_password:'Senha fraca — siga as dicas acima.', signup_fill_all:'Preencha todos os campos.',
+    signup_success:'Conta criada! Verifique seu e-mail (e a caixa de spam/lixo eletrônico) para confirmar antes de entrar.',
+    forgot_title:'Recuperar senha', forgot_desc:'Digite seu e-mail e enviaremos um link para redefinir sua senha.',
+    forgot_email_placeholder:'seuemail@exemplo.com', forgot_send:'Enviar link', forgot_sending:'Enviando...',
+    forgot_sent:'E-mail enviado! Verifique sua caixa de entrada.', forgot_cancel:'Cancelar',
+    forgot_error:'Não foi possível enviar. Verifique o e-mail digitado.',
+    feed_section_title:'AVISTAMENTOS RECENTES', feed_empty_title:'Nenhum avistamento ainda',
+    feed_empty_desc:'Toque em + para registrar o primeiro avistamento de fauna ou flora do seu passeio.',
+    action_share_location:'Compartilhar local', action_location_shared:'Local compartilhado',
+    action_share_photo:'Foto', action_report:'Denunciar',
+    status_pending:'Em análise', tag_no_photo:'Sem foto',
+    comment_view_all:'Ver todos os {n} comentários', comment_view_less:'Ver menos',
+    comment_be_first:'Seja o primeiro a comentar.', comment_placeholder:'Escreva um comentário...', comment_send:'Enviar',
+    checkin_section_title:'CHECK-IN VIA GPS',
+    checkin_desc:'Selecione sua reserva confirmada abaixo para homologar seu check-in de chegada na pousada via posicionamento geográfico satelital.',
+    checkin_period_label:'Período:', checkin_button:'Efetuar Check-In (Geofence)', checkin_confirmed:'✓ Check-in confirmado',
+    checkin_getting_location:'Obtendo localização...', checkin_gps_unavailable:'GPS indisponível neste dispositivo.',
+    checkin_location_failed:'Não foi possível confirmar sua localização.',
+    alerts_section_title:'ALERTAS ECOLÓGICOS (PUSH)',
+    alerts_desc:'Avisos de fauna silvestre avistada por outros hóspedes, filtrados pelas espécies que você segue.',
+    alerts_empty_title:'Nenhum alerta por enquanto',
+    alerts_empty_desc:'Escolha as espécies que mais te interessam para receber um aviso assim que alguém avistar uma delas.',
+    alerts_choose_species:'Escolher espécies de interesse',
+    wallet_balance_label:'{currency} disponíveis', wallet_benefits_title:'TROCAR POR BENEFÍCIOS',
+    wallet_vouchers_title:'MEUS VOUCHERS', wallet_used:'Usado', wallet_pending:'Pendente',
+    wallet_disclaimer:'🪙 {currency} é uma moeda de recompensa interna do EcoSafari Go. Não possui valor monetário, não pode ser comprada, vendida, transferida entre contas ou trocada por dinheiro real — apenas por benefícios dentro da pousada parceira.',
+    wallet_back:'‹ Voltar', wallet_redeem:'Resgatar', wallet_code_label:'Código:',
+    benefit_discount_bar:'10% de desconto no bar da pousada', benefit_night_tour:'Passeio noturno extra grátis',
+    benefit_tshirt:'Camiseta EcoSafari Go', benefit_room_upgrade:'Upgrade de quarto (sujeito a disp.)',
+    profile_title:'MEU PERFIL', profile_achievements:'CONQUISTAS',
+    profile_species_alerts_title:'ALERTAS POR ESPÉCIE',
+    profile_species_alerts_desc:'Marque os animais de seu interesse. Quando outro hóspede avistar um deles, você recebe um alerta.',
+    profile_ranking_title:'RANKING DA POUSADA',
+    profile_ranking_empty:'O ranking aparece assim que os hóspedes da estadia começarem a registrar avistamentos.',
+    profile_connection_title:'CONEXÃO', profile_simulate_offline:'Simular modo offline (demonstração)',
+    profile_simulate_demo_btn:'🧪 Simular avistamento de outro hóspede (demo)',
+    profile_simulate_demo_note:'Este botão existe só neste protótipo, para testar o alerta por espécie. No app publicado, o alerta chega sozinho quando qualquer hóspede real registra um avistamento.',
+    profile_appearance_title:'APARÊNCIA', profile_theme_dark:'Escuro', profile_theme_light:'Claro',
+    profile_language_title:'IDIOMA',
+    profile_privacy_title:'PRIVACIDADE E DADOS', profile_privacy_policy:'Política de Privacidade',
+    profile_permissions:'Como usamos sua localização', profile_guide_mode:'Sou da equipe (modo guia)',
+    profile_delete_account:'Excluir minha conta e meus dados', profile_logout:'Sair da conta',
+    profile_delete_confirm:'Tem certeza que deseja excluir sua conta e todos os seus dados? Essa ação não pode ser desfeita.',
+    modal_title:'Novo Avistamento', modal_take_photo:'📷 Tirar foto', modal_gallery:'🖼️ Galeria',
+    modal_change_photo:'Trocar foto',
+    modal_optional_note:'Foto é opcional — sem tempo ou sem foto boa? Você pode relatar só com texto e localização abaixo.',
+    modal_location_label:'LOCALIZAÇÃO', modal_location_attach:'📍 Anexar minha localização atual',
+    modal_location_attached:'Localização atual anexada',
+    modal_species_label:'ESPÉCIE AVISTADA', modal_species_placeholder:'Ex: Onça-Pintada',
+    modal_desc_label:'DESCRIÇÃO', modal_desc_placeholder:'O que aconteceu?',
+    modal_submit:'Enviar para validação', modal_cancel:'Cancelar',
+    guide_panel_title:'PAINEL DO GUIA — APROVAÇÕES',
+    guide_panel_desc:'Avistamentos enviados pelos hóspedes aguardando validação antes de creditar JaguarCoin.',
+    guide_empty:'Nenhum avistamento pendente no momento.',
+    guide_approve:'Aprovar (+10 {currency})', guide_reject:'Rejeitar', guide_back:'‹ Voltar ao meu perfil',
+    guide_no_location:'Sem localização anexada pelo hóspede.',
+    policy_close:'Fechar', policy_privacy_title:'Política de Privacidade', policy_permissions_title:'Permissões do App',
+    policy_collect_title:'O que coletamos', policy_collect_body:'Nome, e-mail, fotos de avistamentos enviadas por você, e sua localização apenas nos momentos de check-in e de compartilhamento de avistamento.',
+    policy_use_title:'Como usamos', policy_use_body:'Para validar seu check-in na pousada, confirmar a localização aproximada de um avistamento, e creditar JaguarCoin. Nunca vendemos seus dados a terceiros.',
+    policy_rights_title:'Seus direitos', policy_rights_body:'Você pode solicitar a exclusão da sua conta e dos seus dados pessoais a qualquer momento, na seção Perfil. As fotos e textos de avistamentos que você já publicou continuam disponíveis no app após a exclusão, sem qualquer informação que identifique você, como parte do acervo público de fauna e flora do EcoSafari Go.',
+    policy_location_title:'Localização', policy_location_body:'Usada para confirmar que você está na pousada no momento do check-in (geofence) e, se você optar, para anexar o local de um avistamento. Você pode negar essa permissão e ainda assim usar o restante do app.',
+    policy_camera_title:'Câmera e Fotos', policy_camera_body:'Usada apenas quando você escolhe adicionar uma foto de avistamento. As fotos passam por validação da equipe antes de gerar JaguarCoin.',
+    verified_label:'Observador Verificado', user_profile_posts_title:'AVISTAMENTOS COMPARTILHADOS',
+    user_profile_sightings_count:'{n} avistamento(s) validado(s)', user_profile_empty:'Este hóspede ainda não tem avistamentos validados.',
+  },
+  en: {
+    nav_avistamentos:'Sightings', nav_checkin:'Check-In', nav_alertas:'Alerts', nav_perfil:'Profile',
+    app_tagline:'Share sightings. Earn JaguarCoin.',
+    offline_label:'No connection', offline_pending:'{n} item(s) waiting to send',
+    login_email_label:'EMAIL', login_password_label:'PASSWORD',
+    login_email_placeholder:'youremail@example.com', login_password_placeholder:'••••••••',
+    login_button:'Log In', login_entering:'Logging in...',
+    login_hint:'Confirmed booking at a partner lodge? Your login was sent by e-mail.',
+    login_forgot:'Forgot your password?', login_or:'or', login_google:'Continue with Google',
+    login_error_fill:'Please fill in email and password.', login_error_invalid:'Invalid email or password.',
+    login_no_account:"Don't have an account?", login_create_account:'Create account',
+    signup_title:'Create Account', signup_fullname_label:'FULL NAME', signup_fullname_placeholder:'Your name',
+    signup_email_confirm_label:'CONFIRM EMAIL', signup_password_confirm_label:'CONFIRM PASSWORD',
+    signup_password_hint:'Use at least 8 characters, with uppercase, lowercase and a number.',
+    signup_button:'Create account', signup_creating:'Creating account...',
+    signup_have_account:'Already have an account?', signup_go_login:'Log in',
+    signup_email_mismatch:"The emails you entered don't match.", signup_password_mismatch:"The passwords you entered don't match.",
+    signup_weak_password:'Weak password — follow the tips above.', signup_fill_all:'Please fill in all fields.',
+    signup_success:'Account created! Check your email (and your spam/junk folder) to confirm before logging in.',
+    forgot_title:'Reset password', forgot_desc:"Enter your email and we'll send you a link to reset your password.",
+    forgot_email_placeholder:'youremail@example.com', forgot_send:'Send link', forgot_sending:'Sending...',
+    forgot_sent:'Email sent! Check your inbox.', forgot_cancel:'Cancel',
+    forgot_error:'Could not send. Check the email you entered.',
+    feed_section_title:'RECENT SIGHTINGS', feed_empty_title:'No sightings yet',
+    feed_empty_desc:'Tap + to log the first wildlife or plant sighting of your trip.',
+    action_share_location:'Share location', action_location_shared:'Location shared',
+    action_share_photo:'Photo', action_report:'Report',
+    status_pending:'Under review', tag_no_photo:'No photo',
+    comment_view_all:'View all {n} comments', comment_view_less:'View less',
+    comment_be_first:'Be the first to comment.', comment_placeholder:'Write a comment...', comment_send:'Send',
+    checkin_section_title:'GPS CHECK-IN',
+    checkin_desc:'Select your confirmed reservation below to validate your arrival check-in via satellite location.',
+    checkin_period_label:'Period:', checkin_button:'Check In (Geofence)', checkin_confirmed:'✓ Check-in confirmed',
+    checkin_getting_location:'Getting location...', checkin_gps_unavailable:'GPS unavailable on this device.',
+    checkin_location_failed:'Could not confirm your location.',
+    alerts_section_title:'WILDLIFE ALERTS (PUSH)',
+    alerts_desc:'Wildlife sighting alerts from other guests, filtered by the species you follow.',
+    alerts_empty_title:'No alerts yet',
+    alerts_empty_desc:'Choose the species you care about most to get notified as soon as someone spots one.',
+    alerts_choose_species:'Choose species of interest',
+    wallet_balance_label:'{currency} available', wallet_benefits_title:'REDEEM BENEFITS',
+    wallet_vouchers_title:'MY VOUCHERS', wallet_used:'Used', wallet_pending:'Pending',
+    wallet_disclaimer:"🪙 {currency} is EcoSafari Go's internal reward currency. It has no monetary value and cannot be bought, sold, transferred between accounts, or exchanged for real money — only for benefits at the partner lodge.",
+    wallet_back:'‹ Back', wallet_redeem:'Redeem', wallet_code_label:'Code:',
+    benefit_discount_bar:'10% off at the lodge bar', benefit_night_tour:'Free extra night tour',
+    benefit_tshirt:'EcoSafari Go T-shirt', benefit_room_upgrade:'Room upgrade (subject to availability)',
+    profile_title:'MY PROFILE', profile_achievements:'ACHIEVEMENTS',
+    profile_species_alerts_title:'ALERTS BY SPECIES',
+    profile_species_alerts_desc:"Mark the animals you're interested in. When another guest spots one, you'll get an alert.",
+    profile_ranking_title:'LODGE LEADERBOARD',
+    profile_ranking_empty:'The leaderboard appears once guests start logging sightings.',
+    profile_connection_title:'CONNECTION', profile_simulate_offline:'Simulate offline mode (demo)',
+    profile_simulate_demo_btn:"🧪 Simulate another guest's sighting (demo)",
+    profile_simulate_demo_note:'This button only exists in this prototype, to test the species alert. In the published app, the alert arrives on its own when any real guest logs a sighting.',
+    profile_appearance_title:'APPEARANCE', profile_theme_dark:'Dark', profile_theme_light:'Light',
+    profile_language_title:'LANGUAGE',
+    profile_privacy_title:'PRIVACY & DATA', profile_privacy_policy:'Privacy Policy',
+    profile_permissions:'How we use your location', profile_guide_mode:"I'm on staff (guide mode)",
+    profile_delete_account:'Delete my account and data', profile_logout:'Log out',
+    profile_delete_confirm:'Are you sure you want to delete your account and all your data? This action cannot be undone.',
+    modal_title:'New Sighting', modal_take_photo:'📷 Take photo', modal_gallery:'🖼️ Gallery',
+    modal_change_photo:'Change photo',
+    modal_optional_note:"Photo is optional — no time or no good shot? You can report with just text and location below.",
+    modal_location_label:'LOCATION', modal_location_attach:'📍 Attach my current location',
+    modal_location_attached:'Current location attached',
+    modal_species_label:'SPECIES SPOTTED', modal_species_placeholder:'E.g.: Jaguar',
+    modal_desc_label:'DESCRIPTION', modal_desc_placeholder:'What happened?',
+    modal_submit:'Submit for review', modal_cancel:'Cancel',
+    guide_panel_title:'GUIDE PANEL — APPROVALS',
+    guide_panel_desc:'Sightings submitted by guests awaiting validation before JaguarCoin is credited.',
+    guide_empty:'No pending sightings right now.',
+    guide_approve:'Approve (+10 {currency})', guide_reject:'Reject', guide_back:'‹ Back to my profile',
+    guide_no_location:'No location attached by the guest.',
+    policy_close:'Close', policy_privacy_title:'Privacy Policy', policy_permissions_title:'App Permissions',
+    policy_collect_title:'What we collect', policy_collect_body:'Name, email, photos of sightings you submit, and your location only at check-in and when sharing a sighting.',
+    policy_use_title:'How we use it', policy_use_body:'To validate your lodge check-in, confirm the approximate location of a sighting, and credit JaguarCoin. We never sell your data to third parties.',
+    policy_rights_title:'Your rights', policy_rights_body:'You can request deletion of your account and personal data at any time, in the Profile section. Photos and text from sightings you already published remain available in the app after deletion, with no information identifying you, as part of EcoSafari Go\'s public wildlife record.',
+    policy_location_title:'Location', policy_location_body:"Used to confirm you're at the lodge at check-in time (geofence) and, if you choose, to attach the location of a sighting. You can deny this permission and still use the rest of the app.",
+    policy_camera_title:'Camera & Photos', policy_camera_body:'Used only when you choose to add a photo to a sighting. Photos go through staff validation before JaguarCoin is credited.',
+    verified_label:'Verified Observer', user_profile_posts_title:'SHARED SIGHTINGS',
+    user_profile_sightings_count:'{n} validated sighting(s)', user_profile_empty:'This guest has no validated sightings yet.',
+  },
+  es: {
+    nav_avistamentos:'Avistamientos', nav_checkin:'Check-In', nav_alertas:'Alertas', nav_perfil:'Perfil',
+    app_tagline:'Comparte avistamientos. Gana JaguarCoin.',
+    offline_label:'Sin conexión', offline_pending:'{n} elemento(s) esperando envío',
+    login_email_label:'CORREO', login_password_label:'CONTRASEÑA',
+    login_email_placeholder:'tucorreo@ejemplo.com', login_password_placeholder:'••••••••',
+    login_button:'Iniciar sesión', login_entering:'Iniciando...',
+    login_hint:'¿Reserva confirmada en una posada asociada? Tu acceso fue enviado por correo.',
+    login_forgot:'¿Olvidaste tu contraseña?', login_or:'o', login_google:'Continuar con Google',
+    login_error_fill:'Completa el correo y la contraseña.', login_error_invalid:'Correo o contraseña inválidos.',
+    login_no_account:'¿No tienes cuenta?', login_create_account:'Crear cuenta',
+    signup_title:'Crear Cuenta', signup_fullname_label:'NOMBRE COMPLETO', signup_fullname_placeholder:'Tu nombre',
+    signup_email_confirm_label:'CONFIRMAR CORREO', signup_password_confirm_label:'CONFIRMAR CONTRASEÑA',
+    signup_password_hint:'Usa al menos 8 caracteres, con mayúscula, minúscula y número.',
+    signup_button:'Crear cuenta', signup_creating:'Creando cuenta...',
+    signup_have_account:'¿Ya tienes cuenta?', signup_go_login:'Iniciar sesión',
+    signup_email_mismatch:'Los correos ingresados no coinciden.', signup_password_mismatch:'Las contraseñas ingresadas no coinciden.',
+    signup_weak_password:'Contraseña débil — sigue las indicaciones de arriba.', signup_fill_all:'Completa todos los campos.',
+    signup_success:'¡Cuenta creada! Revisa tu correo (y la carpeta de spam) para confirmar antes de iniciar sesión.',
+    forgot_title:'Recuperar contraseña', forgot_desc:'Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.',
+    forgot_email_placeholder:'tucorreo@ejemplo.com', forgot_send:'Enviar enlace', forgot_sending:'Enviando...',
+    forgot_sent:'¡Correo enviado! Revisa tu bandeja de entrada.', forgot_cancel:'Cancelar',
+    forgot_error:'No se pudo enviar. Revisa el correo ingresado.',
+    feed_section_title:'AVISTAMIENTOS RECIENTES', feed_empty_title:'Aún no hay avistamientos',
+    feed_empty_desc:'Toca + para registrar el primer avistamiento de fauna o flora de tu paseo.',
+    action_share_location:'Compartir ubicación', action_location_shared:'Ubicación compartida',
+    action_share_photo:'Foto', action_report:'Reportar',
+    status_pending:'En revisión', tag_no_photo:'Sin foto',
+    comment_view_all:'Ver los {n} comentarios', comment_view_less:'Ver menos',
+    comment_be_first:'Sé el primero en comentar.', comment_placeholder:'Escribe un comentario...', comment_send:'Enviar',
+    checkin_section_title:'CHECK-IN POR GPS',
+    checkin_desc:'Selecciona tu reserva confirmada para validar tu llegada a la posada mediante ubicación satelital.',
+    checkin_period_label:'Periodo:', checkin_button:'Hacer Check-In (Geofence)', checkin_confirmed:'✓ Check-in confirmado',
+    checkin_getting_location:'Obteniendo ubicación...', checkin_gps_unavailable:'GPS no disponible en este dispositivo.',
+    checkin_location_failed:'No se pudo confirmar tu ubicación.',
+    alerts_section_title:'ALERTAS DE FAUNA (PUSH)',
+    alerts_desc:'Avisos de fauna silvestre avistada por otros huéspedes, filtrados por las especies que sigues.',
+    alerts_empty_title:'Sin alertas por ahora',
+    alerts_empty_desc:'Elige las especies que más te interesan para recibir un aviso en cuanto alguien aviste una.',
+    alerts_choose_species:'Elegir especies de interés',
+    wallet_balance_label:'{currency} disponibles', wallet_benefits_title:'CANJEAR BENEFICIOS',
+    wallet_vouchers_title:'MIS VALES', wallet_used:'Usado', wallet_pending:'Pendiente',
+    wallet_disclaimer:'🪙 {currency} es la moneda de recompensa interna de EcoSafari Go. No tiene valor monetario y no puede comprarse, venderse, transferirse entre cuentas ni cambiarse por dinero real — solo por beneficios en la posada asociada.',
+    wallet_back:'‹ Volver', wallet_redeem:'Canjear', wallet_code_label:'Código:',
+    benefit_discount_bar:'10% de descuento en el bar de la posada', benefit_night_tour:'Paseo nocturno extra gratis',
+    benefit_tshirt:'Camiseta EcoSafari Go', benefit_room_upgrade:'Mejora de habitación (sujeto a disponibilidad)',
+    profile_title:'MI PERFIL', profile_achievements:'LOGROS',
+    profile_species_alerts_title:'ALERTAS POR ESPECIE',
+    profile_species_alerts_desc:'Marca los animales de tu interés. Cuando otro huésped aviste uno, recibirás una alerta.',
+    profile_ranking_title:'RANKING DE LA POSADA',
+    profile_ranking_empty:'El ranking aparece cuando los huéspedes empiecen a registrar avistamientos.',
+    profile_connection_title:'CONEXIÓN', profile_simulate_offline:'Simular modo sin conexión (demo)',
+    profile_simulate_demo_btn:'🧪 Simular avistamiento de otro huésped (demo)',
+    profile_simulate_demo_note:'Este botón solo existe en este prototipo, para probar la alerta por especie. En la app publicada, la alerta llega sola cuando cualquier huésped real registra un avistamiento.',
+    profile_appearance_title:'APARIENCIA', profile_theme_dark:'Oscuro', profile_theme_light:'Claro',
+    profile_language_title:'IDIOMA',
+    profile_privacy_title:'PRIVACIDAD Y DATOS', profile_privacy_policy:'Política de Privacidad',
+    profile_permissions:'Cómo usamos tu ubicación', profile_guide_mode:'Soy parte del equipo (modo guía)',
+    profile_delete_account:'Eliminar mi cuenta y mis datos', profile_logout:'Cerrar sesión',
+    profile_delete_confirm:'¿Seguro que deseas eliminar tu cuenta y todos tus datos? Esta acción no se puede deshacer.',
+    modal_title:'Nuevo Avistamiento', modal_take_photo:'📷 Tomar foto', modal_gallery:'🖼️ Galería',
+    modal_change_photo:'Cambiar foto',
+    modal_optional_note:'La foto es opcional — ¿sin tiempo o sin buena foto? Puedes reportar solo con texto y ubicación abajo.',
+    modal_location_label:'UBICACIÓN', modal_location_attach:'📍 Adjuntar mi ubicación actual',
+    modal_location_attached:'Ubicación actual adjuntada',
+    modal_species_label:'ESPECIE AVISTADA', modal_species_placeholder:'Ej: Jaguar',
+    modal_desc_label:'DESCRIPCIÓN', modal_desc_placeholder:'¿Qué pasó?',
+    modal_submit:'Enviar para validación', modal_cancel:'Cancelar',
+    guide_panel_title:'PANEL DEL GUÍA — APROBACIONES',
+    guide_panel_desc:'Avistamientos enviados por huéspedes en espera de validación antes de acreditar JaguarCoin.',
+    guide_empty:'No hay avistamientos pendientes por ahora.',
+    guide_approve:'Aprobar (+10 {currency})', guide_reject:'Rechazar', guide_back:'‹ Volver a mi perfil',
+    guide_no_location:'El huésped no adjuntó ubicación.',
+    policy_close:'Cerrar', policy_privacy_title:'Política de Privacidad', policy_permissions_title:'Permisos de la App',
+    policy_collect_title:'Qué recopilamos', policy_collect_body:'Nombre, correo, fotos de avistamientos que envías, y tu ubicación solo en el check-in y al compartir un avistamiento.',
+    policy_use_title:'Cómo lo usamos', policy_use_body:'Para validar tu check-in en la posada, confirmar la ubicación aproximada de un avistamiento y acreditar JaguarCoin. Nunca vendemos tus datos a terceros.',
+    policy_rights_title:'Tus derechos', policy_rights_body:'Puedes solicitar la eliminación de tu cuenta y tus datos personales en cualquier momento, en la sección Perfil. Las fotos y textos de avistamientos que ya publicaste siguen disponibles en la app después de la eliminación, sin ninguna información que te identifique, como parte del acervo público de fauna y flora de EcoSafari Go.',
+    policy_location_title:'Ubicación', policy_location_body:'Se usa para confirmar que estás en la posada al momento del check-in (geofence) y, si lo eliges, para adjuntar la ubicación de un avistamiento. Puedes negar este permiso y aun así usar el resto de la app.',
+    policy_camera_title:'Cámara y Fotos', policy_camera_body:'Se usa solo cuando eliges agregar una foto a un avistamiento. Las fotos pasan por validación del equipo antes de generar JaguarCoin.',
+    verified_label:'Observador Verificado', user_profile_posts_title:'AVISTAMIENTOS COMPARTIDOS',
+    user_profile_sightings_count:'{n} avistamiento(s) validado(s)', user_profile_empty:'Este huésped aún no tiene avistamientos validados.',
+  },
+  de: {
+    nav_avistamentos:'Sichtungen', nav_checkin:'Check-In', nav_alertas:'Meldungen', nav_perfil:'Profil',
+    app_tagline:'Teile Sichtungen. Verdiene JaguarCoin.',
+    offline_label:'Keine Verbindung', offline_pending:'{n} Element(e) warten auf Übertragung',
+    login_email_label:'E-MAIL', login_password_label:'PASSWORT',
+    login_email_placeholder:'deinemail@beispiel.com', login_password_placeholder:'••••••••',
+    login_button:'Anmelden', login_entering:'Anmeldung läuft...',
+    login_hint:'Bestätigte Reservierung in einer Partner-Lodge? Deine Zugangsdaten wurden per E-Mail gesendet.',
+    login_forgot:'Passwort vergessen?', login_or:'oder', login_google:'Mit Google fortfahren',
+    login_error_fill:'Bitte E-Mail und Passwort ausfüllen.', login_error_invalid:'Ungültige E-Mail oder Passwort.',
+    login_no_account:'Noch kein Konto?', login_create_account:'Konto erstellen',
+    signup_title:'Konto erstellen', signup_fullname_label:'VOLLSTÄNDIGER NAME', signup_fullname_placeholder:'Dein Name',
+    signup_email_confirm_label:'E-MAIL BESTÄTIGEN', signup_password_confirm_label:'PASSWORT BESTÄTIGEN',
+    signup_password_hint:'Mindestens 8 Zeichen, mit Groß-, Kleinbuchstaben und einer Zahl.',
+    signup_button:'Konto erstellen', signup_creating:'Konto wird erstellt...',
+    signup_have_account:'Bereits ein Konto?', signup_go_login:'Anmelden',
+    signup_email_mismatch:'Die eingegebenen E-Mails stimmen nicht überein.', signup_password_mismatch:'Die eingegebenen Passwörter stimmen nicht überein.',
+    signup_weak_password:'Schwaches Passwort — befolge die Tipps oben.', signup_fill_all:'Bitte alle Felder ausfüllen.',
+    signup_success:'Konto erstellt! Bestätige deine E-Mail (prüfe auch deinen Spam-Ordner), bevor du dich anmeldest.',
+    forgot_title:'Passwort zurücksetzen', forgot_desc:'Gib deine E-Mail ein, wir senden dir einen Link zum Zurücksetzen deines Passworts.',
+    forgot_email_placeholder:'deinemail@beispiel.com', forgot_send:'Link senden', forgot_sending:'Wird gesendet...',
+    forgot_sent:'E-Mail gesendet! Überprüfe dein Postfach.', forgot_cancel:'Abbrechen',
+    forgot_error:'Senden fehlgeschlagen. Überprüfe die eingegebene E-Mail.',
+    feed_section_title:'NEUESTE SICHTUNGEN', feed_empty_title:'Noch keine Sichtungen',
+    feed_empty_desc:'Tippe auf +, um die erste Tier- oder Pflanzensichtung deiner Tour zu erfassen.',
+    action_share_location:'Standort teilen', action_location_shared:'Standort geteilt',
+    action_share_photo:'Foto', action_report:'Melden',
+    status_pending:'In Prüfung', tag_no_photo:'Kein Foto',
+    comment_view_all:'Alle {n} Kommentare ansehen', comment_view_less:'Weniger anzeigen',
+    comment_be_first:'Sei der Erste, der kommentiert.', comment_placeholder:'Schreib einen Kommentar...', comment_send:'Senden',
+    checkin_section_title:'GPS-CHECK-IN',
+    checkin_desc:'Wähle unten deine bestätigte Reservierung, um deinen Check-in per Satellitenortung zu bestätigen.',
+    checkin_period_label:'Zeitraum:', checkin_button:'Check-In durchführen (Geofence)', checkin_confirmed:'✓ Check-in bestätigt',
+    checkin_getting_location:'Standort wird ermittelt...', checkin_gps_unavailable:'GPS auf diesem Gerät nicht verfügbar.',
+    checkin_location_failed:'Standort konnte nicht bestätigt werden.',
+    alerts_section_title:'TIER-MELDUNGEN (PUSH)',
+    alerts_desc:'Meldungen von Wildtiersichtungen anderer Gäste, gefiltert nach den Arten, denen du folgst.',
+    alerts_empty_title:'Noch keine Meldungen',
+    alerts_empty_desc:'Wähle die Arten aus, die dich am meisten interessieren, um sofort benachrichtigt zu werden.',
+    alerts_choose_species:'Interessante Arten auswählen',
+    wallet_balance_label:'Verfügbare {currency}', wallet_benefits_title:'VORTEILE EINLÖSEN',
+    wallet_vouchers_title:'MEINE GUTSCHEINE', wallet_used:'Verwendet', wallet_pending:'Ausstehend',
+    wallet_disclaimer:'🪙 {currency} ist die interne Belohnungswährung von EcoSafari Go. Sie hat keinen Geldwert und kann nicht gekauft, verkauft, zwischen Konten übertragen oder gegen echtes Geld eingetauscht werden — nur gegen Vorteile in der Partner-Lodge.',
+    wallet_back:'‹ Zurück', wallet_redeem:'Einlösen', wallet_code_label:'Code:',
+    benefit_discount_bar:'10% Rabatt an der Lodge-Bar', benefit_night_tour:'Kostenlose zusätzliche Nachttour',
+    benefit_tshirt:'EcoSafari Go T-Shirt', benefit_room_upgrade:'Zimmer-Upgrade (je nach Verfügbarkeit)',
+    profile_title:'MEIN PROFIL', profile_achievements:'ERFOLGE',
+    profile_species_alerts_title:'MELDUNGEN NACH ART',
+    profile_species_alerts_desc:'Markiere die Tiere, die dich interessieren. Sichtet ein anderer Gast eines davon, erhältst du eine Meldung.',
+    profile_ranking_title:'RANGLISTE DER LODGE',
+    profile_ranking_empty:'Die Rangliste erscheint, sobald Gäste beginnen, Sichtungen zu erfassen.',
+    profile_connection_title:'VERBINDUNG', profile_simulate_offline:'Offline-Modus simulieren (Demo)',
+    profile_simulate_demo_btn:'🧪 Sichtung eines anderen Gasts simulieren (Demo)',
+    profile_simulate_demo_note:'Diese Schaltfläche existiert nur in diesem Prototyp, um die Artmeldung zu testen. In der veröffentlichten App kommt die Meldung von selbst, sobald ein echter Gast eine Sichtung erfasst.',
+    profile_appearance_title:'ERSCHEINUNGSBILD', profile_theme_dark:'Dunkel', profile_theme_light:'Hell',
+    profile_language_title:'SPRACHE',
+    profile_privacy_title:'DATENSCHUTZ', profile_privacy_policy:'Datenschutzerklärung',
+    profile_permissions:'Wie wir deinen Standort nutzen', profile_guide_mode:'Ich gehöre zum Team (Guide-Modus)',
+    profile_delete_account:'Mein Konto und meine Daten löschen', profile_logout:'Abmelden',
+    profile_delete_confirm:'Bist du sicher, dass du dein Konto und alle deine Daten löschen möchtest? Dies kann nicht rückgängig gemacht werden.',
+    modal_title:'Neue Sichtung', modal_take_photo:'📷 Foto aufnehmen', modal_gallery:'🖼️ Galerie',
+    modal_change_photo:'Foto ändern',
+    modal_optional_note:'Foto ist optional — keine Zeit oder kein gutes Foto? Du kannst nur mit Text und Standort unten berichten.',
+    modal_location_label:'STANDORT', modal_location_attach:'📍 Meinen aktuellen Standort anhängen',
+    modal_location_attached:'Aktueller Standort angehängt',
+    modal_species_label:'GESICHTETE ART', modal_species_placeholder:'Z.B.: Jaguar',
+    modal_desc_label:'BESCHREIBUNG', modal_desc_placeholder:'Was ist passiert?',
+    modal_submit:'Zur Prüfung senden', modal_cancel:'Abbrechen',
+    guide_panel_title:'GUIDE-PANEL — GENEHMIGUNGEN',
+    guide_panel_desc:'Von Gästen eingereichte Sichtungen, die vor der JaguarCoin-Gutschrift auf Bestätigung warten.',
+    guide_empty:'Derzeit keine ausstehenden Sichtungen.',
+    guide_approve:'Genehmigen (+10 {currency})', guide_reject:'Ablehnen', guide_back:'‹ Zurück zu meinem Profil',
+    guide_no_location:'Kein Standort vom Gast angehängt.',
+    policy_close:'Schließen', policy_privacy_title:'Datenschutzerklärung', policy_permissions_title:'App-Berechtigungen',
+    policy_collect_title:'Was wir erfassen', policy_collect_body:'Name, E-Mail, von dir eingereichte Sichtungsfotos und dein Standort nur beim Check-in und beim Teilen einer Sichtung.',
+    policy_use_title:'Wie wir es nutzen', policy_use_body:'Um deinen Lodge-Check-in zu bestätigen, den ungefähren Standort einer Sichtung zu bestätigen und JaguarCoin gutzuschreiben. Wir verkaufen deine Daten niemals an Dritte.',
+    policy_rights_title:'Deine Rechte', policy_rights_body:'Du kannst jederzeit im Bereich Profil die Löschung deines Kontos und deiner persönlichen Daten beantragen. Fotos und Texte von Sichtungen, die du bereits veröffentlicht hast, bleiben nach der Löschung in der App verfügbar, ohne dich identifizierende Informationen, als Teil des öffentlichen Wildtier-Archivs von EcoSafari Go.',
+    policy_location_title:'Standort', policy_location_body:'Wird verwendet, um zu bestätigen, dass du dich beim Check-in in der Lodge befindest (Geofence), und, falls gewünscht, um den Standort einer Sichtung anzuhängen. Du kannst diese Berechtigung verweigern und den Rest der App trotzdem nutzen.',
+    policy_camera_title:'Kamera & Fotos', policy_camera_body:'Wird nur verwendet, wenn du ein Foto zu einer Sichtung hinzufügst. Fotos durchlaufen eine Prüfung durch das Team, bevor JaguarCoin gutgeschrieben wird.',
+    verified_label:'Verifizierter Beobachter', user_profile_posts_title:'GETEILTE SICHTUNGEN',
+    user_profile_sightings_count:'{n} bestätigte Sichtung(en)', user_profile_empty:'Dieser Gast hat noch keine bestätigten Sichtungen.',
+  },
+  fr: {
+    nav_avistamentos:'Observations', nav_checkin:'Check-In', nav_alertas:'Alertes', nav_perfil:'Profil',
+    app_tagline:'Partagez vos observations. Gagnez des JaguarCoin.',
+    offline_label:'Hors ligne', offline_pending:'{n} élément(s) en attente d\'envoi',
+    login_email_label:'E-MAIL', login_password_label:'MOT DE PASSE',
+    login_email_placeholder:'votremail@exemple.com', login_password_placeholder:'••••••••',
+    login_button:'Se connecter', login_entering:'Connexion...',
+    login_hint:'Réservation confirmée dans un lodge partenaire ? Vos identifiants ont été envoyés par e-mail.',
+    login_forgot:'Mot de passe oublié ?', login_or:'ou', login_google:'Continuer avec Google',
+    login_error_fill:"Veuillez remplir l'e-mail et le mot de passe.", login_error_invalid:'E-mail ou mot de passe invalide.',
+    login_no_account:'Pas encore de compte ?', login_create_account:'Créer un compte',
+    signup_title:'Créer un compte', signup_fullname_label:'NOM COMPLET', signup_fullname_placeholder:'Votre nom',
+    signup_email_confirm_label:"CONFIRMER L'E-MAIL", signup_password_confirm_label:'CONFIRMER LE MOT DE PASSE',
+    signup_password_hint:'Utilisez au moins 8 caractères, avec majuscule, minuscule et un chiffre.',
+    signup_button:'Créer un compte', signup_creating:'Création du compte...',
+    signup_have_account:'Déjà un compte ?', signup_go_login:'Se connecter',
+    signup_email_mismatch:"Les e-mails saisis ne correspondent pas.", signup_password_mismatch:"Les mots de passe saisis ne correspondent pas.",
+    signup_weak_password:'Mot de passe faible — suivez les conseils ci-dessus.', signup_fill_all:'Veuillez remplir tous les champs.',
+    signup_success:'Compte créé ! Vérifiez votre e-mail (et vos courriers indésirables) pour confirmer avant de vous connecter.',
+    forgot_title:'Réinitialiser le mot de passe', forgot_desc:'Entrez votre e-mail, nous vous enverrons un lien pour réinitialiser votre mot de passe.',
+    forgot_email_placeholder:'votremail@exemple.com', forgot_send:'Envoyer le lien', forgot_sending:'Envoi...',
+    forgot_sent:'E-mail envoyé ! Vérifiez votre boîte de réception.', forgot_cancel:'Annuler',
+    forgot_error:"Échec de l'envoi. Vérifiez l'e-mail saisi.",
+    feed_section_title:'OBSERVATIONS RÉCENTES', feed_empty_title:'Aucune observation pour le moment',
+    feed_empty_desc:'Appuyez sur + pour enregistrer la première observation de faune ou de flore de votre excursion.',
+    action_share_location:'Partager la position', action_location_shared:'Position partagée',
+    action_share_photo:'Photo', action_report:'Signaler',
+    status_pending:'En cours de validation', tag_no_photo:'Sans photo',
+    comment_view_all:'Voir les {n} commentaires', comment_view_less:'Voir moins',
+    comment_be_first:'Soyez le premier à commenter.', comment_placeholder:'Écrivez un commentaire...', comment_send:'Envoyer',
+    checkin_section_title:'CHECK-IN PAR GPS',
+    checkin_desc:'Sélectionnez votre réservation confirmée ci-dessous pour valider votre arrivée via géolocalisation satellite.',
+    checkin_period_label:'Période :', checkin_button:'Effectuer le Check-In (Geofence)', checkin_confirmed:'✓ Check-in confirmé',
+    checkin_getting_location:'Localisation en cours...', checkin_gps_unavailable:'GPS indisponible sur cet appareil.',
+    checkin_location_failed:'Impossible de confirmer votre position.',
+    alerts_section_title:'ALERTES FAUNE (PUSH)',
+    alerts_desc:"Avis d'observations de faune sauvage par d'autres clients, filtrés selon les espèces que vous suivez.",
+    alerts_empty_title:'Aucune alerte pour le moment',
+    alerts_empty_desc:"Choisissez les espèces qui vous intéressent le plus pour être averti dès qu'une est observée.",
+    alerts_choose_species:"Choisir des espèces d'intérêt",
+    wallet_balance_label:'{currency} disponibles', wallet_benefits_title:'ÉCHANGER DES AVANTAGES',
+    wallet_vouchers_title:'MES BONS', wallet_used:'Utilisé', wallet_pending:'En attente',
+    wallet_disclaimer:"🪙 {currency} est la monnaie de récompense interne d'EcoSafari Go. Elle n'a aucune valeur monétaire et ne peut être ni achetée, ni vendue, ni transférée entre comptes, ni échangée contre de l'argent réel — uniquement contre des avantages au sein du lodge partenaire.",
+    wallet_back:'‹ Retour', wallet_redeem:'Échanger', wallet_code_label:'Code :',
+    benefit_discount_bar:'10% de réduction au bar du lodge', benefit_night_tour:'Excursion nocturne supplémentaire gratuite',
+    benefit_tshirt:'T-shirt EcoSafari Go', benefit_room_upgrade:'Surclassement de chambre (selon disponibilité)',
+    profile_title:'MON PROFIL', profile_achievements:'RÉCOMPENSES',
+    profile_species_alerts_title:'ALERTES PAR ESPÈCE',
+    profile_species_alerts_desc:"Cochez les animaux qui vous intéressent. Quand un autre client en observe un, vous recevez une alerte.",
+    profile_ranking_title:'CLASSEMENT DU LODGE',
+    profile_ranking_empty:'Le classement apparaît dès que les clients commencent à enregistrer des observations.',
+    profile_connection_title:'CONNEXION', profile_simulate_offline:'Simuler le mode hors ligne (démo)',
+    profile_simulate_demo_btn:"🧪 Simuler l'observation d'un autre client (démo)",
+    profile_simulate_demo_note:"Ce bouton n'existe que dans ce prototype, pour tester l'alerte par espèce. Dans l'app publiée, l'alerte arrive automatiquement dès qu'un client réel enregistre une observation.",
+    profile_appearance_title:'APPARENCE', profile_theme_dark:'Sombre', profile_theme_light:'Clair',
+    profile_language_title:'LANGUE',
+    profile_privacy_title:'CONFIDENTIALITÉ ET DONNÉES', profile_privacy_policy:'Politique de confidentialité',
+    profile_permissions:'Comment nous utilisons votre position', profile_guide_mode:"Je fais partie de l'équipe (mode guide)",
+    profile_delete_account:'Supprimer mon compte et mes données', profile_logout:'Se déconnecter',
+    profile_delete_confirm:'Voulez-vous vraiment supprimer votre compte et toutes vos données ? Cette action est irréversible.',
+    modal_title:'Nouvelle Observation', modal_take_photo:'📷 Prendre une photo', modal_gallery:'🖼️ Galerie',
+    modal_change_photo:'Changer de photo',
+    modal_optional_note:"La photo est facultative — pas le temps ou pas de bonne photo ? Vous pouvez signaler avec seulement du texte et la position ci-dessous.",
+    modal_location_label:'POSITION', modal_location_attach:'📍 Joindre ma position actuelle',
+    modal_location_attached:'Position actuelle jointe',
+    modal_species_label:'ESPÈCE OBSERVÉE', modal_species_placeholder:'Ex : Jaguar',
+    modal_desc_label:'DESCRIPTION', modal_desc_placeholder:"Que s'est-il passé ?",
+    modal_submit:'Envoyer pour validation', modal_cancel:'Annuler',
+    guide_panel_title:'PANNEAU DU GUIDE — APPROBATIONS',
+    guide_panel_desc:'Observations envoyées par les clients en attente de validation avant crédit du JaguarCoin.',
+    guide_empty:'Aucune observation en attente pour le moment.',
+    guide_approve:'Approuver (+10 {currency})', guide_reject:'Rejeter', guide_back:'‹ Retour à mon profil',
+    guide_no_location:"Aucune position jointe par le client.",
+    policy_close:'Fermer', policy_privacy_title:'Politique de confidentialité', policy_permissions_title:"Permissions de l'app",
+    policy_collect_title:'Ce que nous collectons', policy_collect_body:"Nom, e-mail, photos d'observations que vous envoyez, et votre position uniquement lors du check-in et du partage d'une observation.",
+    policy_use_title:'Comment nous l\'utilisons', policy_use_body:"Pour valider votre check-in au lodge, confirmer la position approximative d'une observation, et créditer des JaguarCoin. Nous ne vendons jamais vos données à des tiers.",
+    policy_rights_title:'Vos droits', policy_rights_body:"Vous pouvez demander la suppression de votre compte et de vos données personnelles à tout moment, dans la section Profil. Les photos et textes d'observations déjà publiés restent disponibles dans l'app après la suppression, sans aucune information vous identifiant, dans le cadre des archives publiques de faune et flore d'EcoSafari Go.",
+    policy_location_title:'Position', policy_location_body:"Utilisée pour confirmer que vous êtes au lodge au moment du check-in (geofence) et, si vous le souhaitez, pour joindre la position d'une observation. Vous pouvez refuser cette autorisation et quand même utiliser le reste de l'app.",
+    policy_camera_title:'Caméra et Photos', policy_camera_body:"Utilisée seulement lorsque vous choisissez d'ajouter une photo à une observation. Les photos sont validées par l'équipe avant le crédit de JaguarCoin.",
+    verified_label:'Observateur Vérifié', user_profile_posts_title:'OBSERVATIONS PARTAGÉES',
+    user_profile_sightings_count:'{n} observation(s) validée(s)', user_profile_empty:"Ce client n'a pas encore d'observations validées.",
+  },
+  ru: {
+    nav_avistamentos:'Наблюдения', nav_checkin:'Check-In', nav_alertas:'Оповещения', nav_perfil:'Профиль',
+    app_tagline:'Делитесь наблюдениями. Получайте JaguarCoin.',
+    offline_label:'Нет соединения', offline_pending:'{n} элемент(ов) ожидают отправки',
+    login_email_label:'ПОЧТА', login_password_label:'ПАРОЛЬ',
+    login_email_placeholder:'you@example.com', login_password_placeholder:'••••••••',
+    login_button:'Войти', login_entering:'Вход...',
+    login_hint:'Подтверждённое бронирование в партнёрском лодже? Данные для входа отправлены на почту.',
+    login_forgot:'Забыли пароль?', login_or:'или', login_google:'Продолжить с Google',
+    login_error_fill:'Заполните почту и пароль.', login_error_invalid:'Неверная почта или пароль.',
+    login_no_account:'Нет аккаунта?', login_create_account:'Создать аккаунт',
+    signup_title:'Создать аккаунт', signup_fullname_label:'ПОЛНОЕ ИМЯ', signup_fullname_placeholder:'Ваше имя',
+    signup_email_confirm_label:'ПОДТВЕРДИТЕ ПОЧТУ', signup_password_confirm_label:'ПОДТВЕРДИТЕ ПАРОЛЬ',
+    signup_password_hint:'Минимум 8 символов, с заглавной, строчной буквой и цифрой.',
+    signup_button:'Создать аккаунт', signup_creating:'Создание аккаунта...',
+    signup_have_account:'Уже есть аккаунт?', signup_go_login:'Войти',
+    signup_email_mismatch:'Введённые адреса почты не совпадают.', signup_password_mismatch:'Введённые пароли не совпадают.',
+    signup_weak_password:'Слабый пароль — следуйте подсказкам выше.', signup_fill_all:'Заполните все поля.',
+    signup_success:'Аккаунт создан! Проверьте почту (и папку со спамом) для подтверждения перед входом.',
+    forgot_title:'Восстановление пароля', forgot_desc:'Введите почту, и мы отправим ссылку для сброса пароля.',
+    forgot_email_placeholder:'you@example.com', forgot_send:'Отправить ссылку', forgot_sending:'Отправка...',
+    forgot_sent:'Письмо отправлено! Проверьте почту.', forgot_cancel:'Отмена',
+    forgot_error:'Не удалось отправить. Проверьте введённую почту.',
+    feed_section_title:'ПОСЛЕДНИЕ НАБЛЮДЕНИЯ', feed_empty_title:'Пока нет наблюдений',
+    feed_empty_desc:'Нажмите +, чтобы зарегистрировать первое наблюдение флоры или фауны во время поездки.',
+    action_share_location:'Поделиться геолокацией', action_location_shared:'Геолокация отправлена',
+    action_share_photo:'Фото', action_report:'Пожаловаться',
+    status_pending:'На проверке', tag_no_photo:'Без фото',
+    comment_view_all:'Показать все комментарии ({n})', comment_view_less:'Свернуть',
+    comment_be_first:'Будьте первым, кто оставит комментарий.', comment_placeholder:'Напишите комментарий...', comment_send:'Отправить',
+    checkin_section_title:'ЗАСЕЛЕНИЕ ПО GPS',
+    checkin_desc:'Выберите подтверждённое бронирование ниже, чтобы подтвердить заселение по спутниковой геолокации.',
+    checkin_period_label:'Период:', checkin_button:'Подтвердить заселение (геозона)', checkin_confirmed:'✓ Заселение подтверждено',
+    checkin_getting_location:'Определение местоположения...', checkin_gps_unavailable:'GPS недоступен на этом устройстве.',
+    checkin_location_failed:'Не удалось подтвердить местоположение.',
+    alerts_section_title:'ОПОВЕЩЕНИЯ О ФАУНЕ (PUSH)',
+    alerts_desc:'Оповещения о диких животных от других гостей, отфильтрованные по видам, за которыми вы следите.',
+    alerts_empty_title:'Пока нет оповещений',
+    alerts_empty_desc:'Выберите виды, которые вас интересуют больше всего, чтобы получать оповещения.',
+    alerts_choose_species:'Выбрать интересующие виды',
+    wallet_balance_label:'Доступно {currency}', wallet_benefits_title:'ОБМЕНЯТЬ НА БОНУСЫ',
+    wallet_vouchers_title:'МОИ ВАУЧЕРЫ', wallet_used:'Использован', wallet_pending:'Ожидает',
+    wallet_disclaimer:'🪙 {currency} — внутренняя валюта вознаграждений EcoSafari Go. Она не имеет денежной ценности и не может быть куплена, продана, передана между аккаунтами или обменена на реальные деньги — только на бонусы в партнёрском лодже.',
+    wallet_back:'‹ Назад', wallet_redeem:'Обменять', wallet_code_label:'Код:',
+    benefit_discount_bar:'Скидка 10% в баре лоджа', benefit_night_tour:'Бесплатная дополнительная ночная экскурсия',
+    benefit_tshirt:'Футболка EcoSafari Go', benefit_room_upgrade:'Улучшение номера (при наличии)',
+    profile_title:'МОЙ ПРОФИЛЬ', profile_achievements:'ДОСТИЖЕНИЯ',
+    profile_species_alerts_title:'ОПОВЕЩЕНИЯ ПО ВИДАМ',
+    profile_species_alerts_desc:'Отметьте интересующих вас животных. Когда другой гость увидит одного из них, вы получите оповещение.',
+    profile_ranking_title:'РЕЙТИНГ ЛОДЖА',
+    profile_ranking_empty:'Рейтинг появится, как только гости начнут регистрировать наблюдения.',
+    profile_connection_title:'СОЕДИНЕНИЕ', profile_simulate_offline:'Симулировать офлайн-режим (демо)',
+    profile_simulate_demo_btn:'🧪 Симулировать наблюдение другого гостя (демо)',
+    profile_simulate_demo_note:'Эта кнопка существует только в прототипе, для проверки оповещений по видам. В опубликованном приложении оповещение приходит само, когда реальный гость регистрирует наблюдение.',
+    profile_appearance_title:'ВНЕШНИЙ ВИД', profile_theme_dark:'Тёмная', profile_theme_light:'Светлая',
+    profile_language_title:'ЯЗЫК',
+    profile_privacy_title:'КОНФИДЕНЦИАЛЬНОСТЬ И ДАННЫЕ', profile_privacy_policy:'Политика конфиденциальности',
+    profile_permissions:'Как мы используем вашу геолокацию', profile_guide_mode:'Я сотрудник (режим гида)',
+    profile_delete_account:'Удалить мой аккаунт и данные', profile_logout:'Выйти из аккаунта',
+    profile_delete_confirm:'Вы уверены, что хотите удалить аккаунт и все данные? Это действие необратимо.',
+    modal_title:'Новое наблюдение', modal_take_photo:'📷 Сделать фото', modal_gallery:'🖼️ Галерея',
+    modal_change_photo:'Заменить фото',
+    modal_optional_note:'Фото необязательно — нет времени или хорошего кадра? Можно сообщить только текстом и геолокацией ниже.',
+    modal_location_label:'ГЕОЛОКАЦИЯ', modal_location_attach:'📍 Прикрепить текущую геолокацию',
+    modal_location_attached:'Текущая геолокация прикреплена',
+    modal_species_label:'УВИДЕННЫЙ ВИД', modal_species_placeholder:'Например: Ягуар',
+    modal_desc_label:'ОПИСАНИЕ', modal_desc_placeholder:'Что произошло?',
+    modal_submit:'Отправить на проверку', modal_cancel:'Отмена',
+    guide_panel_title:'ПАНЕЛЬ ГИДА — ОДОБРЕНИЯ',
+    guide_panel_desc:'Наблюдения, отправленные гостями и ожидающие проверки перед начислением JaguarCoin.',
+    guide_empty:'Сейчас нет наблюдений на рассмотрении.',
+    guide_approve:'Одобрить (+10 {currency})', guide_reject:'Отклонить', guide_back:'‹ Назад к профилю',
+    guide_no_location:'Гость не прикрепил геолокацию.',
+    policy_close:'Закрыть', policy_privacy_title:'Политика конфиденциальности', policy_permissions_title:'Разрешения приложения',
+    policy_collect_title:'Что мы собираем', policy_collect_body:'Имя, почту, фото наблюдений, которые вы отправляете, и вашу геолокацию только при заселении и при отправке наблюдения.',
+    policy_use_title:'Как мы это используем', policy_use_body:'Чтобы подтвердить ваше заселение в лодж, подтвердить примерное место наблюдения и начислить JaguarCoin. Мы никогда не продаём ваши данные третьим лицам.',
+    policy_rights_title:'Ваши права', policy_rights_body:'Вы можете запросить удаление аккаунта и личных данных в любой момент в разделе Профиль. Фото и тексты наблюдений, которые вы уже опубликовали, остаются доступны в приложении после удаления, без какой-либо информации, идентифицирующей вас, как часть публичного архива флоры и фауны EcoSafari Go.',
+    policy_location_title:'Геолокация', policy_location_body:'Используется, чтобы подтвердить, что вы находитесь в лодже во время заселения (геозона), и, при желании, чтобы прикрепить место наблюдения. Вы можете отказать в этом разрешении и всё равно пользоваться остальным приложением.',
+    policy_camera_title:'Камера и фото', policy_camera_body:'Используется только когда вы добавляете фото к наблюдению. Фото проходят проверку сотрудников перед начислением JaguarCoin.',
+    verified_label:'Проверенный наблюдатель', user_profile_posts_title:'ОПУБЛИКОВАННЫЕ НАБЛЮДЕНИЯ',
+    user_profile_sightings_count:'{n} подтверждённых наблюдений', user_profile_empty:'У этого гостя пока нет подтверждённых наблюдений.',
+  },
+};
+
+function t(key, vars){
+  let str = (LANG[state.lang] && LANG[state.lang][key]) || LANG.pt[key] || key;
+  if(vars) Object.keys(vars).forEach(k => { str = str.replace('{'+k+'}', vars[k]); });
+  return str;
+}
+
+/* Moeda com nome/ícone configuráveis por pousada (ex: "JaguarCoin" 🪙
+   pode virar "SafariCoin" 🦁 em outra pousada, sem mudar código) */
+function currencyName(){
+  return (state.lodgeFeatures && state.lodgeFeatures.currency_name) || 'JaguarCoin';
+}
+function currencyIcon(){
+  return (state.lodgeFeatures && state.lodgeFeatures.currency_icon) || '🪙';
+}
+function currencyLabel(amount){
+  return `${currencyIcon()} ${amount} ${currencyName()}`;
+}
+
+/* "Há quanto tempo" com base no momento REAL do avistamento
+   (observed_at), não em quando foi enviado pro banco. */
+function timeAgo(dateStr){
+  if(!dateStr) return '';
+  const diffSec = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
+  if(diffSec < 60) return 'agora mesmo';
+  if(diffSec < 3600) return `há ${Math.floor(diffSec/60)} min`;
+  if(diffSec < 86400) return `há ${Math.floor(diffSec/3600)}h`;
+  return `há ${Math.floor(diffSec/86400)}d`;
+}
+
+function formatGap(ms){
+  const mins = Math.floor(ms / 60000);
+  if(mins < 60) return `${mins} min`;
+  const hours = Math.floor(mins / 60);
+  if(hours < 24) return `${hours}h`;
+  return `${Math.floor(hours/24)}d`;
+}
+
+/* =====================================================================
+   ESTADO (agora a maior parte dos dados vem do Supabase, não é mais
+   fixo aqui. Os arrays abaixo começam vazios e são preenchidos pelas
+   funções loadXxx() depois do login.)
+   ===================================================================== */
+const state = {
+  screen: 'login',
+  loggedUser: null,
+  session: null,
+  profile: null,
+  theme: 'dark',
+  lang: 'pt',
+  languagePickerOpen: false,
+  speciesPickerOpen: false,
+  viewingUser: null,
+  checkinDone: false,
+  geoStatus: '',
+  modalOpen: false,
+  photoData: null,
+  photoAssets: null,
+  videoFile: null,
+  videoBlob: null,
+  videoPreviewUrl: null,
+  videoNeedsTrim: false,
+  videoDuration: 0,
+  videoTrimStart: 0,
+  photoWarning: '',
+  speciesSuggestion: null,
+  modalLocation: null,
+  guideMode: false,
+  adminMode: false,
+  adminReservations: [],
+  adminBenefitsAll: [],
+  adminAnalytics: null,
+  signupOpen: false,
+  lodgeSignupOpen: false,
+  online: true,
+  offlineQueue: [],
+  hasUnreadAlerts: false,
+  policyModal: null,
+  loading: true,
+
+  // caches carregados do Supabase
+  sightings: [],
+  alerts: [],
+  benefits: [],
+  redemptions: [],
+  ranking: [],
+  badges: [],
+  followedSpecies: [],
+  speciesCatalog: [],
+  coins: 0,
+  rewardSettings: { sighting: 10, checkin: 5 },
+  lodgeFeatures: null,
+  onboardingDone: false,
+  onboardingStep: 0,
+  feedPage: 0,
+  feedScope: 'lodge',
+  newPostsLodge: 0,
+  newPostsGlobal: 0,
+  feedHasMore: true,
+  reservation: null,
+  pendingGuideSightings: [],
+};
+
+/* =====================================================================
+   CARREGAMENTO DE DADOS DO SUPABASE
+   ===================================================================== */
+
+async function loadSpeciesCatalog(){
+  if(!state.profile) return;
+  const { data, error } = await db
+    .from('species')
+    .select('*')
+    .or(`lodge_id.is.null,lodge_id.eq.${state.profile.lodge_id}`)
+    .order('common_name');
+  if(error){ console.error('species', error.message); return; }
+  state.speciesCatalog = data || [];
+}
+
+async function loadFollowedSpecies(){
+  const { data, error } = await db
+    .from('user_followed_species')
+    .select('species_id')
+    .eq('user_id', state.session.user.id);
+  if(error){ console.error('followed species', error.message); return; }
+  state.followedSpecies = (data || []).map(r => r.species_id);
+}
+
+const FEED_PAGE_SIZE = 20;
+
+async function loadSightings(loadMore = false){
+  if(!state.profile) return;
+  const page = loadMore ? state.feedPage + 1 : 0;
+  const from = page * FEED_PAGE_SIZE;
+  const to = from + FEED_PAGE_SIZE - 1;
+
+  let query = db.from('sightings').select('*');
+  if(state.feedScope === 'global'){
+    query = query.eq('status', 'approved');
+  } else {
+    query = query.eq('lodge_id', state.profile.lodge_id)
+      .or(`status.eq.approved,user_id.eq.${state.session.user.id}`);
+  }
+  const { data, error } = await query
+    .order('created_at', { ascending:false })
+    .range(from, to);
+  if(error){ console.error('sightings', error.message); return; }
+  const rows = data || [];
+  state.feedPage = page;
+  state.feedHasMore = rows.length === FEED_PAGE_SIZE;
+
+  const userIds = [...new Set(rows.map(r=>r.user_id))];
+  let profilesById = {};
+  if(userIds.length){
+    const { data: profs } = await db.from('profiles').select('id, full_name, verified_observer, avatar_url').in('id', userIds);
+    (profs||[]).forEach(p => { profilesById[p.id] = p; });
+  }
+
+  const lodgeIds = [...new Set(rows.map(r=>r.lodge_id))];
+  let lodgeNamesById = {};
+  if(lodgeIds.length){
+    const { data: lodgesData } = await db.from('lodges').select('id, name').in('id', lodgeIds);
+    (lodgesData||[]).forEach(l => { lodgeNamesById[l.id] = l.name; });
+  }
+
+  const sightingIds = rows.map(r=>r.id);
+  let likedSet = new Set();
+  if(sightingIds.length){
+    const { data: myLikes } = await db.from('sighting_likes').select('sighting_id').eq('user_id', state.session.user.id).in('sighting_id', sightingIds);
+    (myLikes||[]).forEach(l => likedSet.add(l.sighting_id));
+  }
+
+  let commentsBySighting = {};
+  if(sightingIds.length){
+    const { data: comments } = await db
+      .from('sighting_comments')
+      .select('*')
+      .in('sighting_id', sightingIds)
+      .order('created_at', { ascending:true });
+    const commentUserIds = [...new Set((comments||[]).map(c=>c.user_id))];
+    let commentProfiles = {};
+    if(commentUserIds.length){
+      const { data: cp } = await db.from('profiles').select('id, full_name').in('id', commentUserIds);
+      (cp||[]).forEach(p => { commentProfiles[p.id] = p.full_name; });
+    }
+    (comments||[]).forEach(c=>{
+      if(!commentsBySighting[c.sighting_id]) commentsBySighting[c.sighting_id] = [];
+      commentsBySighting[c.sighting_id].push({
+        id: c.id, user: commentProfiles[c.user_id] || 'Hóspede', text: c.body,
+        likes: c.likes_count || 0, likedByMe:false,
+      });
+    });
+  }
+
+  const mapped = rows.map(r => ({
+    id: r.id,
+    userId: r.user_id,
+    user: profilesById[r.user_id] ? profilesById[r.user_id].full_name : 'Hóspede',
+    verified: profilesById[r.user_id] ? !!profilesById[r.user_id].verified_observer : false,
+    avatarUrl: profilesById[r.user_id] ? profilesById[r.user_id].avatar_url : null,
+    loc: lodgeNamesById[r.lodge_id] || 'Pousada',
+    date: new Date(r.created_at).toLocaleDateString('pt-BR') + ' às ' + new Date(r.created_at).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+    species: r.species_text,
+    speciesId: r.species_id,
+    desc: r.description || '',
+    photo: r.photo_url,
+    thumb: r.photo_thumb_url || r.photo_url,
+    videoUrl: r.video_url, videoTrimStart: r.video_trim_start || 0, observedAt: r.observed_at || r.created_at, createdAt: r.created_at,
+    hasPhoto: !!r.has_photo,
+    coords: r.location_lat != null ? { lat:r.location_lat, lng:r.location_lng } : null,
+    likes: r.likes_count || 0,
+    liked: likedSet.has(r.id),
+    status: r.status,
+    byUser: r.user_id === state.session.user.id,
+    commentsOpen: false,
+    showAllComments: false,
+    comments: commentsBySighting[r.id] || [],
+  }));
+
+  state.sightings = loadMore ? [...state.sightings, ...mapped] : mapped;
+}
+
+async function setFeedScope(scope){
+  if(state.feedScope === scope) return;
+  state.feedScope = scope;
+  state.feedPage = 0;
+  state.sightings = [];
+  if(scope === 'lodge') state.newPostsLodge = 0;
+  if(scope === 'global') state.newPostsGlobal = 0;
+  render();
+  await loadSightings(false);
+  document.getElementById('content').innerHTML = avistamentosView();
+}
+
+function subscribeToNewSightings(){
+  if(!state.profile) return;
+  if(window.__sightingsChannel){
+    db.removeChannel(window.__sightingsChannel);
+  }
+  window.__sightingsChannel = db.channel('sightings-approved-watch')
+    .on('postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'sightings' },
+      (payload) => {
+        const wasApproved = payload.old.status === 'approved';
+        const nowApproved = payload.new.status === 'approved';
+        if(nowApproved && !wasApproved){
+          // conta para "Global" sempre (é de qualquer pousada);
+          // conta para "Minha Pousada" só se for da mesma pousada do usuário
+          if(payload.new.lodge_id === state.profile.lodge_id){
+            if(state.feedScope !== 'lodge'){
+              state.newPostsLodge++;
+              renderTopBarBadgesOnly();
+            }
+          }
+          if(state.feedScope !== 'global'){
+            state.newPostsGlobal++;
+            renderTopBarBadgesOnly();
+          }
+        }
+      }
+    )
+    .subscribe();
+}
+
+function renderTopBarBadgesOnly(){
+  if(state.screen === 'avistamentos'){
+    document.getElementById('content').innerHTML = avistamentosView();
+  }
+}
+
+async function loadMoreSightings(){
+  await loadSightings(true);
+  document.getElementById('content').innerHTML = avistamentosView();
+}
+
+async function loadWallet(){
+  if(!state.profile) return;
+  const { data: summary } = await db
+    .from('user_coin_summary')
+    .select('balance')
+    .eq('user_id', state.session.user.id)
+    .eq('lodge_id', state.profile.lodge_id)
+    .maybeSingle();
+  state.coins = (summary && summary.balance) || 0;
+
+  const { data: benefits } = await db.from('benefits').select('*').eq('lodge_id', state.profile.lodge_id).eq('active', true);
+  state.benefits = benefits || [];
+
+  const { data: redemptions } = await db.from('redemptions').select('*').eq('user_id', state.session.user.id).order('created_at', {ascending:false});
+  state.redemptions = redemptions || [];
+}
+
+async function loadAlerts(){
+  const { data, error } = await db.from('alerts').select('*').eq('user_id', state.session.user.id).order('created_at', {ascending:false});
+  if(error){ console.error('alerts', error.message); return; }
+  state.alerts = (data || []).map(a => ({ title:a.title, icon:'🐾', time: new Date(a.created_at).toLocaleString('pt-BR'), body:a.body, read:a.read }));
+  state.hasUnreadAlerts = (data || []).some(a => !a.read);
+}
+
+async function loadRanking(){
+  if(!state.profile) return;
+  const { data } = await db.from('lodge_leaderboard').select('*').eq('lodge_id', state.profile.lodge_id).limit(10);
+  state.ranking = (data || []).map(r => ({ name:r.full_name, points:r.points }));
+}
+
+async function loadBadges(){
+  const { data } = await db.from('user_badges').select('badges(code,name,icon)').eq('user_id', state.session.user.id);
+  state.badges = (data || []).map(r => r.badges);
+}
+
+async function loadRewardSettings(){
+  if(!state.profile) return;
+  const { data } = await db
+    .from('lodge_reward_settings')
+    .select('sighting_reward_coins, checkin_reward_coins')
+    .eq('lodge_id', state.profile.lodge_id)
+    .maybeSingle();
+  state.rewardSettings = {
+    sighting: (data && data.sighting_reward_coins) || 10,
+    checkin: (data && data.checkin_reward_coins) || 5,
+  };
+}
+
+async function loadReservation(){
+  const { data } = await db
+    .from('reservations')
+    .select('*')
+    .eq('user_id', state.session.user.id)
+    .order('created_at', { ascending:false })
+    .limit(1)
+    .maybeSingle();
+  state.reservation = data || null;
+  state.checkinDone = !!(data && data.checked_in_at);
+}
+
+async function loadAll(){
+  state.loading = true;
+  const tasks = {
+    speciesCatalog: loadSpeciesCatalog(),
+    followedSpecies: loadFollowedSpecies(),
+    sightings: loadSightings(),
+    wallet: loadWallet(),
+    alerts: loadAlerts(),
+    ranking: loadRanking(),
+    badges: loadBadges(),
+    reservation: loadReservation(),
+    rewardSettings: loadRewardSettings(),
+  };
+  const results = await Promise.allSettled(Object.values(tasks));
+  const names = Object.keys(tasks);
+  results.forEach((r, i)=>{
+    if(r.status === 'rejected'){
+      console.error(`Falha ao carregar "${names[i]}":`, r.reason);
+    }
+  });
+  state.loading = false;
+  render();
+}
+function icon(name){
+  const icons = {
+    camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>',
+    bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+    heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>',
+    comment: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-4-1L3 20l1.2-4.5A8.5 8.5 0 1 1 21 11.5z"/></svg>',
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+    user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>',
+    wifioff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 1l22 22"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>',
+    share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>',
+    star: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
+  };
+  return icons[name]||'';
+
+}
+
+/* =====================================================================
+   RENDER RAIZ
+   ===================================================================== */
+function render(){
+  document.body.setAttribute('data-theme', state.theme);
+  const el = document.getElementById('screen');
+  if(state.screen==='login' && !state.onboardingDone){ el.innerHTML = onboardingView(); return; }
+  if(state.screen==='login'){ el.innerHTML = loginView(); attachLogin(); return; }
+
+  el.innerHTML = `
+    <div class="statusbar">
+      <span>15:14</span>
+      <div class="right"><span class="net-dot ${state.online?'':'off'}"></span><span>4G</span><span>100%</span></div>
+    </div>
+    <div class="topbar">
+      <div class="brand">${state.lodgeFeatures && state.lodgeFeatures.logo_url ? `<img src="${state.lodgeFeatures.logo_url}" style="width:20px;height:20px;border-radius:50%;object-fit:cover;" alt="logo">` : '<span class="dot">🌿</span>'} ${(state.lodgeFeatures && state.lodgeFeatures.display_name) || 'EcoSafari Go'}</div>
+      <div class="right-icons">
+        <div class="coin-pill" onclick="goWallet()">${currencyIcon()} ${state.coins}</div>
+        <div class="bell" onclick="openNotifications()" role="button" aria-label="Notificações" tabindex="0">${icon('bell')}${state.hasUnreadAlerts ? '<span class="badge"></span>' : ''}</div>
+      </div>
+    </div>
+    <div class="content" id="content">${state.loading ? loadingView() : ''}</div>
+    <div class="navbar">
+      ${navItem('avistamentos','camera',t('nav_avistamentos'))}
+      ${navItem('checkin','check',t('nav_checkin'))}
+      ${navItem('alertas','bell',t('nav_alertas'))}
+      ${navItem('perfil','user',t('nav_perfil'))}
+    </div>
+    ${modalHTML()}
+    <div class="toast" id="toast"></div>
+  `;
+  if(!state.loading){
+    document.getElementById('content').innerHTML = viewFor(state.screen);
+  }
+  bindDynamic();
+}
+
+function loadingView(){
+  return `<div style="padding:60px 20px; text-align:center; color:var(--text-dim); font-size:12.5px;">Carregando...</div>`;
+}
+
+function navItem(key,ic,label){
+  return `<div class="nav-item ${state.screen===key?'active':''}" onclick="setScreen('${key}')">${icon(ic)}<span>${label}</span></div>`;
+}
+
+function offlineBanner(){
+  if(state.online) return '';
+  const n = state.offlineQueue.length;
+  return `<div class="banner-offline">${icon('wifioff')} ${t('offline_label')}${n?` — ${t('offline_pending',{n})}`:''}</div>`;
+}
+
+/* =====================================================================
+   LOGIN
+   ===================================================================== */
+const ONBOARDING_SLIDES = [
+  { icon:'📸', title:'Registre o que você vê', body:'Fotografe ou descreva os animais e plantas que encontrar durante o passeio.' },
+  { icon:'🪙', title:'Ganhe JaguarCoin', body:'Cada avistamento validado pela equipe da pousada credita moedas na sua conta.' },
+  { icon:'🎁', title:'Troque por experiências', body:'Use suas moedas para resgatar benefícios reais na pousada onde você está hospedado.' },
+];
+
+function onboardingView(){
+  const i = state.onboardingStep || 0;
+  const slide = ONBOARDING_SLIDES[i];
+  const isLast = i === ONBOARDING_SLIDES.length - 1;
+  return `
+    <div class="statusbar"><span>15:14</span><div class="right"><span>4G</span><span>100%</span></div></div>
+    <div class="login-wrap">
+      <div class="login-logo" style="animation:fadeInUp .4s ease;">
+        <div class="circle" style="font-size:34px;">${slide.icon}</div>
+        <h1 style="margin-top:6px;">${slide.title}</h1>
+        <p>${slide.body}</p>
+      </div>
+      <div style="display:flex; justify-content:center; gap:6px; margin:20px 0;">
+        ${ONBOARDING_SLIDES.map((_,idx)=>`<div style="width:${idx===i?18:6}px; height:6px; border-radius:3px; background:${idx===i?'var(--green)':'var(--card-border)'}; transition:all .2s;"></div>`).join('')}
+      </div>
+      <button class="btn-primary" onclick="advanceOnboarding()">${isLast ? 'Começar' : 'Próximo'}</button>
+      ${!isLast ? `<button class="btn-ghost" onclick="skipOnboarding()">Pular</button>` : ''}
+    </div>
+  `;
+}
+function advanceOnboarding(){
+  if((state.onboardingStep||0) >= ONBOARDING_SLIDES.length - 1){ skipOnboarding(); return; }
+  state.onboardingStep = (state.onboardingStep||0) + 1;
+  render();
+}
+function skipOnboarding(){
+  state.onboardingDone = true;
+  render();
+}
+
+function loginView(){
+  if(state.forgotPasswordOpen) return forgotPasswordView();
+  if(state.signupOpen) return signupView();
+  if(state.lodgeSignupOpen) return lodgeSignupView();
+  return `
+    <div class="statusbar"><span>15:14</span><div class="right"><span>4G</span><span>100%</span></div></div>
+    <div class="login-wrap">
+      <div class="login-logo">
+        <div class="circle">🌿</div>
+        <h1>EcoSafari Go</h1>
+        <p>${t('app_tagline')}</p>
+      </div>
+      <div class="field"><label>${t('login_email_label')}</label><input id="li-email" type="email" placeholder="${t('login_email_placeholder')}"></div>
+      <div class="field"><label>${t('login_password_label')}</label><input id="li-pass" type="password" placeholder="${t('login_password_placeholder')}"></div>
+      <div id="li-error" style="color:var(--danger); font-size:11.5px; margin:-6px 0 10px 0; min-height:14px;"></div>
+      <div style="text-align:right; margin-bottom:14px;">
+        <span class="back-link" style="margin:0;" onclick="state.forgotPasswordOpen=true; render();">${t('login_forgot')}</span>
+      </div>
+      <button class="btn-primary" id="li-btn">${t('login_button')}</button>
+      <div style="text-align:center; margin-top:14px; font-size:12px; color:var(--text-dim);">
+        ${t('login_no_account')} <span class="back-link" style="margin:0; display:inline; color:var(--green);" onclick="state.signupOpen=true; render();">${t('login_create_account')}</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; margin:16px 0;">
+        <div style="flex:1; height:1px; background:var(--card-border);"></div>
+        <span style="color:var(--text-dim); font-size:11px;">${t('login_or')}</span>
+        <div style="flex:1; height:1px; background:var(--card-border);"></div>
+      </div>
+      <button class="btn-ghost" style="margin-top:0; display:flex; align-items:center; justify-content:center; gap:8px;" id="li-google-btn">
+        <svg viewBox="0 0 48 48" style="width:16px;height:16px;"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 6 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.4 15.9 18.8 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 6 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.4 26.7 36 24 36c-5.3 0-9.7-3.1-11.3-7.6l-6.5 5C9.6 39.7 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.6l6.2 5.2C40.8 36 44 30.5 44 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+        ${t('login_google')}
+      </button>
+      <div class="login-hint">${t('login_hint')}</div>
+      <div style="text-align:center; margin-top:18px;">
+        <span class="back-link" style="margin:0; font-size:11.5px;" onclick="state.lodgeSignupOpen=true; render();">🏡 É dono de uma pousada? Cadastre-se como parceiro</span>
+      </div>
+    </div>
+  `;
+}
+
+function passwordStrength(pw){
+  return {
+    length: pw.length >= 8,
+    upper: /[A-Z]/.test(pw),
+    lower: /[a-z]/.test(pw),
+    number: /[0-9]/.test(pw),
+  };
+}
+function isPasswordStrong(pw){
+  const s = passwordStrength(pw);
+  return s.length && s.upper && s.lower && s.number;
+}
+
+function signupView(){
+  return `
+    <div class="statusbar"><span>15:14</span><div class="right"><span>4G</span><span>100%</span></div></div>
+    <div class="login-wrap">
+      <div class="login-logo">
+        <div class="circle">🌿</div>
+        <h1>${t('signup_title')}</h1>
+      </div>
+      <div class="field"><label>${t('signup_fullname_label')}</label><input id="su-name" placeholder="${t('signup_fullname_placeholder')}"></div>
+      <div class="field"><label>DATA DE NASCIMENTO</label><input id="su-birthdate" type="date"></div>
+      <div class="field"><label>NACIONALIDADE</label><input id="su-nationality" placeholder="Ex: Brasileira"></div>
+      <div class="field"><label>${t('login_email_label')}</label><input id="su-email" type="email" placeholder="${t('login_email_placeholder')}"></div>
+      <div class="field"><label>${t('signup_email_confirm_label')}</label><input id="su-email2" type="email" placeholder="${t('login_email_placeholder')}"></div>
+      <div class="field"><label>${t('login_password_label')}</label><input id="su-pass" type="password" placeholder="${t('login_password_placeholder')}"></div>
+      <div class="field"><label>${t('signup_password_confirm_label')}</label><input id="su-pass2" type="password" placeholder="${t('login_password_placeholder')}"></div>
+      <div id="su-strength" style="font-size:10.5px; color:var(--text-dim); line-height:1.6; margin:-6px 0 12px 0;">${t('signup_password_hint')}</div>
+      <div id="su-error" style="color:var(--danger); font-size:11.5px; margin:-6px 0 12px 0; min-height:14px;"></div>
+      <button class="btn-primary" id="su-btn">${t('signup_button')}</button>
+      <div style="text-align:center; margin-top:14px; font-size:12px; color:var(--text-dim);">
+        ${t('signup_have_account')} <span class="back-link" style="margin:0; display:inline; color:var(--green);" onclick="state.signupOpen=false; render();">${t('signup_go_login')}</span>
+      </div>
+    </div>
+  `;
+}
+
+function lodgeSignupView(){
+  return `
+    <div class="statusbar"><span>15:14</span><div class="right"><span>4G</span><span>100%</span></div></div>
+    <div class="login-wrap">
+      <div class="login-logo">
+        <div class="circle">🏡</div>
+        <h1>Cadastre sua Pousada</h1>
+        <p>Preencha os dados abaixo. Nossa equipe entra em contato para ativar o acesso.</p>
+      </div>
+      <div class="field"><label>NOME DA POUSADA</label><input id="ls-name" placeholder="Ex: Pousada Vagalume"></div>
+      <div class="field"><label>ENDEREÇO / LOCALIZAÇÃO</label><input id="ls-address" placeholder="Endereço completo"></div>
+      <div class="field"><label>CPF OU CNPJ</label><input id="ls-taxid" placeholder="Documento do responsável ou da empresa"></div>
+      <div class="field"><label>SEU NOME</label><input id="ls-applicant-name" placeholder="Nome do responsável"></div>
+      <div class="field"><label>SEU E-MAIL</label><input id="ls-applicant-email" type="email" placeholder="seuemail@exemplo.com"></div>
+      <div class="field"><label>SEU TELEFONE (opcional)</label><input id="ls-applicant-phone" placeholder="(00) 00000-0000"></div>
+      <div id="ls-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
+      <button class="btn-primary" id="ls-btn">Enviar cadastro</button>
+      <button class="btn-ghost" onclick="state.lodgeSignupOpen=false; render();">Voltar</button>
+    </div>
+  `;
+}
+
+function forgotPasswordView(){
+  return `
+    <div class="statusbar"><span>15:14</span><div class="right"><span>4G</span><span>100%</span></div></div>
+    <div class="login-wrap">
+      <div class="login-logo">
+        <div class="circle">🔑</div>
+        <h1>${t('forgot_title')}</h1>
+        <p>${t('forgot_desc')}</p>
+      </div>
+      <div class="field"><label>${t('login_email_label')}</label><input id="fp-email" type="email" placeholder="${t('forgot_email_placeholder')}"></div>
+      <div id="fp-msg" style="font-size:11.5px; margin:-6px 0 12px 0; min-height:14px;"></div>
+      <button class="btn-primary" id="fp-send-btn">${t('forgot_send')}</button>
+      <button class="btn-ghost" onclick="state.forgotPasswordOpen=false; render();">${t('forgot_cancel')}</button>
+    </div>
+  `;
+}
+
+function attachLogin(){
+  if(state.lodgeSignupOpen){
+    const btn = document.getElementById('ls-btn');
+    btn.onclick = async ()=>{
+      const name = document.getElementById('ls-name').value.trim();
+      const address = document.getElementById('ls-address').value.trim();
+      const taxId = document.getElementById('ls-taxid').value.trim();
+      const applicantName = document.getElementById('ls-applicant-name').value.trim();
+      const applicantEmail = document.getElementById('ls-applicant-email').value.trim();
+      const applicantPhone = document.getElementById('ls-applicant-phone').value.trim();
+      const msg = document.getElementById('ls-msg');
+
+      if(!name || !address || !taxId || !applicantName || !applicantEmail){
+        msg.style.color = 'var(--danger)'; msg.textContent = 'Preencha todos os campos obrigatórios.';
+        return;
+      }
+
+      btn.disabled = true; btn.textContent = 'Enviando...';
+      const { error } = await db.rpc('submit_lodge_application', {
+        p_lodge_name: name, p_address: address, p_tax_id: taxId,
+        p_applicant_name: applicantName, p_applicant_email: applicantEmail, p_applicant_phone: applicantPhone || null,
+      });
+      btn.disabled = false; btn.textContent = 'Enviar cadastro';
+
+      if(error){ msg.style.color = 'var(--danger)'; msg.textContent = error.message; return; }
+
+      state.lodgeSignupOpen = false;
+      render();
+      showToast('Cadastro enviado! Nossa equipe vai analisar e entrar em contato por e-mail.');
+    };
+    return;
+  }
+
+  if(state.forgotPasswordOpen){
+    const sendBtn = document.getElementById('fp-send-btn');
+    sendBtn.onclick = async ()=>{
+      const email = document.getElementById('fp-email').value.trim();
+      const msg = document.getElementById('fp-msg');
+      if(!email){ msg.style.color = 'var(--danger)'; msg.textContent = t('login_error_fill'); return; }
+      sendBtn.disabled = true;
+      sendBtn.textContent = t('forgot_sending');
+      const { error } = await db.auth.resetPasswordForEmail(email);
+      sendBtn.disabled = false;
+      sendBtn.textContent = t('forgot_send');
+      if(error){ msg.style.color = 'var(--danger)'; msg.textContent = t('forgot_error'); return; }
+      msg.style.color = 'var(--green)';
+      msg.textContent = t('forgot_sent');
+    };
+    return;
+  }
+
+  if(state.signupOpen){
+    const strengthBox = document.getElementById('su-strength');
+    const passInput = document.getElementById('su-pass');
+    passInput.oninput = ()=>{
+      const s = passwordStrength(passInput.value);
+      const check = (ok)=> ok ? '✅' : '⬜';
+      strengthBox.innerHTML =
+        `${check(s.length)} 8+ caracteres &nbsp; ${check(s.upper)} maiúscula &nbsp; ${check(s.lower)} minúscula &nbsp; ${check(s.number)} número`;
+    };
+
+    const suBtn = document.getElementById('su-btn');
+    suBtn.onclick = async ()=>{
+      const name = document.getElementById('su-name').value.trim();
+      const birthDate = document.getElementById('su-birthdate').value;
+      const nationality = document.getElementById('su-nationality').value.trim();
+      const email = document.getElementById('su-email').value.trim();
+      const email2 = document.getElementById('su-email2').value.trim();
+      const pass = document.getElementById('su-pass').value;
+      const pass2 = document.getElementById('su-pass2').value;
+      const errBox = document.getElementById('su-error');
+      errBox.textContent = '';
+
+      if(!name || !email || !email2 || !pass || !pass2){
+        errBox.textContent = t('signup_fill_all');
+        return;
+      }
+      if(email.toLowerCase() !== email2.toLowerCase()){
+        errBox.textContent = t('signup_email_mismatch');
+        return;
+      }
+      if(pass !== pass2){
+        errBox.textContent = t('signup_password_mismatch');
+        return;
+      }
+      if(!isPasswordStrong(pass)){
+        errBox.textContent = t('signup_weak_password');
+        return;
+      }
+
+      suBtn.disabled = true;
+      suBtn.textContent = t('signup_creating');
+      const { data, error } = await db.auth.signUp({
+        email, password: pass, options: { data: { full_name: name } }
+      });
+      suBtn.disabled = false;
+      suBtn.textContent = t('signup_button');
+
+      if(error){
+        errBox.textContent = error.message;
+        return;
+      }
+
+      // Salva idade/nacionalidade no perfil assim que ele existir
+      // (o gatilho handle_new_user cria a linha; damos um pequeno tempo)
+      if(data.user && (birthDate || nationality)){
+        setTimeout(async ()=>{
+          await db.from('profiles').update({
+            birth_date: birthDate || null,
+            nationality: nationality || null,
+          }).eq('id', data.user.id);
+        }, 800);
+      }
+
+      if(data.session){
+        // projeto configurado sem confirmação de e-mail: já entra direto
+        await completeLogin(data.session, data.user);
+      } else {
+        state.signupOpen = false;
+        render();
+        showToast(t('signup_success'));
+      }
+    };
+    return;
+  }
+
+  const btn = document.getElementById('li-btn');
+  btn.onclick = async ()=>{
+    const email = document.getElementById('li-email').value.trim();
+    const password = document.getElementById('li-pass').value;
+    const errBox = document.getElementById('li-error');
+    errBox.textContent = '';
+
+    if(!email || !password){
+      errBox.textContent = t('login_error_fill');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = t('login_entering');
+
+    const { data, error } = await db.auth.signInWithPassword({ email, password });
+
+    btn.disabled = false;
+    btn.textContent = t('login_button');
+
+    if(error){
+      console.error('Supabase auth error:', error.message);
+      if(/email not confirmed/i.test(error.message)){
+        errBox.textContent = 'E-mail ainda não confirmado. Confirme o e-mail (ou marque "Auto Confirm User" no Supabase) antes de entrar.';
+      } else if(/invalid api key|failed to fetch/i.test(error.message)){
+        errBox.textContent = 'Não foi possível conectar ao Supabase. Verifique a URL/chave do projeto.';
+      } else {
+        errBox.textContent = t('login_error_invalid') + ' (' + error.message + ')';
+      }
+      return;
+    }
+
+    await completeLogin(data.session, data.user);
+  };
+
+  const googleBtn = document.getElementById('li-google-btn');
+  if(googleBtn) googleBtn.onclick = async ()=>{
+    await db.auth.signInWithOAuth({ provider: 'google' });
+  };
+}
+
+/* =====================================================================
+   PUSH NOTIFICATIONS (Capacitor + Firebase)
+   Só faz algo quando o app está rodando empacotado pelo Capacitor —
+   em um navegador comum, essa função não faz nada (sem gerar erro).
+   ===================================================================== */
+async function registerPushNotifications(){
+  if(!window.Capacitor || !window.Capacitor.isNativePlatform || !window.Capacitor.isNativePlatform()) return;
+  const PushNotifications = window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications;
+  if(!PushNotifications) return;
+
+  try{
+    let permStatus = await PushNotifications.checkPermissions();
+    if(permStatus.receive === 'prompt'){
+      permStatus = await PushNotifications.requestPermissions();
+    }
+    if(permStatus.receive !== 'granted'){
+      console.log('Permissão de notificação negada pelo usuário.');
+      return;
+    }
+
+    await PushNotifications.register();
+
+    PushNotifications.addListener('registration', async (token) => {
+      if(!state.session) return;
+      const { error } = await db.from('push_tokens').upsert({
+        user_id: state.session.user.id,
+        token: token.value,
+        platform: window.Capacitor.getPlatform(),
+      }, { onConflict: 'user_id,token' });
+      if(error) console.error('Erro ao salvar token de push:', error.message);
+    });
+
+    PushNotifications.addListener('registrationError', (err) => {
+      console.error('Erro ao registrar push notification:', err);
+    });
+
+    PushNotifications.addListener('pushNotificationReceived', (notification) => {
+      showToast(notification.title || 'Nova notificação do EcoSafari Go');
+      loadAlerts().then(render);
+    });
+
+    PushNotifications.addListener('pushNotificationActionPerformed', () => {
+      state.screen = 'alertas';
+      render();
+    });
+  }catch(err){
+    console.error('Falha ao configurar push notifications:', err);
+  }
+}
+
+async function completeLogin(session, user){
+  state.session = session;
+  state.loggedUser = user.email;
+
+  try{
+    let { data: profile, error: profileError } = await db.from('profiles').select('*').eq('id', user.id).single();
+    if(profileError){
+      console.error('profile fetch error (1st try):', profileError.message);
+      await new Promise(r => setTimeout(r, 600));
+      const retry = await db.from('profiles').select('*').eq('id', user.id).single();
+      profile = retry.data;
+      profileError = retry.error;
+    }
+    if(profileError){ console.error('profile fetch error:', profileError.message); }
+    state.profile = profile || null;
+
+    if(profile && !profile.avatar_url){
+      const googleAvatar = user.user_metadata && (user.user_metadata.avatar_url || user.user_metadata.picture);
+      if(googleAvatar){
+        state.profile.avatar_url = googleAvatar;
+        db.from('profiles').update({ avatar_url: googleAvatar }).eq('id', user.id).then(()=>{});
+      }
+    }
+
+    if(profile){
+      state.theme = profile.theme_preference || 'dark';
+      state.lang = profile.language_preference || 'pt';
+
+      if(!profile.lodge_id){
+        const { data: anyLodge } = await db.from('lodges').select('id, name').limit(1).maybeSingle();
+        if(anyLodge){
+          state.profile.lodge_id = anyLodge.id;
+          await db.from('profiles').update({ lodge_id: anyLodge.id }).eq('id', user.id);
+        }
+      }
+
+      if(state.profile.lodge_id){
+        const { data: features } = await db
+          .from('lodge_plan_features')
+          .select('*')
+          .eq('lodge_id', state.profile.lodge_id)
+          .maybeSingle();
+        if(features){
+          state.profile.lodge_name = features.display_name || features.name;
+          state.lodgeFeatures = features;
+        }
+      }
+    }
+
+    state.screen = 'avistamentos';
+
+    if(!state.profile){
+      state.loading = false;
+      render();
+      showToast('Não encontramos seu perfil no banco de dados. Algumas telas podem não funcionar.');
+      return;
+    }
+
+    render();
+    await loadAll();
+    registerPushNotifications();
+    subscribeToNewSightings();
+  }catch(err){
+    console.error('completeLogin failed:', err);
+    state.loading = false;
+    state.screen = 'avistamentos';
+    render();
+    showToast('Ocorreu um erro ao carregar seus dados. Veja o console do navegador (F12) para detalhes.');
+  }
+}
+
+/* =====================================================================
+   NAVEGAÇÃO
+   ===================================================================== */
+function viewFor(screen){
+  if(screen==='avistamentos') return avistamentosView();
+  if(screen==='checkin') return checkinView();
+  if(screen==='alertas') return alertasView();
+  if(screen==='wallet') return walletView();
+  if(screen==='userProfile') return userProfileView();
+  if(screen==='perfil') return state.adminMode ? adminView() : (state.guideMode ? guideView() : perfilView());
+  return '';
+}
+function setScreen(s){ state.screen = s; render(); }
+function goWallet(){ state.screen='wallet'; render(); }
+async function openNotifications(){
+  state.hasUnreadAlerts = false;
+  state.screen='alertas';
+  render();
+  await db.rpc('mark_alerts_read');
+  state.alerts.forEach(a=>a.read=true);
+}
+
+/* =====================================================================
+   AVISTAMENTOS (feed)
+   ===================================================================== */
+function avistamentosView(){
+  return `
+    ${offlineBanner()}
+    <div style="display:flex; gap:8px; margin:10px 0 4px 0;">
+      <button class="btn-ghost" style="margin:0; flex:1; padding:8px; font-size:11.5px; position:relative; ${state.feedScope==='lodge'?'background:var(--green-dim); border-color:var(--green); color:var(--green);':''}" onclick="setFeedScope('lodge')">🏡 Minha Pousada${state.newPostsLodge>0?` <span class="feed-badge">${state.newPostsLodge>10?'10+':state.newPostsLodge}</span>`:''}</button>
+      <button class="btn-ghost" style="margin:0; flex:1; padding:8px; font-size:11.5px; position:relative; ${state.feedScope==='global'?'background:var(--green-dim); border-color:var(--green); color:var(--green);':''}" onclick="setFeedScope('global')">🌎 Global${state.newPostsGlobal>0?` <span class="feed-badge">${state.newPostsGlobal>10?'10+':state.newPostsGlobal}</span>`:''}</button>
+    </div>
+    <div class="section-title">${t('feed_section_title')} <button class="add-btn" onclick="openModal()">+</button></div>
+    ${state.sightings.length===0 ? `
+      <div class="card" style="padding:30px 18px; text-align:center;">
+        <div style="font-size:30px; margin-bottom:8px;">🦜</div>
+        <div style="color:var(--text); font-weight:700; font-size:13.5px; margin-bottom:4px;">${t('feed_empty_title')}</div>
+        <div style="color:var(--text-dim); font-size:12px; line-height:1.5;">${t('feed_empty_desc')}</div>
+      </div>
+    ` : ''}
+    ${state.sightings.map(s=>{
+      const statusTag = s.status==='pending' ? `<span class="status-pending">${t('status_pending')}</span>` : '';
+      const noPhotoTag = (!s.photo && !s.videoUrl) ? `<span class="no-photo-tag">${t('tag_no_photo')}</span>` : '';
+      return `
+      <div class="card">
+        <div class="post-head" onclick="openUserProfile('${s.userId}')" style="cursor:pointer;">
+          <div class="avatar ${s.verified?'verified':''}" style="${s.avatarUrl?'padding:0; overflow:hidden;':''}">${s.avatarUrl ? `<img src="${s.avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">` : s.user.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+          <div>
+            <div class="post-user">${s.user} ${s.verified?`<span class="verified-tag" title="${t('verified_label')}">${icon('star')}</span>`:''} ${statusTag} ${noPhotoTag}</div>
+            <div class="post-loc">📍 ${s.loc}</div>
+          </div>
+          <div class="post-date">${s.date}<br><span style="color:var(--green);">${timeAgo(s.observedAt)}</span></div>
+        </div>
+        ${(s.createdAt && s.observedAt && (new Date(s.createdAt) - new Date(s.observedAt)) > 10*60*1000) ? `
+          <div style="padding:0 14px; margin-top:-4px;"><span class="status-queued" style="font-size:10px;">📴 Registrado offline — enviado ${formatGap(new Date(s.createdAt) - new Date(s.observedAt))} depois do avistamento real</span></div>
+        ` : ''}
+        ${s.videoUrl ? `
+          <video src="${s.videoUrl}" controls playsinline preload="metadata" style="width:100%; max-height:280px; background:#000; display:block;" onloadedmetadata="this.currentTime=${s.videoTrimStart||0}" ontimeupdate="if(${s.videoTrimStart||0}>0 && this.currentTime-${s.videoTrimStart||0}>=30){this.pause();}"></video>
+        ` : s.photo ? `
+          <div class="post-photo-wrap">
+            <div class="post-photo-bg" style="background-image:url('${s.thumb}')"></div>
+            <img class="post-photo" src="${s.thumb}" alt="Foto do avistamento: ${s.species}" loading="lazy">
+          </div>
+        ` : ''}
+        <div class="post-body">
+          <div class="species">${s.species}</div>
+          <div class="desc">${s.desc}</div>
+          ${s.coords ? `<div class="loc-attached-chip" style="margin-bottom:10px; display:inline-flex;">${icon('pin')} ${s.coords.lat.toFixed(4)}, ${s.coords.lng.toFixed(4)}</div>` : ''}
+          <div class="action-row">
+            <button class="action-btn ${s.liked?'liked':''}" onclick="toggleLike('${s.id}')">${icon('heart')} ${s.likes}</button>
+            <button class="action-btn ${s.commentsOpen?'commented':''}" onclick="toggleComments('${s.id}')">${icon('comment')} ${s.comments.length}</button>
+            <button class="action-btn ${s.locationShared?'shared':''}" onclick="shareLocation('${s.id}')">${icon('pin')} ${s.locationShared?t('action_location_shared'):t('action_share_location')}</button>
+            ${s.photo ? `<button class="action-btn" onclick="shareBranded('${s.id}')">${icon('share')} ${t('action_share_photo')}</button>` : ''}
+            <button class="report-link" onclick="reportPost('${s.id}')">${t('action_report')}</button>
+          </div>
+          ${s.commentsOpen ? renderCommentPanel(s) : ''}
+        </div>
+      </div>
+    `;}).join('')}
+    ${state.feedHasMore && state.sightings.length > 0 ? `
+      <button class="btn-ghost" onclick="loadMoreSightings()">Carregar mais avistamentos</button>
+    ` : ''}
+  `;
+}
+
+function findSighting(id){ return state.sightings.find(s=>s.id===id); }
+
+function pickPreviewComments(comments){
+  const hasLikes = comments.some(c=>(c.likes||0) > 0);
+  if(hasLikes){
+    return [...comments].sort((a,b)=>(b.likes||0)-(a.likes||0)).slice(0,3);
+  }
+  return comments.slice(-3);
+}
+
+function renderCommentPanel(s){
+  const total = s.comments.length;
+  const list = s.showAllComments ? s.comments : pickPreviewComments(s.comments);
+  const hiddenCount = total - list.length;
+  return `
+    <div class="comment-panel">
+      ${total===0 ? `<div class="comment-item" style="color:var(--text-dim)">${t('comment_be_first')}</div>` : ''}
+      ${!s.showAllComments && hiddenCount > 0 ? `<div class="comment-viewall" onclick="setShowAllComments('${s.id}', true)">${t('comment_view_all',{n:total})}</div>` : ''}
+      ${list.map(c=>`
+        <div class="comment-item">
+          <div><b>${c.user}</b>${c.text}</div>
+          <button class="comment-like-btn ${c.likedByMe?'liked':''}" onclick="toggleCommentLike('${s.id}', '${c.id}')">${icon('heart')} ${c.likes||0}</button>
+        </div>
+      `).join('')}
+      ${s.showAllComments && total > 3 ? `<div class="comment-viewall" onclick="setShowAllComments('${s.id}', false)">${t('comment_view_less')}</div>` : ''}
+      <div class="comment-input-row">
+        <input type="text" placeholder="${t('comment_placeholder')}" id="cinput-${s.id}" onkeydown="if(event.key==='Enter')addComment('${s.id}')">
+        <button onclick="addComment('${s.id}')">${t('comment_send')}</button>
+      </div>
+    </div>
+  `;
+}
+
+async function toggleLike(id){
+  const s = findSighting(id); if(!s) return;
+  s.liked = !s.liked;
+  s.likes += s.liked ? 1 : -1;
+  document.getElementById('content').innerHTML = avistamentosView();
+  const { error } = await db.rpc('toggle_sighting_like', { p_sighting_id: id });
+  if(error) console.error('like', error.message);
+}
+
+function toggleComments(id){
+  const s = findSighting(id); if(!s) return;
+  s.commentsOpen = !s.commentsOpen;
+  document.getElementById('content').innerHTML = avistamentosView();
+}
+
+function setShowAllComments(id, val){
+  const s = findSighting(id); if(!s) return;
+  s.showAllComments = val;
+  document.getElementById('content').innerHTML = avistamentosView();
+}
+
+async function toggleCommentLike(sightingId, commentId){
+  const s = findSighting(sightingId); if(!s) return;
+  const c = s.comments.find(c=>c.id===commentId); if(!c) return;
+  c.likedByMe = !c.likedByMe;
+  c.likes = (c.likes||0) + (c.likedByMe ? 1 : -1);
+  document.getElementById('content').innerHTML = avistamentosView();
+  const { error } = await db.rpc('toggle_comment_like', { p_comment_id: commentId });
+  if(error) console.error('comment like', error.message);
+}
+
+async function addComment(sightingId){
+  const input = document.getElementById('cinput-'+sightingId);
+  const text = input.value.trim();
+  if(!text) return;
+  if(!state.profile || !state.profile.verified_guest){
+    showToast('Valide o código da sua reserva na aba Check-in antes de comentar.');
+    return;
+  }
+  const { data, error } = await db
+    .from('sighting_comments')
+    .insert({ sighting_id: sightingId, user_id: state.session.user.id, body: text })
+    .select().single();
+  if(error){ console.error('comment insert', error.message); showToast('Não foi possível enviar o comentário.'); return; }
+  const s = findSighting(sightingId);
+  s.comments.push({ id:data.id, user: state.profile.full_name || 'Você', text, likes:0, likedByMe:false });
+  s.showAllComments = true;
+  document.getElementById('content').innerHTML = avistamentosView();
+}
+
+function reportPost(id){
+  db.from('reports').insert({ sighting_id:id, reporter_id: state.session.user.id }).then(({error})=>{
+    if(error) console.error('report', error.message);
+  });
+  showToast('Denúncia enviada à equipe EcoSafari.');
+}
+
+function shareLocation(id){
+  const s = findSighting(id);
+  if(!s || !s.coords){
+    showToast('Este avistamento não tem localização anexada pelo autor.');
+    return;
+  }
+  const { lat, lng } = s.coords;
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+
+  if(navigator.share){
+    navigator.share({ title: `Localização do avistamento: ${s.species}`, url: mapsUrl }).catch(()=>{});
+  } else {
+    window.open(mapsUrl, '_blank');
+  }
+
+  s.locationShared = true;
+  document.getElementById('content').innerHTML = avistamentosView();
+}
+
+function shareBranded(id){
+  const s = findSighting(id); if(!s) return;
+  showToast('Preparando imagem para compartilhar...');
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = ()=>{
+    try{
+      const size = 800;
+      const canvas = document.createElement('canvas');
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      const scale = Math.max(size/img.width, size/img.height);
+      const w = img.width*scale, h = img.height*scale;
+      ctx.drawImage(img, (size-w)/2, (size-h)/2, w, h);
+      const grad = ctx.createLinearGradient(0, size*0.7, 0, size);
+      grad.addColorStop(0, 'rgba(0,0,0,0)');
+      grad.addColorStop(1, 'rgba(0,0,0,0.75)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, size*0.65, size, size*0.35);
+      ctx.fillStyle = '#1fdf9a';
+      ctx.font = 'bold 30px sans-serif';
+      ctx.fillText('🌿 EcoSafari Go', 24, size-70);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 24px sans-serif';
+      ctx.fillText(s.species, 24, size-34);
+      canvas.toBlob((blob)=>{
+        const file = new File([blob], 'ecosafari-avistamento.jpg', {type:'image/jpeg'});
+        if(navigator.canShare && navigator.canShare({files:[file]})){
+          navigator.share({files:[file], title:'EcoSafari Go', text: s.species}).catch(()=>{});
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = 'ecosafari-avistamento.jpg'; a.click();
+          showToast('Imagem baixada com a marca EcoSafari Go!');
+        }
+      }, 'image/jpeg', 0.9);
+    }catch(err){ showToast('Não foi possível preparar essa imagem para compartilhar.'); }
+  };
+  img.onerror = ()=> showToast('Não foi possível preparar essa imagem para compartilhar.');
+  img.src = s.photo;
+}
+
+/* =====================================================================
+   CHECK-IN
+   ===================================================================== */
+function checkinView(){
+  const r = state.reservation;
+  if(!r || !state.profile.verified_guest){
+    return `
+      ${offlineBanner()}
+      <div class="section-title">${t('checkin_section_title')}</div>
+      <div class="section-sub">Digite o código da sua reserva (enviado pela pousada) para liberar o check-in e a publicação de avistamentos.</div>
+      <div class="card" style="padding:18px;">
+        <div class="field"><label>CÓDIGO DA RESERVA</label><input id="voucher-code" placeholder="Ex: ARL-000081" style="text-transform:uppercase;"></div>
+        <div id="voucher-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
+        <button class="btn-primary" id="voucher-btn">Validar código</button>
+      </div>
+      <div class="section-sub" style="text-align:center; margin:14px 0 6px 0;">— ou —</div>
+      <div class="card" style="padding:18px;">
+        <div class="field"><label>CÓDIGO DE ACESSO DA POUSADA</label><input id="lodge-code" placeholder="Código exibido na recepção" style="text-transform:uppercase;"></div>
+        <div id="lodge-code-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
+        <button class="btn-ghost" id="lodge-code-btn" style="margin-top:0;">Validar código da pousada</button>
+      </div>
+    `;
+  }
+  return `
+    ${offlineBanner()}
+    <div class="section-title">${t('checkin_section_title')}</div>
+    <div class="section-sub">${t('checkin_desc')}</div>
+    <div class="card checkin-card">
+      <span class="badge-pill">RESERVA #${r.reservation_code}</span>
+      <div class="checkin-title">${state.profile.lodge_name || 'Pousada'}</div>
+      <div class="checkin-period">${t('checkin_period_label')} ${r.check_in_date} – ${r.check_out_date}</div>
+      ${state.checkinDone ? `
+        <button class="btn-primary" disabled>${t('checkin_confirmed')}</button>
+      ` : `
+        <button class="btn-primary" id="checkin-btn">${t('checkin_button')}</button>
+      `}
+      <div class="geo-status" id="geo-status">${state.geoStatus}</div>
+    </div>
+    ${state.checkinDone ? `
+      <span class="back-link" onclick="startNewStay()">Voltar em outra data? Registrar nova estadia</span>
+    ` : ''}
+  `;
+}
+
+function startNewStay(){
+  state.reservation = null;
+  render();
+}
+
+async function claimReservationCode(){
+  const input = document.getElementById('voucher-code');
+  const msg = document.getElementById('voucher-msg');
+  const btn = document.getElementById('voucher-btn');
+  const code = input.value.trim().toUpperCase();
+  if(!code){ msg.style.color='var(--danger)'; msg.textContent = 'Digite o código da reserva.'; return; }
+  btn.disabled = true; btn.textContent = 'Validando...';
+  const { data, error } = await db.rpc('claim_reservation', { p_code: code });
+  btn.disabled = false; btn.textContent = 'Validar código';
+  if(error){
+    msg.style.color = 'var(--danger)';
+    msg.textContent = error.message;
+    return;
+  }
+  msg.style.color = 'var(--green)';
+  msg.textContent = `Reserva confirmada em ${data.lodge_name}!`;
+
+  // Recarrega o perfil inteiro do banco (não só os 2 campos) para garantir
+  // que lodge_id, verified_guest, etc. fiquem sincronizados de verdade.
+  const { data: freshProfile } = await db.from('profiles').select('*').eq('id', state.session.user.id).single();
+  if(freshProfile){
+    state.profile = freshProfile;
+    if(freshProfile.lodge_id){
+      const { data: lodge } = await db.from('lodges').select('name').eq('id', freshProfile.lodge_id).single();
+      if(lodge) state.profile.lodge_name = lodge.name;
+    }
+  }
+
+  await loadReservation();
+  await loadAll();
+  showToast('Código validado! Agora você já pode publicar avistamentos.');
+}
+
+async function claimLodgeAccessCode(){
+  const input = document.getElementById('lodge-code');
+  const msg = document.getElementById('lodge-code-msg');
+  const btn = document.getElementById('lodge-code-btn');
+  const code = input.value.trim().toUpperCase();
+  if(!code){ msg.style.color='var(--danger)'; msg.textContent = 'Digite o código de acesso da pousada.'; return; }
+  btn.disabled = true; btn.textContent = 'Validando...';
+  const { data, error } = await db.rpc('claim_lodge_access_code', { p_code: code });
+  btn.disabled = false; btn.textContent = 'Validar código da pousada';
+  if(error){
+    msg.style.color = 'var(--danger)';
+    msg.textContent = error.message;
+    return;
+  }
+  msg.style.color = 'var(--green)';
+  msg.textContent = `Acesso confirmado em ${data.lodge_name}!`;
+
+  const { data: freshProfile } = await db.from('profiles').select('*').eq('id', state.session.user.id).single();
+  if(freshProfile){
+    state.profile = freshProfile;
+    if(freshProfile.lodge_id){
+      const { data: lodge } = await db.from('lodges').select('name').eq('id', freshProfile.lodge_id).single();
+      if(lodge) state.profile.lodge_name = lodge.name;
+    }
+  }
+
+  await loadAll();
+  showToast('Acesso liberado! Agora você já pode publicar avistamentos.');
+}
+
+function doGeofenceCheckin(){
+  if(!state.reservation) return;
+  if(!state.online){
+    state.offlineQueue.push({type:'checkin'});
+    showToast(t('offline_label'));
+    render();
+    return;
+  }
+  state.geoStatus = t('checkin_getting_location');
+  document.getElementById('geo-status').textContent = state.geoStatus;
+  if(!navigator.geolocation){
+    state.geoStatus = t('checkin_gps_unavailable');
+    document.getElementById('geo-status').textContent = state.geoStatus;
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    (pos)=>{ completeCheckin(pos.coords.latitude, pos.coords.longitude); },
+    ()=>{
+      state.geoStatus = t('checkin_location_failed');
+      document.getElementById('geo-status').textContent = state.geoStatus;
+    },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
+}
+
+async function completeCheckin(lat, lng){
+  const { data, error } = await db.rpc('checkin_reservation', {
+    p_reservation_id: state.reservation.id, p_lat: lat, p_lng: lng
+  });
+  if(error){
+    console.error('checkin', error.message);
+    state.geoStatus = t('checkin_location_failed');
+    render();
+    return;
+  }
+  if(data === false){
+    state.geoStatus = 'Você parece estar longe demais da pousada para confirmar o check-in.';
+    render();
+    return;
+  }
+  state.checkinDone = true;
+  await loadWallet();
+  render();
+  showToast(`Check-in confirmado! +${currencyLabel(state.rewardSettings.checkin)}`, 'reward');
+  pulseCoinPill();
+}
+
+/* =====================================================================
+   ALERTAS
+   ===================================================================== */
+function alertasView(){
+  return `
+    <div class="section-title">${t('alerts_section_title')}</div>
+    <div class="section-sub">${t('alerts_desc')}</div>
+    ${state.alerts.length===0 ? `
+      <div class="card" style="padding:26px 18px; text-align:center;">
+        <div style="font-size:28px; margin-bottom:8px;">🔔</div>
+        <div style="color:var(--text); font-weight:700; font-size:13px; margin-bottom:4px;">${t('alerts_empty_title')}</div>
+        <div style="color:var(--text-dim); font-size:12px; line-height:1.5; margin-bottom:14px;">${t('alerts_empty_desc')}</div>
+        <button class="btn-ghost" onclick="setScreen('perfil')">${t('alerts_choose_species')}</button>
+      </div>
+    ` : ''}
+    ${state.alerts.map(a=>`
+      <div class="card alert-card">
+        <div class="alert-head"><div class="alert-title">${a.icon} ${a.title}</div><div class="alert-time">${a.time}</div></div>
+        <div class="alert-body">${a.body}</div>
+      </div>
+    `).join('')}
+  `;
+}
+
+/* =====================================================================
+   CARTEIRA (JAGUARCOIN)
+   ===================================================================== */
+function walletView(){
+  return `
+    <span class="back-link" onclick="setScreen('avistamentos')">${t('wallet_back')}</span>
+    <div class="wallet-hero">
+      <div class="amt">${currencyIcon()} ${state.coins}</div>
+      <div class="lbl">${t('wallet_balance_label', {currency: currencyName()})}</div>
+    </div>
+    <div class="section-title">${t('wallet_benefits_title')}</div>
+    ${state.benefits.map(b=>`
+      <div class="benefit">
+        <div><div class="benefit-name">${b.name}</div><div class="benefit-cost">${currencyLabel(b.cost_coins)}</div></div>
+        <button class="redeem-btn" ${state.coins<b.cost_coins?'disabled':''} onclick="redeem('${b.id}')">${t('wallet_redeem')}</button>
+      </div>
+    `).join('')}
+    ${state.redemptions.length ? `
+      <div class="section-title" style="margin-top:18px;">${t('wallet_vouchers_title')}</div>
+      ${state.redemptions.map(r=>`
+        <div class="benefit">
+          <div><div class="benefit-name">Voucher</div><div class="benefit-cost">${t('wallet_code_label')} ${r.code}</div></div>
+          <div class="${r.used?'status-pending':'status-queued'}" style="${r.used?'color:var(--green);background:rgba(31,223,154,0.14)':''}">${r.used?t('wallet_used'):t('wallet_pending')}</div>
+        </div>
+      `).join('')}
+    ` : ''}
+    <div class="disclaimer-box">${t('wallet_disclaimer', {currency: currencyName()})}</div>
+  `;
+}
+
+async function redeem(benefitId){
+  const { data, error } = await db.rpc('redeem_benefit', { p_benefit_id: benefitId });
+  if(error){
+    console.error('redeem', error.message);
+    showToast('Não foi possível resgatar: ' + error.message);
+    return;
+  }
+  await loadWallet();
+  render();
+  showToast(`Voucher gerado: ${data} — apresente na recepção`);
+}
+
+/* =====================================================================
+   PERFIL
+   ===================================================================== */
+function computeBadgeDisplay(){
+  const all = [
+    {code:'first_sighting', ic:'🥉', name:'Primeiro Avistamento'},
+    {code:'frequent_observer', ic:'🥈', name:'Observador Frequente (5)'},
+    {code:'biodiversity', ic:'🌿', name:'Diversidade da Fauna (3 espécies)'},
+    {code:'jaguar_hunter', ic:'🐆', name:'Caçador de Onças'},
+  ];
+  const earnedCodes = new Set(state.badges.map(b=>b.code));
+  return all.map(b => ({...b, done: earnedCodes.has(b.code)}));
+}
+
+function perfilView(){
+  const badges = computeBadgeDisplay();
+  const languages = [
+    {code:'pt', label:'Português'}, {code:'en', label:'English'}, {code:'es', label:'Español'},
+    {code:'de', label:'Deutsch'}, {code:'fr', label:'Français'}, {code:'ru', label:'Русский'},
+  ];
+  return `
+    <div class="section-title">${t('profile_title')}</div>
+    <div class="card" style="padding:14px; display:flex; align-items:center; gap:12px;">
+      <div style="position:relative; width:52px; height:52px; flex-shrink:0;">
+        ${state.profile && state.profile.avatar_url ? `
+          <img src="${state.profile.avatar_url}" style="width:52px; height:52px; border-radius:50%; object-fit:cover; display:block;" alt="Foto de perfil">
+        ` : `
+          <div class="avatar" style="width:52px; height:52px; font-size:18px;">${(state.loggedUser||'?').slice(0,2).toUpperCase()}</div>
+        `}
+        <div onclick="document.getElementById('avatar-input').click()" style="position:absolute; bottom:-2px; right:-2px; width:22px; height:22px; background:var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid var(--bg); font-size:11px;">✏️</div>
+        <input type="file" accept="image/*" id="avatar-input" style="display:none">
+      </div>
+      <div>
+        <div style="color:var(--text); font-weight:700; font-size:14px;">${state.loggedUser || 'Visitante'} ${state.profile && state.profile.verified_observer ? `<span class="verified-tag" title="${t('verified_label')}">${icon('star')}</span>` : ''}</div>
+        <div style="color:var(--text-dim); font-size:11.5px; margin-top:2px;">${state.profile && state.profile.lodge_name || 'Pousada'}</div>
+      </div>
+    </div>
+
+    <div class="section-title">${t('profile_achievements')}</div>
+    <div class="badge-grid">
+      ${badges.map(b=>`
+        <div class="badge-chip ${b.done?'':'locked'}">
+          <div class="ic">${b.ic}</div>
+          <div class="nm">${b.name}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="section-title" style="margin-top:16px;">${t('profile_appearance_title')}</div>
+    <div class="card" style="padding:6px 14px;">
+      <div class="toggle-row">
+        <span>${t('profile_theme_dark')} / ${t('profile_theme_light')}</span>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-ghost" style="margin:0; padding:6px 12px; font-size:11.5px; ${state.theme==='dark'?'background:var(--green-dim); border-color:var(--green);':''}" onclick="setTheme('dark')">🌙 ${t('profile_theme_dark')}</button>
+          <button class="btn-ghost" style="margin:0; padding:6px 12px; font-size:11.5px; ${state.theme==='light'?'background:var(--green-dim); border-color:var(--green);':''}" onclick="setTheme('light')">☀️ ${t('profile_theme_light')}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:16px;">${t('profile_language_title')}</div>
+    <div class="card" style="padding:6px 14px;">
+      <div class="settings-row" onclick="toggleLanguagePicker()">
+        <span>${languages.find(l=>l.code===state.lang).label}</span>
+        <span class="chev">${state.languagePickerOpen ? '▲' : '▼'}</span>
+      </div>
+      ${state.languagePickerOpen ? languages.map(l=>`
+        <div class="settings-row" onclick="setLanguage('${l.code}')">
+          <span>${l.label}</span>
+          <span class="chev">${state.lang===l.code ? '✓' : ''}</span>
+        </div>
+      `).join('') : ''}
+    </div>
+
+    <div class="section-title" style="margin-top:16px;">${t('profile_species_alerts_title')}</div>
+    <div class="section-sub" style="margin-top:0;">${t('profile_species_alerts_desc')}</div>
+    <div class="card" style="padding:6px 14px;">
+      <div class="settings-row" onclick="toggleSpeciesPicker()">
+        <span>${state.followedSpecies.length ? `${state.followedSpecies.length} espécie(s) selecionada(s)` : 'Nenhuma espécie selecionada'}</span>
+        <span class="chev">${state.speciesPickerOpen ? '▲' : '▼'}</span>
+      </div>
+      ${state.speciesPickerOpen ? state.speciesCatalog.map(sp=>`
+        <div class="toggle-row">
+          <span>${sp.common_name}${sp.scientific_name?` (${sp.scientific_name})`:''}</span>
+          <div class="switch ${state.followedSpecies.includes(sp.id)?'on':''}" onclick="toggleFollowSpecies('${sp.id}')"><div class="knob"></div></div>
+        </div>
+      `).join('') : ''}
+    </div>
+
+    <div class="section-title" style="margin-top:16px;">${t('profile_ranking_title')}</div>
+    ${state.ranking.length ? state.ranking.map((r,i)=>`
+      <div class="rank-row ${r.name===state.profile.full_name?'me':''}">
+        <div class="rank-pos">${i+1}º</div>
+        <div class="rank-name">${r.name}</div>
+        <div class="rank-pts">${r.points} pts</div>
+      </div>
+    `).join('') : `
+      <div class="card" style="padding:16px; text-align:center; color:var(--text-dim); font-size:12px;">${t('profile_ranking_empty')}</div>
+    `}
+
+    <div class="section-title" style="margin-top:16px;">${t('profile_privacy_title')}</div>
+    <div class="card" style="padding:6px 14px;">
+      <div class="settings-row" onclick="openPolicy('privacy')"><span>${t('profile_privacy_policy')}</span><span class="chev">›</span></div>
+      <div class="settings-row" onclick="openPolicy('permissions')"><span>${t('profile_permissions')}</span><span class="chev">›</span></div>
+      <div class="settings-row" onclick="setGuideMode(true)"><span>${t('profile_guide_mode')}</span><span class="chev">›</span></div>
+      ${state.profile && state.profile.role === 'admin' ? `<div class="settings-row" onclick="setAdminMode(true)"><span>Painel Administrativo</span><span class="chev">›</span></div>` : ''}
+    </div>
+    <button class="danger-btn" onclick="deleteAccount()">${t('profile_delete_account')}</button>
+    <button class="btn-ghost" onclick="logout()">${t('profile_logout')}</button>
+
+    ${policyModalHTML()}
+  `;
+}
+
+async function setTheme(theme){
+  state.theme = theme;
+  render();
+  if(state.session){
+    await db.from('profiles').update({ theme_preference: theme }).eq('id', state.session.user.id);
+  }
+}
+async function setLanguage(lang){
+  state.lang = lang;
+  state.languagePickerOpen = false;
+  render();
+  if(state.session){
+    await db.from('profiles').update({ language_preference: lang }).eq('id', state.session.user.id);
+  }
+}
+function toggleLanguagePicker(){
+  state.languagePickerOpen = !state.languagePickerOpen;
+  render();
+}
+
+function toggleSpeciesPicker(){
+  state.speciesPickerOpen = !state.speciesPickerOpen;
+  render();
+}
+
+async function toggleFollowSpecies(speciesId){
+  const idx = state.followedSpecies.indexOf(speciesId);
+  if(idx>=0){
+    state.followedSpecies.splice(idx,1);
+    render();
+    await db.from('user_followed_species').delete().eq('user_id', state.session.user.id).eq('species_id', speciesId);
+  } else {
+    state.followedSpecies.push(speciesId);
+    render();
+    await db.from('user_followed_species').insert({ user_id: state.session.user.id, species_id: speciesId });
+  }
+}
+
+async function logout(){
+  await db.auth.signOut();
+  state.screen = 'login';
+  state.loggedUser = null;
+  state.session = null;
+  state.profile = null;
+  state.signupOpen = false;
+  state.forgotPasswordOpen = false;
+  render();
+}
+
+async function deleteAccount(){
+  if(!confirm(t('profile_delete_confirm'))) return;
+
+  const userId = state.session.user.id;
+
+  // Anonimiza os dados pessoais AGORA (o conteúdo publicado continua existindo,
+  // como "patrimônio" do EcoSafari Go, sem nome/e-mail vinculado a ele).
+  await db.from('profiles').update({
+    full_name: 'Ex-hóspede', avatar_url: null,
+  }).eq('id', userId);
+
+  // Registra o pedido para a exclusão definitiva do login (isso exige a
+  // Admin API do Supabase, que só roda em backend/Edge Function — ver
+  // explicação completa no chat).
+  await db.from('account_deletion_requests').insert({ user_id: userId });
+
+  showToast('Seus dados pessoais foram removidos. A exclusão definitiva do login será concluída pela equipe.');
+  await logout();
+}
+
+function openPolicy(which){ state.policyModal = which; render(); }
+function closePolicy(){ state.policyModal = null; render(); }
+function policyModalHTML(){
+  if(!state.policyModal) return '';
+  const privacy = `
+    <h4>${t('policy_collect_title')}</h4>
+    ${t('policy_collect_body')}
+    <h4>${t('policy_use_title')}</h4>
+    ${t('policy_use_body')}
+    <h4>${t('policy_rights_title')}</h4>
+    ${t('policy_rights_body')}
+  `;
+  const permissions = `
+    <h4>${t('policy_location_title')}</h4>
+    ${t('policy_location_body')}
+    <h4>${t('policy_camera_title')}</h4>
+    ${t('policy_camera_body')}
+  `;
+  return `
+    <div class="modal-overlay open" style="z-index:50;">
+      <div class="modal">
+        <h3>${state.policyModal==='privacy' ? t('policy_privacy_title') : t('policy_permissions_title')}</h3>
+        <div class="policy-text">${state.policyModal==='privacy' ? privacy : permissions}</div>
+        <button class="btn-ghost" style="margin-top:16px;" onclick="closePolicy()">${t('policy_close')}</button>
+      </div>
+    </div>
+  `;
+}
+
+/* =====================================================================
+   PAINEL DO GUIA
+   ===================================================================== */
+/* =====================================================================
+   PAINEL ADMINISTRATIVO
+   ===================================================================== */
+async function setAdminMode(v){
+  state.adminMode = v;
+  if(v) await loadAdminData();
+  render();
+}
+
+async function loadAdminData(){
+  const [resResult, benefitsResult, speciesPopResult, activityResult, topGuestsResult, coinEconomyResult] = await Promise.all([
+    db.rpc('admin_list_reservations'),
+    db.from('benefits').select('*').eq('lodge_id', state.profile.lodge_id).order('created_at', {ascending:false}),
+    db.from('lodge_species_popularity').select('*').eq('lodge_id', state.profile.lodge_id).limit(5),
+    db.from('lodge_activity_summary').select('*').eq('lodge_id', state.profile.lodge_id).maybeSingle(),
+    db.from('lodge_top_guests').select('*').eq('lodge_id', state.profile.lodge_id).limit(5),
+    db.from('lodge_coin_economy').select('*').eq('lodge_id', state.profile.lodge_id).maybeSingle(),
+  ]);
+
+  if(resResult.error) console.error('admin reservations', resResult.error.message);
+  state.adminReservations = resResult.data || [];
+
+  if(benefitsResult.error) console.error('admin benefits', benefitsResult.error.message);
+  state.adminBenefitsAll = benefitsResult.data || [];
+
+  state.adminAnalytics = {
+    speciesPopularity: speciesPopResult.data || [],
+    activity: activityResult.data || { active_guests:0, total_approved_sightings:0, sightings_last_30_days:0 },
+    topGuests: topGuestsResult.data || [],
+    coinEconomy: coinEconomyResult.data || { total_emitido:0, total_resgatado:0, total_expirado:0, em_circulacao:0 },
+  };
+}
+
+function adminView(){
+  const a = state.adminAnalytics || { speciesPopularity:[], activity:{active_guests:0,total_approved_sightings:0,sightings_last_30_days:0}, topGuests:[], coinEconomy:{total_emitido:0,total_resgatado:0,total_expirado:0,em_circulacao:0} };
+  const f = state.lodgeFeatures || {};
+  const isPro = f.plan_code === 'pro' || f.plan_code === 'premium';
+  const isPremium = f.plan_code === 'premium';
+  const hasSharedCode = !!f.shared_checkin_code_enabled;
+
+  if(!isPro){
+    return `
+      <span class="back-link" onclick="setAdminMode(false)">${t('guide_back')}</span>
+      <div class="section-title">PAINEL ADMINISTRATIVO</div>
+      <div class="card" style="padding:26px 20px; text-align:center; margin-top:12px;">
+        <div style="font-size:32px; margin-bottom:10px;">🔒</div>
+        <div style="font-weight:700; color:var(--text); font-size:15px; margin-bottom:8px;">Exclusivo para assinantes</div>
+        <div style="color:var(--text-dim); font-size:12.5px; line-height:1.6; margin-bottom:20px;">
+          O Painel Administrativo (criar reservas, benefícios, personalizar marca e moeda, analytics) é liberado para pousadas nos planos Pro ou Premium. Sua pousada está no plano Free.
+        </div>
+        <button class="btn-primary" onclick="goToUpgradeCheckout('pro')">Assinar Pro</button>
+        <button class="btn-ghost" onclick="goToUpgradeCheckout('premium')">Assinar Premium</button>
+      </div>
+    `;
+  }
+
+  return `
+    <span class="back-link" onclick="setAdminMode(false)">${t('guide_back')}</span>
+    <div class="section-title">PAINEL ADMINISTRATIVO</div>
+    <div class="section-sub">Gerencie reservas, benefícios e valores de recompensa da sua pousada — sem precisar de SQL.</div>
+
+    <div class="section-title" style="margin-top:16px;">PLANO DA POUSADA</div>
+    <div class="card" style="padding:16px; display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div style="font-weight:700; color:var(--text); font-size:14px;">${isPremium ? '💎 Plano Premium' : '⭐ Plano Pro'}</div>
+        <div style="color:var(--text-dim); font-size:11px; margin-top:2px;">Reservas ilimitadas, marca própria, moeda personalizada e analytics completo.</div>
+      </div>
+      ${!isPremium ? `<button class="btn-ghost" style="margin:0; padding:8px 14px; font-size:11.5px;" onclick="goToUpgradeCheckout('premium')">Assinar Premium</button>` : ''}
+    </div>
+
+    <div class="section-title" style="margin-top:16px;">VISÃO GERAL</div>
+    <div class="card" style="padding:14px; display:flex; justify-content:space-around; text-align:center;">
+      <div><div style="font-size:20px; font-weight:700; color:var(--green);">${a.activity.active_guests||0}</div><div style="font-size:10px; color:var(--text-dim);">hóspedes ativos</div></div>
+      <div><div style="font-size:20px; font-weight:700; color:var(--green);">${a.activity.total_approved_sightings||0}</div><div style="font-size:10px; color:var(--text-dim);">avistamentos</div></div>
+      <div><div style="font-size:20px; font-weight:700; color:var(--green);">${a.activity.sightings_last_30_days||0}</div><div style="font-size:10px; color:var(--text-dim);">últimos 30 dias</div></div>
+    </div>
+
+    <div class="section-title" style="margin-top:16px;">ECONOMIA DE ${currencyName().toUpperCase()}</div>
+    <div class="card" style="padding:14px; display:flex; justify-content:space-around; text-align:center; flex-wrap:wrap; gap:10px;">
+      <div><div style="font-size:18px; font-weight:700; color:var(--green);">${currencyIcon()} ${a.coinEconomy.total_emitido||0}</div><div style="font-size:9.5px; color:var(--text-dim);">emitido no total</div></div>
+      <div><div style="font-size:18px; font-weight:700; color:var(--blue);">${a.coinEconomy.total_resgatado||0}</div><div style="font-size:9.5px; color:var(--text-dim);">resgatado</div></div>
+      <div><div style="font-size:18px; font-weight:700; color:var(--amber);">${a.coinEconomy.total_expirado||0}</div><div style="font-size:9.5px; color:var(--text-dim);">expirado</div></div>
+      <div><div style="font-size:18px; font-weight:700; color:var(--text);">${a.coinEconomy.em_circulacao||0}</div><div style="font-size:9.5px; color:var(--text-dim);">em circulação</div></div>
+    </div>
+
+    ${a.speciesPopularity.length ? `
+      <div class="section-title" style="margin-top:16px;">ESPÉCIES MAIS AVISTADAS</div>
+      <div class="card" style="padding:6px 14px;">
+        ${a.speciesPopularity.map(s=>`
+          <div class="settings-row"><span>${s.species_text}</span><span class="chev">${s.sighting_count}</span></div>
+        `).join('')}
+      </div>
+    ` : ''}
+
+    ${a.topGuests.length ? `
+      <div class="section-title" style="margin-top:16px;">HÓSPEDES MAIS ATIVOS</div>
+      <div class="card" style="padding:6px 14px;">
+        ${a.topGuests.map(g=>`
+          <div class="settings-row"><span>${g.full_name||'Hóspede'}</span><span class="chev">${g.sightings_count}</span></div>
+        `).join('')}
+      </div>
+    ` : ''}
+
+    <div class="section-title" style="margin-top:16px;">VALORES DE JAGUARCOIN</div>
+    <div class="card" style="padding:16px;">
+      <div class="field"><label>POR AVISTAMENTO APROVADO</label><input id="adm-sighting-reward" type="number" min="0" value="${state.rewardSettings.sighting}"></div>
+      <div class="field"><label>POR CHECK-IN</label><input id="adm-checkin-reward" type="number" min="0" value="${state.rewardSettings.checkin}"></div>
+      <div id="adm-reward-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
+      <button class="btn-primary" id="adm-reward-btn">Salvar valores</button>
+    </div>
+
+    <div class="section-title" style="margin-top:16px;">CRIAR CÓDIGO DE RESERVA</div>
+    <div class="card" style="padding:16px;">
+      <div class="field"><label>CÓDIGO (opcional)</label><input id="adm-res-code" placeholder="Deixe em branco para gerar automaticamente" style="text-transform:uppercase;"></div>
+      <div class="field"><label>CHECK-IN</label><input id="adm-res-checkin" type="date"></div>
+      <div class="field"><label>CHECK-OUT</label><input id="adm-res-checkout" type="date"></div>
+      <div id="adm-res-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
+      <button class="btn-primary" id="adm-res-btn">Criar reserva</button>
+    </div>
+
+    ${state.adminReservations.length ? `
+      <div class="section-title" style="margin-top:16px;">RESERVAS DA POUSADA</div>
+      ${state.adminReservations.map(r=>`
+        <div class="benefit">
+          <div>
+            <div class="benefit-name">${r.reservation_code}</div>
+            <div class="benefit-cost">${r.check_in_date} → ${r.check_out_date}${r.guest_name ? ' · '+r.guest_name : ''}</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="${r.checked_in?'status-pending':(r.claimed?'status-queued':'no-photo-tag')}" style="${r.checked_in?'color:var(--green);background:rgba(31,223,154,0.14)':''}">
+              ${r.checked_in ? 'Check-in feito' : (r.claimed ? 'Vinculada' : 'Livre')}
+            </div>
+            ${r.checked_in ? `<button class="redeem-btn" onclick="adminResetCheckin('${r.id}')">Refazer</button>` : ''}
+          </div>
+        </div>
+      `).join('')}
+    ` : ''}
+
+    <div class="section-title" style="margin-top:16px;">CÓDIGO DE CHECK-IN COMPARTILHADO ${!hasSharedCode ? '🔒 PRO/PREMIUM' : ''}</div>
+    <div class="section-sub" style="margin-top:0;">Um único código exibido na recepção, que qualquer hóspede pode digitar para liberar publicações — sem precisar de reserva individual cadastrada. Gerado automaticamente (3 letras da pousada + 6 dígitos), garantido único. Exclusivo dos planos pagos.</div>
+    <div class="card" style="padding:16px; ${!hasSharedCode?'opacity:0.5;':''} text-align:center;">
+      ${f.shared_access_code ? `
+        <div class="voucher-code">${f.shared_access_code}</div>
+        <button class="btn-ghost" id="adm-lodge-code-btn" style="margin-top:0;" ${!hasSharedCode?'disabled':''}>🔄 Gerar novo código</button>
+      ` : `
+        <button class="btn-primary" id="adm-lodge-code-btn" ${!hasSharedCode?'disabled':''}>${hasSharedCode ? '🎲 Gerar código de check-in' : 'Disponível nos planos Pro/Premium'}</button>
+      `}
+      <div id="adm-lodge-code-msg" style="font-size:11.5px; margin-top:10px; min-height:14px;"></div>
+    </div>
+
+    <div class="section-title" style="margin-top:16px;">CRIAR BENEFÍCIO</div>
+    <div class="card" style="padding:16px;">
+      <div class="field"><label>NOME DO BENEFÍCIO</label><input id="adm-ben-name" placeholder="Ex: Sobremesa grátis"></div>
+      <div class="field"><label>CUSTO EM JAGUARCOIN</label><input id="adm-ben-cost" type="number" min="1" placeholder="Ex: 30"></div>
+      <div id="adm-ben-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
+      <button class="btn-primary" id="adm-ben-btn">Criar benefício</button>
+    </div>
+
+    ${state.adminBenefitsAll.length ? `
+      <div class="section-title" style="margin-top:16px;">BENEFÍCIOS CADASTRADOS</div>
+      ${state.adminBenefitsAll.map(b=>`
+        <div class="benefit">
+          <div><div class="benefit-name">${b.name}</div><div class="benefit-cost">${currencyLabel(b.cost_coins)}</div></div>
+          <div class="switch ${b.active?'on':''}" onclick="adminToggleBenefit('${b.id}', ${!b.active})"><div class="knob"></div></div>
+        </div>
+      `).join('')}
+    ` : ''}
+
+    <div class="section-title" style="margin-top:16px;">MARCA E MOEDA PRÓPRIA ${!isPro ? '🔒 PRO' : ''}</div>
+    <div class="card" style="padding:16px; ${!isPro?'opacity:0.5;':''}">
+      <div class="field"><label>NOME EXIBIDO NO APP</label><input id="adm-brand-name" placeholder="Ex: Araras Eco Lodge" value="${f.display_name||''}" ${!isPro?'disabled':''}></div>
+      <div class="field"><label>URL DO LOGO</label><input id="adm-brand-logo" placeholder="https://..." value="${f.logo_url||''}" ${!isPro?'disabled':''}></div>
+      <div class="field"><label>NOME DA MOEDA</label><input id="adm-currency-name" placeholder="Ex: SafariCoin" value="${f.currency_name||'JaguarCoin'}" ${!isPro?'disabled':''}></div>
+      <div class="field"><label>ÍCONE DA MOEDA (EMOJI)</label><input id="adm-currency-icon" placeholder="🪙" value="${f.currency_icon||'🪙'}" ${!isPro?'disabled':''}></div>
+      <div class="field"><label>PARCEIRO DE CONSERVAÇÃO (opcional)</label><input id="adm-conservation" placeholder="Ex: Apoia o Instituto Onçafari" value="${f.conservation_partner||''}" ${!isPro?'disabled':''}></div>
+      <div id="adm-brand-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
+      <button class="btn-primary" id="adm-brand-btn" ${!isPro?'disabled':''}>${isPro ? 'Salvar marca e moeda' : 'Disponível no plano Pro'}</button>
+    </div>
+
+    <div class="section-title" style="margin-top:16px;">CATÁLOGO DE ESPÉCIES DA POUSADA ${!isPro ? '🔒 PRO' : ''}</div>
+    <div class="card" style="padding:16px; ${!isPro?'opacity:0.5;':''}">
+      <div class="field"><label>NOME COMUM</label><input id="adm-sp-name" placeholder="Ex: Tamanduá-mirim" ${!isPro?'disabled':''}></div>
+      <div class="field"><label>NOME CIENTÍFICO</label><input id="adm-sp-sci" placeholder="Ex: Tamandua tetradactyla" ${!isPro?'disabled':''}></div>
+      <div class="field"><label>CATEGORIA</label><input id="adm-sp-cat" placeholder="Ex: mamifero" ${!isPro?'disabled':''}></div>
+      <div id="adm-sp-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
+      <button class="btn-primary" id="adm-sp-btn" ${!isPro?'disabled':''}>${isPro ? 'Adicionar espécie' : 'Disponível no plano Pro'}</button>
+    </div>
+  `;
+}
+
+/* Links de pagamento do Stripe (Payment Links) — crie em
+   dashboard.stripe.com > Payment Links (não precisa de nenhum código de
+   servidor). Cole a URL gerada em cada linha abaixo. Enquanto estiver
+   com "SEU-LINK-AQUI", o botão avisa que ainda não foi configurado. */
+const STRIPE_PAYMENT_LINKS = {
+  pro: 'https://buy.stripe.com/SEU-LINK-PRO-AQUI',
+  premium: 'https://buy.stripe.com/SEU-LINK-PREMIUM-AQUI',
+};
+
+function goToUpgradeCheckout(planCode){
+  const link = STRIPE_PAYMENT_LINKS[planCode];
+  if(!link || link.includes('SEU-LINK')){
+    showToast('Pagamento ainda não configurado pela equipe EcoSafari Go. Avise o suporte.');
+    return;
+  }
+  // Anexa o e-mail e o id da pousada como referência, para conseguirmos
+  // saber automaticamente quem pagou quando o webhook do Stripe processar.
+  const url = new URL(link);
+  if(state.loggedUser) url.searchParams.set('prefilled_email', state.loggedUser);
+  if(state.profile && state.profile.lodge_id) url.searchParams.set('client_reference_id', state.profile.lodge_id);
+  window.open(url.toString(), '_blank');
+}
+
+async function adminSaveRewardSettings(){
+  const sighting = parseInt(document.getElementById('adm-sighting-reward').value, 10);
+  const checkin = parseInt(document.getElementById('adm-checkin-reward').value, 10);
+  const msg = document.getElementById('adm-reward-msg');
+  if(isNaN(sighting) || isNaN(checkin) || sighting < 0 || checkin < 0){
+    msg.style.color = 'var(--danger)'; msg.textContent = 'Digite valores válidos (0 ou mais).';
+    return;
+  }
+  const { error } = await db.rpc('admin_update_reward_settings', { p_sighting_reward: sighting, p_checkin_reward: checkin });
+  if(error){ msg.style.color = 'var(--danger)'; msg.textContent = error.message; return; }
+  state.rewardSettings = { sighting, checkin };
+  msg.style.color = 'var(--green)'; msg.textContent = 'Valores atualizados!';
+  showToast(`Valores de ${currencyName()} atualizados.`);
+}
+
+async function adminCreateReservation(){
+  const code = document.getElementById('adm-res-code').value.trim().toUpperCase();
+  const checkin = document.getElementById('adm-res-checkin').value;
+  const checkout = document.getElementById('adm-res-checkout').value;
+  const msg = document.getElementById('adm-res-msg');
+  if(!checkin || !checkout){
+    msg.style.color = 'var(--danger)'; msg.textContent = 'Preencha as duas datas.';
+    return;
+  }
+  const { error } = await db.rpc('admin_create_reservation', { p_code: code || null, p_checkin: checkin, p_checkout: checkout });
+  if(error){ msg.style.color = 'var(--danger)'; msg.textContent = error.message; return; }
+  msg.style.color = 'var(--green)'; msg.textContent = 'Reserva criada!';
+  await loadAdminData();
+  render();
+  showToast(code ? `Código ${code} criado com sucesso.` : 'Reserva criada com código gerado automaticamente.');
+}
+
+async function adminCreateBenefit(){
+  const name = document.getElementById('adm-ben-name').value.trim();
+  const cost = parseInt(document.getElementById('adm-ben-cost').value, 10);
+  const msg = document.getElementById('adm-ben-msg');
+  if(!name || isNaN(cost) || cost <= 0){
+    msg.style.color = 'var(--danger)'; msg.textContent = 'Preencha o nome e um custo maior que zero.';
+    return;
+  }
+  const { error } = await db.rpc('admin_create_benefit', { p_name: name, p_cost: cost });
+  if(error){ msg.style.color = 'var(--danger)'; msg.textContent = error.message; return; }
+  msg.style.color = 'var(--green)'; msg.textContent = 'Benefício criado!';
+  await loadAdminData();
+  render();
+  showToast(`Benefício "${name}" criado.`);
+}
+
+async function adminToggleBenefit(benefitId, newActive){
+  const { error } = await db.rpc('admin_toggle_benefit', { p_benefit_id: benefitId, p_active: newActive });
+  if(error){ showToast('Erro: ' + error.message); return; }
+  await loadAdminData();
+  render();
+  showToast(newActive ? 'Benefício ativado.' : 'Benefício desativado.');
+}
+
+async function adminResetCheckin(reservationId){
+  if(!confirm('Refazer o check-in? O hóspede poderá confirmar a chegada novamente.')) return;
+  const { error } = await db.rpc('admin_reset_checkin', { p_reservation_id: reservationId });
+  if(error){ showToast('Erro: ' + error.message); return; }
+  await loadAdminData();
+  render();
+  showToast('Check-in liberado para ser refeito.');
+}
+
+async function adminSaveLodgeCode(){
+  const btn = document.getElementById('adm-lodge-code-btn');
+  const msg = document.getElementById('adm-lodge-code-msg');
+  btn.disabled = true;
+  const { data: code, error } = await db.rpc('admin_generate_shared_access_code');
+  btn.disabled = false;
+  if(error){ msg.style.color = 'var(--danger)'; msg.textContent = error.message; return; }
+  msg.style.color = 'var(--green)'; msg.textContent = 'Código gerado!';
+
+  // Atualiza a tela direto com o código que a função retornou — não
+  // depende de outra consulta pra mostrar na hora.
+  if(!state.lodgeFeatures) state.lodgeFeatures = {};
+  state.lodgeFeatures.shared_access_code = code;
+
+  // Também tenta atualizar o resto dos dados do plano em segundo plano
+  // (mescla em vez de substituir, para nunca apagar o código que acabamos de gerar)
+  db.from('lodge_plan_features').select('*').eq('lodge_id', state.profile.lodge_id).maybeSingle()
+    .then(({ data: features })=>{
+      if(features) state.lodgeFeatures = { ...features, shared_access_code: features.shared_access_code || code };
+    });
+
+  render();
+  showToast(`Código de check-in gerado: ${code}`);
+}
+
+async function adminSaveBranding(){
+  const displayName = document.getElementById('adm-brand-name').value.trim() || null;
+  const logoUrl = document.getElementById('adm-brand-logo').value.trim() || null;
+  const currName = document.getElementById('adm-currency-name').value.trim() || null;
+  const currIcon = document.getElementById('adm-currency-icon').value.trim() || null;
+  const conservation = document.getElementById('adm-conservation').value.trim() || null;
+  const msg = document.getElementById('adm-brand-msg');
+
+  const { error } = await db.rpc('admin_update_branding', {
+    p_display_name: displayName, p_logo_url: logoUrl,
+    p_currency_name: currName, p_currency_icon: currIcon,
+    p_conservation_partner: conservation,
+  });
+  if(error){ msg.style.color = 'var(--danger)'; msg.textContent = error.message; return; }
+
+  const { data: features } = await db.from('lodge_plan_features').select('*').eq('lodge_id', state.profile.lodge_id).maybeSingle();
+  if(features){ state.lodgeFeatures = features; state.profile.lodge_name = features.display_name || features.name; }
+
+  msg.style.color = 'var(--green)'; msg.textContent = 'Marca atualizada!';
+  render();
+  showToast('Marca e moeda da pousada atualizadas.');
+}
+
+async function adminCreateSpecies(){
+  const name = document.getElementById('adm-sp-name').value.trim();
+  const sci = document.getElementById('adm-sp-sci').value.trim() || null;
+  const cat = document.getElementById('adm-sp-cat').value.trim() || null;
+  const msg = document.getElementById('adm-sp-msg');
+  if(!name){ msg.style.color = 'var(--danger)'; msg.textContent = 'Digite o nome comum da espécie.'; return; }
+
+  const { error } = await db.rpc('admin_create_species', { p_common_name: name, p_scientific_name: sci, p_category: cat });
+  if(error){ msg.style.color = 'var(--danger)'; msg.textContent = error.message; return; }
+
+  msg.style.color = 'var(--green)'; msg.textContent = 'Espécie adicionada!';
+  await loadSpeciesCatalog();
+  showToast(`Espécie "${name}" adicionada ao catálogo da pousada.`);
+}
+
+async function setGuideMode(v){
+  state.guideMode = v;
+  if(v) await loadPendingForGuide();
+  render();
+}
+
+async function loadPendingForGuide(){
+  const { data, error } = await db
+    .from('sightings')
+    .select('*')
+    .eq('lodge_id', state.profile.lodge_id)
+    .eq('status', 'pending')
+    .order('created_at', { ascending:true });
+  if(error){ console.error('guide pending', error.message); return; }
+  const rows = data || [];
+  const userIds = [...new Set(rows.map(r=>r.user_id))];
+  let profilesById = {};
+  if(userIds.length){
+    const { data: profs } = await db.from('profiles').select('id, full_name').in('id', userIds);
+    (profs||[]).forEach(p => { profilesById[p.id] = p.full_name; });
+  }
+  state.pendingGuideSightings = rows.map(r => ({
+    id:r.id, user: profilesById[r.user_id] || 'Hóspede', loc: 'Araras Eco Lodge',
+    date: new Date(r.created_at).toLocaleDateString('pt-BR') + ' às ' + new Date(r.created_at).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+    species: r.species_text, desc: r.description || '', photo: r.photo_url,
+    videoUrl: r.video_url, videoTrimStart: r.video_trim_start || 0, observedAt: r.observed_at || r.created_at,
+    moderationStatus: r.moderation_status, moderationReason: r.moderation_reason,
+    coords: r.location_lat != null ? {lat:r.location_lat, lng:r.location_lng} : null,
+  }));
+}
+
+function guideView(){
+  const pending = state.pendingGuideSightings;
+  return `
+    <span class="back-link" onclick="setGuideMode(false)">${t('guide_back')}</span>
+
+    <div class="section-title">VALIDAR VOUCHER DE BENEFÍCIO</div>
+    <div class="section-sub">O hóspede mostra o código na recepção — digite aqui para confirmar o uso. Cada código só pode ser validado uma vez.</div>
+    <div class="card" style="padding:16px;">
+      <div class="field"><label>CÓDIGO DO VOUCHER</label><input id="gd-voucher-code" placeholder="Ex: ARL-7F3K2" style="text-transform:uppercase;"></div>
+      <div id="gd-voucher-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
+      <button class="btn-primary" id="gd-voucher-btn">Validar voucher</button>
+    </div>
+
+    <div class="section-title" style="margin-top:16px;">${t('guide_panel_title')}</div>
+    <div class="section-sub">${t('guide_panel_desc')}</div>
+    ${pending.length===0 ? `<div class="card" style="padding:16px; text-align:center; color:var(--text-dim); font-size:12.5px;">${t('guide_empty')}</div>` : ''}
+    ${pending.map(s=>`
+      <div class="guide-item">
+        <div style="font-weight:700; color:var(--text); font-size:13px;">${s.species} ${!s.photo && !s.videoUrl ? `<span class="no-photo-tag">${t('tag_no_photo')}</span>` : ''} ${s.moderationStatus==='flagged' ? `<span class="no-photo-tag" style="background:rgba(224,72,63,0.16); color:var(--danger);">⚠️ Sinalizado pela moderação</span>` : ''}</div>
+        <div style="color:var(--text-dim); font-size:11.5px; margin:2px 0 8px 0;">${s.user} · ${s.loc} · ${s.date}</div>
+        <div style="color:var(--blue); font-size:12px; margin-bottom:8px;">${s.desc}</div>
+        ${s.moderationStatus==='flagged' && s.moderationReason ? `<div style="color:var(--danger); font-size:11px; margin-bottom:8px;">${s.moderationReason}</div>` : ''}
+        ${s.videoUrl ? `
+          <video src="${s.videoUrl}" controls style="width:100%; border-radius:10px; margin-bottom:8px; max-height:220px; background:#000;"></video>
+          <div style="background:var(--warn-bg); border-radius:8px; padding:9px 11px; margin-bottom:8px;">
+            <div style="color:var(--amber); font-size:10.5px; font-weight:700; margin-bottom:3px;">✅ Antes de aprovar, confira no vídeo:</div>
+            <div style="color:var(--text-dim); font-size:10.5px; line-height:1.5;">☐ Mostra o animal claramente?<br>☐ A pessoa aparece dizendo nome, município e data/hora?</div>
+          </div>
+        ` : s.photo ? `
+          <div class="post-photo-wrap" style="height:140px; border-radius:10px; margin-bottom:8px;">
+            <div class="post-photo-bg" style="background-image:url('${s.photo}')"></div>
+            <img class="post-photo" src="${s.photo}" alt="Foto para validação: ${s.species}">
+          </div>
+        ` : ''}
+        ${s.coords ? `<div class="loc-attached-chip" style="margin-bottom:8px; display:inline-flex;">${icon('pin')} ${s.coords.lat.toFixed(4)}, ${s.coords.lng.toFixed(4)}</div>` : `<div style="color:var(--text-dim); font-size:11px; margin-bottom:8px;">${t('guide_no_location')}</div>`}
+        <div class="guide-actions">
+          <button class="btn-approve" onclick="guideDecision('${s.id}', true)">${t('guide_approve', {currency: currencyName()}).replace('10', state.rewardSettings.sighting)}</button>
+          <button class="btn-reject" onclick="guideDecision('${s.id}', false)">${t('guide_reject')}</button>
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+async function validateVoucher(){
+  const input = document.getElementById('gd-voucher-code');
+  const msg = document.getElementById('gd-voucher-msg');
+  const btn = document.getElementById('gd-voucher-btn');
+  const code = input.value.trim().toUpperCase();
+  if(!code){ msg.style.color = 'var(--danger)'; msg.textContent = 'Digite o código do voucher.'; return; }
+
+  btn.disabled = true; btn.textContent = 'Validando...';
+  const { data, error } = await db.rpc('validate_redemption_code', { p_code: code });
+  btn.disabled = false; btn.textContent = 'Validar voucher';
+
+  if(error){ msg.style.color = 'var(--danger)'; msg.textContent = error.message; return; }
+
+  if(data === false){
+    msg.style.color = 'var(--amber)';
+    msg.textContent = 'Este voucher já tinha sido usado anteriormente.';
+    return;
+  }
+
+  msg.style.color = 'var(--green)';
+  msg.textContent = 'Voucher validado com sucesso!';
+  input.value = '';
+  showToast(`Voucher ${code} confirmado.`);
+}
+
+async function guideDecision(sightingId, approve){
+  const { error } = await db.rpc(approve ? 'approve_sighting' : 'reject_sighting', { p_sighting_id: sightingId });
+  if(error){ console.error('guide decision', error.message); showToast('Erro: ' + error.message); return; }
+  showToast(approve ? `Avistamento aprovado! Hóspede recebeu +${currencyLabel(state.rewardSettings.sighting)}.` : 'Avistamento rejeitado.');
+  await loadPendingForGuide();
+  render();
+}
+
+/* =====================================================================
+   PERFIL PÚBLICO DE OUTRO HÓSPEDE
+   ===================================================================== */
+function openUserProfile(userId){
+  state.viewingUser = userId;
+  state.screen = 'userProfile';
+  state.userProfileData = null;
+  render();
+  loadUserProfile(userId);
+}
+
+async function loadUserProfile(userId){
+  const { data: profile } = await db.from('profiles').select('full_name, verified_observer, avatar_url').eq('id', userId).single();
+  const { data: posts } = await db
+    .from('sightings')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('status', 'approved')
+    .order('created_at', { ascending:false });
+  state.userProfileData = {
+    name: profile ? profile.full_name : 'Hóspede',
+    verified: profile ? !!profile.verified_observer : false,
+    avatarUrl: profile ? profile.avatar_url : null,
+    posts: (posts||[]).map(r=>({
+      species:r.species_text, desc:r.description||'', photo:r.photo_url, thumb: r.photo_thumb_url || r.photo_url, videoUrl: r.video_url, videoTrimStart: r.video_trim_start || 0, observedAt: r.observed_at || r.created_at,
+      date: new Date(r.created_at).toLocaleDateString('pt-BR') + ' às ' + new Date(r.created_at).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), loc:'Araras Eco Lodge'
+    })),
+  };
+  if(state.screen === 'userProfile') render();
+}
+
+function userProfileView(){
+  if(!state.userProfileData){
+    return `<span class="back-link" onclick="setScreen('avistamentos')">${t('wallet_back')}</span>${loadingView()}`;
+  }
+  const { name, verified, avatarUrl, posts } = state.userProfileData;
+  const initials = name.split(' ').map(w=>w[0]).slice(0,2).join('');
+  return `
+    <span class="back-link" onclick="setScreen('avistamentos')">${t('wallet_back')}</span>
+    <div class="card" style="padding:20px; text-align:center;">
+      ${avatarUrl ? `
+        <img src="${avatarUrl}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;margin:0 auto 10px auto;display:block;${verified?'box-shadow:0 0 0 2px var(--green);':''}" alt="">
+      ` : `
+        <div class="avatar ${verified?'verified':''}" style="width:56px;height:56px;font-size:20px;margin:0 auto 10px auto;">${initials}</div>
+      `}
+      <div style="font-weight:700; color:var(--text); font-size:15px;">${name}</div>
+      ${verified ? `<div class="verified-tag" style="margin-top:6px; font-size:11.5px; gap:5px;">${icon('star')} ${t('verified_label')}</div>` : ''}
+      <div style="color:var(--text-dim); font-size:11.5px; margin-top:8px;">${t('user_profile_sightings_count',{n:posts.length})}</div>
+    </div>
+
+    <div class="section-title" style="margin-top:16px;">${t('user_profile_posts_title')}</div>
+    ${posts.length===0 ? `
+      <div class="card" style="padding:24px; text-align:center; color:var(--text-dim); font-size:12px;">${t('user_profile_empty')}</div>
+    ` : posts.map(s=>`
+      <div class="card">
+        ${s.videoUrl ? `
+          <video src="${s.videoUrl}" controls playsinline preload="metadata" style="width:100%; max-height:280px; background:#000; display:block;" onloadedmetadata="this.currentTime=${s.videoTrimStart||0}" ontimeupdate="if(${s.videoTrimStart||0}>0 && this.currentTime-${s.videoTrimStart||0}>=30){this.pause();}"></video>
+        ` : s.photo ? `
+          <div class="post-photo-wrap">
+            <div class="post-photo-bg" style="background-image:url('${s.thumb}')"></div>
+            <img class="post-photo" src="${s.thumb}" alt="Foto do avistamento: ${s.species}" loading="lazy">
+          </div>
+        ` : ''}
+        <div class="post-body">
+          <div class="species">${s.species}</div>
+          <div class="desc">${s.desc}</div>
+          <div style="color:var(--text-dim); font-size:11px; margin-top:6px;">${s.date} · 📍 ${s.loc}</div>
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+/* =====================================================================
+   MODAL: NOVO AVISTAMENTO
+   ===================================================================== */
+function modalHTML(){
+  return `
+    <div class="modal-overlay ${state.modalOpen?'open':''}" id="modal-overlay">
+      <div class="modal">
+        <h3>${t('modal_title')}</h3>
+        ${state.photoWarning ? `<div class="photo-warning">⚠️ ${state.photoWarning}</div>` : ''}
+        <label class="photo-drop" id="photo-drop" style="${state.photoData?'':'display:none'}">
+          ${state.photoData ? `<img src="${state.photoData}">` : ''}
+        </label>
+        ${state.videoPreviewUrl ? `
+          <video src="${state.videoPreviewUrl}" controls style="width:100%; border-radius:12px; margin-bottom:12px; max-height:220px; background:#000;"></video>
+          ${state.videoNeedsTrim ? `
+            <div style="background:var(--card); border:1px solid var(--card-border); border-radius:10px; padding:12px; margin-bottom:12px;">
+              <div style="font-size:11.5px; color:var(--text-dim); margin-bottom:8px;">Seu vídeo tem ${Math.round(state.videoDuration)}s — escolha onde começar os 30s que serão usados:</div>
+              <input type="range" id="video-trim-slider" min="0" max="${Math.max(0, Math.floor(state.videoDuration - 30))}" value="${state.videoTrimStart||0}" style="width:100%;">
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-dim); margin-bottom:10px;">
+                <span>0s</span><span id="video-trim-label">início: ${state.videoTrimStart||0}s</span><span>${Math.round(state.videoDuration)}s</span>
+              </div>
+              <button type="button" class="btn-primary" id="video-trim-confirm-btn" style="margin-top:0;">✂️ Cortar e usar este trecho de 30s</button>
+            </div>
+          ` : ''}
+          <button type="button" class="btn-ghost" style="margin-top:0; margin-bottom:14px;" onclick="clearVideoSelection(); renderModalOnly();">Remover vídeo</button>
+        ` : ''}
+        ${!state.photoData && !state.videoPreviewUrl ? `
+          <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <button type="button" class="btn-primary" style="flex:1;" onclick="document.getElementById('photo-input-camera').click()">${t('modal_take_photo')}</button>
+            <button type="button" class="btn-ghost" style="flex:1; margin-top:0;" onclick="document.getElementById('photo-input-gallery').click()">${t('modal_gallery')}</button>
+          </div>
+          <button type="button" class="btn-ghost" style="margin-top:0; margin-bottom:8px;" onclick="document.getElementById('video-input').click()">🎥 Gravar/escolher vídeo curto</button>
+          <div style="background:var(--green-dim); border:1px solid rgba(31,223,154,0.3); border-radius:10px; padding:10px 12px; margin-bottom:10px;">
+            <div style="color:var(--green); font-size:11px; font-weight:700; margin-bottom:4px;">📋 Para o vídeo ser aceito, grave nesta ordem:</div>
+            <div style="color:var(--text-dim); font-size:10.5px; line-height:1.6;">
+              1. Aponte para o animal por alguns segundos<br>
+              2. Vire a câmera para você e diga: seu nome, o município e a data/hora do avistamento
+            </div>
+          </div>
+          <div style="color:var(--text-dim); font-size:10.5px; margin-bottom:14px;">${t('modal_optional_note')} Vídeos de até 30s (mais longos, você escolhe o trecho).</div>
+        ` : ''}
+        ${state.photoData ? `
+          <button type="button" class="btn-ghost" style="margin-top:0; margin-bottom:14px;" onclick="state.photoData=null; state.photoAssets=null; renderModalOnly();">${t('modal_change_photo')}</button>
+        ` : ''}
+        <input type="file" accept="image/*" capture="environment" id="photo-input-camera" style="display:none">
+        <input type="file" accept="image/*" id="photo-input-gallery" style="display:none">
+        <input type="file" accept="video/*" id="video-input" style="display:none">
+
+        <div class="field">
+          <label>${t('modal_location_label')}</label>
+          ${state.modalLocation ? `
+            <div class="loc-attached-chip">📍 ${t('modal_location_attached')} ${icon('check')}</div>
+          ` : `
+            <button type="button" class="btn-ghost" style="margin-top:0;" onclick="attachModalLocation()">${t('modal_location_attach')}</button>
+          `}
+        </div>
+        <div class="field">
+          <label>${t('modal_species_label')}</label>
+          ${state.speciesSuggestion ? `
+            <div class="loc-attached-chip" id="species-suggestion-chip" style="margin-bottom:8px; cursor:pointer; display:inline-flex;" onclick="applySpeciesSuggestion()">
+              🔎 Parece ser: <b style="margin:0 4px;">${state.speciesSuggestion.name}</b> — usar este nome?
+            </div>
+          ` : ''}
+          <input id="mod-species" list="species-list" placeholder="${t('modal_species_placeholder')}">
+          <datalist id="species-list">${state.speciesCatalog.map(sp=>`<option value="${sp.common_name}">`).join('')}</datalist>
+        </div>
+        <div class="field"><label>${t('modal_desc_label')}</label><input id="mod-desc" placeholder="${t('modal_desc_placeholder')}"></div>
+        <button class="btn-primary" id="mod-submit">${t('modal_submit')}</button>
+        <button class="btn-ghost" onclick="closeModal()">${t('modal_cancel')}</button>
+      </div>
+    </div>
+  `;
+}
+
+function bindDynamic(){
+  const cb = document.getElementById('checkin-btn');
+  if(cb) cb.onclick = doGeofenceCheckin;
+
+  const avInput = document.getElementById('avatar-input');
+  if(avInput) avInput.onchange = handleAvatarUpload;
+
+  const gdvb = document.getElementById('gd-voucher-btn');
+  if(gdvb) gdvb.onclick = validateVoucher;
+
+  const vb = document.getElementById('voucher-btn');
+  if(vb) vb.onclick = claimReservationCode;
+  const lcb = document.getElementById('lodge-code-btn');
+  if(lcb) lcb.onclick = claimLodgeAccessCode;
+
+  const armb = document.getElementById('adm-reward-btn');
+  if(armb) armb.onclick = adminSaveRewardSettings;
+  const arb = document.getElementById('adm-res-btn');
+  if(arb) arb.onclick = adminCreateReservation;
+  const abb = document.getElementById('adm-ben-btn');
+  if(abb) abb.onclick = adminCreateBenefit;
+  const abrb = document.getElementById('adm-brand-btn');
+  if(abrb) abrb.onclick = adminSaveBranding;
+  const alcb = document.getElementById('adm-lodge-code-btn');
+  if(alcb) alcb.onclick = adminSaveLodgeCode;
+  const aspb = document.getElementById('adm-sp-btn');
+  if(aspb) aspb.onclick = adminCreateSpecies;
+
+  const handlePhotoFile = (e)=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    state.photoWarning = '';
+    if(f.lastModified){
+      const ageMs = Date.now() - f.lastModified;
+      if(ageMs > 1000*60*60*48){
+        state.photoWarning = 'Esta foto parece ter sido tirada há mais de 2 dias. Fotos antigas podem não ser validadas pela equipe.';
+      }
+    }
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onload = async ()=>{
+        state.photoAssets = await buildPhotoAssets(img);
+        state.photoData = URL.createObjectURL(state.photoAssets.thumb.blob);
+        state.speciesSuggestion = null;
+        renderModalOnly();
+        suggestSpeciesFromPhoto(state.photoAssets.thumb.blob).then(suggestion=>{
+          if(suggestion && state.modalOpen){
+            state.speciesSuggestion = suggestion;
+            renderModalOnly();
+          }
+        });
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(f);
+  };
+  const piCam = document.getElementById('photo-input-camera');
+  if(piCam) piCam.onchange = handlePhotoFile;
+  const piGal = document.getElementById('photo-input-gallery');
+  if(piGal) piGal.onchange = handlePhotoFile;
+
+  const viInput = document.getElementById('video-input');
+  if(viInput) viInput.onchange = handleVideoFile;
+
+  const trimSlider = document.getElementById('video-trim-slider');
+  if(trimSlider) trimSlider.oninput = (e)=>{
+    state.videoTrimStart = parseInt(e.target.value, 10);
+    const label = document.getElementById('video-trim-label');
+    if(label) label.textContent = `início: ${state.videoTrimStart}s`;
+  };
+  const trimConfirmBtn = document.getElementById('video-trim-confirm-btn');
+  if(trimConfirmBtn) trimConfirmBtn.onclick = confirmVideoTrim;
+
+  const ms = document.getElementById('mod-submit');
+  if(ms) ms.onclick = submitSighting;
+}
+
+function applySpeciesSuggestion(){
+  if(!state.speciesSuggestion) return;
+  const input = document.getElementById('mod-species');
+  if(input) input.value = state.speciesSuggestion.name;
+  state.speciesSuggestion = null;
+  const chip = document.getElementById('species-suggestion-chip');
+  if(chip) chip.remove();
+}
+
+function clearVideoSelection(){
+  state.videoFile = null;
+  state.videoBlob = null;
+  state.videoPreviewUrl = null;
+  state.videoNeedsTrim = false;
+  state.videoDuration = 0;
+  state.videoTrimStart = 0;
+}
+
+function handleVideoFile(e){
+  const f = e.target.files[0];
+  if(!f) return;
+  clearVideoSelection();
+  state.videoFile = f;
+
+  const probeVideo = document.createElement('video');
+  probeVideo.preload = 'metadata';
+  probeVideo.src = URL.createObjectURL(f);
+  probeVideo.onloadedmetadata = () => {
+    state.videoDuration = probeVideo.duration;
+    if(state.videoDuration <= 30){
+      state.videoBlob = f;
+      state.videoPreviewUrl = probeVideo.src;
+      state.videoNeedsTrim = false;
+    } else {
+      state.videoPreviewUrl = probeVideo.src;
+      state.videoNeedsTrim = true;
+      state.videoTrimStart = 0;
+    }
+    renderModalOnly();
+  };
+  probeVideo.onerror = () => {
+    showToast('Não foi possível ler esse arquivo de vídeo.');
+  };
+}
+
+function confirmVideoTrim(){
+  // Método simplificado e confiável: em vez de recodificar o vídeo no
+  // navegador (técnica frágil, variava muito entre aparelhos), enviamos
+  // o vídeo original inteiro e guardamos só o "ponto de início" — a
+  // reprodução no feed já começa e para sozinha nesse trecho de 30s.
+  state.videoBlob = state.videoFile;
+  state.videoNeedsTrim = false;
+  renderModalOnly();
+  showToast('Trecho definido! Pronto para enviar.');
+}
+
+function attachModalLocation(){
+  if(!navigator.geolocation){ showToast('GPS indisponível neste dispositivo.'); return; }
+  showToast('Obtendo localização...');
+  navigator.geolocation.getCurrentPosition(
+    (pos)=>{
+      state.modalLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      renderModalOnly();
+      showToast(`Localização anexada (precisão: ${Math.round(pos.coords.accuracy)}m)!`);
+    },
+    ()=>{ showToast('Não foi possível obter sua localização.'); },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
+}
+
+function renderModalOnly(){
+  const speciesInput = document.getElementById('mod-species');
+  const descInput = document.getElementById('mod-desc');
+  const savedSpecies = speciesInput ? speciesInput.value : '';
+  const savedDesc = descInput ? descInput.value : '';
+
+  document.getElementById('modal-overlay').outerHTML = modalHTML();
+  bindDynamic();
+
+  const newSpeciesInput = document.getElementById('mod-species');
+  const newDescInput = document.getElementById('mod-desc');
+  if(newSpeciesInput && savedSpecies) newSpeciesInput.value = savedSpecies;
+  if(newDescInput && savedDesc) newDescInput.value = savedDesc;
+}
+
+function openModal(){
+  if(!state.profile || !state.profile.verified_guest){
+    showToast('Valide o código da sua reserva na aba Check-in antes de publicar.');
+    return;
+  }
+  state.modalOpen = true; state.photoData = null; state.photoAssets = null; state.photoWarning = ''; state.modalLocation = null; state.speciesSuggestion = null;
+  clearVideoSelection();
+  document.getElementById('modal-overlay').outerHTML = modalHTML();
+  document.getElementById('modal-overlay').classList.add('open');
+  bindDynamic();
+}
+function closeModal(){ state.modalOpen = false; document.getElementById('modal-overlay').outerHTML = modalHTML(); }
+
+/* ---------- OTIMIZAÇÃO DE IMAGEM (miniatura + versão completa, WebP) ---------- */
+const SUPPORTS_WEBP = (function(){
+  const c = document.createElement('canvas');
+  return c.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+})();
+
+function resizeToCanvas(img, maxDim){
+  let w = img.width, h = img.height;
+  if(w > maxDim || h > maxDim){
+    if(w > h){ h = Math.round(h * maxDim / w); w = maxDim; }
+    else { w = Math.round(w * maxDim / h); h = maxDim; }
+  }
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+  return canvas;
+}
+
+function canvasToBlobAsync(canvas, quality){
+  const type = SUPPORTS_WEBP ? 'image/webp' : 'image/jpeg';
+  return new Promise(resolve=>{
+    canvas.toBlob(blob=> resolve({ blob, type, ext: SUPPORTS_WEBP?'webp':'jpg' }), type, quality);
+  });
+}
+
+async function buildPhotoAssets(img){
+  // miniatura: usada no feed (a maioria das visualizações) — bem mais leve
+  const thumbCanvas = resizeToCanvas(img, 480);
+  const thumb = await canvasToBlobAsync(thumbCanvas, 0.72);
+  // versão completa: usada ao abrir/compartilhar, e na validação do guia
+  const fullCanvas = resizeToCanvas(img, 1280);
+  const full = await canvasToBlobAsync(fullCanvas, 0.82);
+  return { thumb, full };
+}
+
+/* Sugestão de espécie a partir da foto, usando a API pública e gratuita
+   de identificação visual do iNaturalist (feita exatamente para isso).
+   Se a chamada falhar por qualquer motivo (sem internet, API fora do
+   ar, espécie não reconhecida), simplesmente não mostra sugestão —
+   nunca bloqueia o envio do avistamento. */
+async function suggestSpeciesFromPhoto(blob){
+  try{
+    const formData = new FormData();
+    formData.append('image', blob, 'photo.jpg');
+    const res = await fetch('https://api.inaturalist.org/v1/computervision/score_image', {
+      method: 'POST',
+      body: formData,
+    });
+    if(!res.ok) return null;
+    const json = await res.json();
+    const top = json.results && json.results[0];
+    if(top && top.taxon && top.combined_score > 50){
+      return {
+        name: top.taxon.preferred_common_name || top.taxon.name,
+        scientificName: top.taxon.name,
+      };
+    }
+  }catch(err){
+    console.error('species suggestion error', err);
+  }
+  return null;
+}
+
+function handleAvatarUpload(e){
+  const f = e.target.files[0];
+  if(!f) return;
+  showToast('Enviando foto de perfil...');
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    const img = new Image();
+    img.onload = async ()=>{
+      const canvas = resizeToCanvas(img, 300);
+      const { blob, type, ext } = await canvasToBlobAsync(canvas, 0.85);
+      try{
+        const path = `${state.session.user.id}/avatar_${Date.now()}.${ext}`;
+        const { error: upErr } = await db.storage.from('user-avatars').upload(path, blob, { contentType: type, upsert: true });
+        if(upErr){ showToast('Não foi possível enviar a foto: ' + upErr.message); return; }
+        const url = db.storage.from('user-avatars').getPublicUrl(path).data.publicUrl;
+        const { error: updErr } = await db.from('profiles').update({ avatar_url: url }).eq('id', state.session.user.id);
+        if(updErr){ showToast('Não foi possível salvar a foto: ' + updErr.message); return; }
+        state.profile.avatar_url = url;
+        render();
+        showToast('Foto de perfil atualizada!');
+      }catch(err){
+        console.error('avatar upload', err);
+        showToast('Não foi possível enviar a foto de perfil.');
+      }
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(f);
+}
+
+async function uploadVideoBlob(blob){
+  try{
+    const ext = blob.type.includes('webm') ? 'webm' : (blob.type.includes('quicktime') ? 'mov' : 'mp4');
+    const path = `${state.session.user.id}/${Date.now()}.${ext}`;
+    const { error } = await db.storage.from('sighting-videos').upload(path, blob, { contentType: blob.type || 'video/webm' });
+    if(error){ console.error('upload video', error.message); return null; }
+    return db.storage.from('sighting-videos').getPublicUrl(path).data.publicUrl;
+  }catch(err){
+    console.error('upload video exception', err);
+    return null;
+  }
+}
+
+async function uploadPhotoAssets(assets){
+  try{
+    const base = `${state.session.user.id}/${Date.now()}`;
+    const fullPath = `${base}.${assets.full.ext}`;
+    const thumbPath = `${base}_thumb.${assets.thumb.ext}`;
+
+    const [fullRes, thumbRes] = await Promise.all([
+      db.storage.from('sighting-photos').upload(fullPath, assets.full.blob, { contentType: assets.full.type }),
+      db.storage.from('sighting-photos').upload(thumbPath, assets.thumb.blob, { contentType: assets.thumb.type }),
+    ]);
+    if(fullRes.error){ console.error('upload full', fullRes.error.message); return null; }
+    if(thumbRes.error){ console.error('upload thumb', thumbRes.error.message); }
+
+    const fullUrl = db.storage.from('sighting-photos').getPublicUrl(fullPath).data.publicUrl;
+    const thumbUrl = thumbRes.error ? fullUrl : db.storage.from('sighting-photos').getPublicUrl(thumbPath).data.publicUrl;
+    return { photo_url: fullUrl, photo_thumb_url: thumbUrl };
+  }catch(err){
+    console.error('upload exception', err);
+    return null;
+  }
+}
+
+async function submitSighting(){
+  const species = document.getElementById('mod-species').value.trim();
+  const desc = document.getElementById('mod-desc').value.trim();
+  if(!species){ document.getElementById('mod-species').style.borderColor='var(--danger)'; return; }
+
+  if(!state.profile || !state.profile.lodge_id){
+    state.modalOpen = false;
+    render();
+    showToast('Não foi possível identificar sua pousada. Saia e entre novamente, ou revalide o código da reserva no Check-in.');
+    return;
+  }
+
+  // Captura o momento exato AGORA — antes de qualquer envio/upload demorado,
+  // para o horário registrado ser sempre o do avistamento real, não o do envio.
+  const observedAt = new Date().toISOString();
+
+  const matchedSpecies = state.speciesCatalog.find(sp => sp.common_name.toLowerCase() === species.toLowerCase());
+  const photoAssetsLocal = state.photoAssets;
+  const videoBlobLocal = state.videoBlob;
+  const videoTrimStartLocal = state.videoTrimStart || 0;
+  let locationLocal = state.modalLocation;
+  state.modalOpen = false;
+  render();
+
+  if(!state.online){
+    // Sem conexão: tenta capturar a localização automaticamente agora
+    // (o GPS do aparelho funciona sem internet), mesmo que o hóspede não
+    // tenha tocado no botão de anexar localização.
+    if(!locationLocal && navigator.geolocation){
+      locationLocal = await new Promise((resolve)=>{
+        navigator.geolocation.getCurrentPosition(
+          pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+          () => resolve(null),
+          { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+        );
+      });
+    }
+
+    state.offlineQueue.push({
+      type:'sighting', species, desc, photoAssetsLocal, videoBlobLocal, videoTrimStartLocal,
+      locationLocal, observedAt, speciesId: matchedSpecies?matchedSpecies.id:null,
+    });
+    render();
+    const horario = new Date(observedAt).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+    showToast(`Sem conexão — avistamento registrado às ${horario}${locationLocal?' com localização':''}. Será enviado automaticamente ao voltar o sinal, mantendo esse horário real.`);
+    return;
+  }
+
+  showToast('Enviando avistamento...');
+
+  let photo_url = null, photo_thumb_url = null;
+  if(photoAssetsLocal){
+    const uploaded = await uploadPhotoAssets(photoAssetsLocal);
+    if(uploaded){ photo_url = uploaded.photo_url; photo_thumb_url = uploaded.photo_thumb_url; }
+  }
+
+  let video_url = null;
+  if(videoBlobLocal){
+    video_url = await uploadVideoBlob(videoBlobLocal);
+    if(!video_url){
+      showToast('Não foi possível enviar o vídeo (verifique sua conexão). O avistamento será enviado sem o vídeo.');
+    }
+  }
+
+  const payload = {
+    lodge_id: state.profile.lodge_id,
+    user_id: state.session.user.id,
+    species_id: matchedSpecies ? matchedSpecies.id : null,
+    species_text: species,
+    description: desc || null,
+    photo_url,
+    photo_thumb_url,
+    video_url,
+    video_trim_start: video_url ? videoTrimStartLocal : null,
+    observed_at: observedAt,
+    has_photo: !!photo_url,
+    location_lat: locationLocal ? locationLocal.lat : null,
+    location_lng: locationLocal ? locationLocal.lng : null,
+  };
+
+  const { error } = await db.from('sightings').insert(payload);
+  if(error){
+    console.error('submit sighting', error.message);
+    showToast('Não foi possível enviar o avistamento: ' + error.message);
+    return;
+  }
+
+  await loadSightings();
+  render();
+  showToast('Avistamento enviado para a equipe da pousada validar. Você será avisado quando aprovar.');
+}
+
+/* =====================================================================
+   TOAST
+   ===================================================================== */
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.toggle('reward', type === 'reward');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3400);
+}
+
+function pulseCoinPill(){
+  const pill = document.querySelector('.coin-pill');
+  if(!pill) return;
+  pill.classList.remove('pop');
+  void pill.offsetWidth; // força reiniciar a animação mesmo se chamado em sequência
+  pill.classList.add('pop');
+}
+
+/* =====================================================================
+   FILA OFFLINE
+   ===================================================================== */
+async function syncQueue(){
+  if(state.offlineQueue.length===0) return;
+  const items = [...state.offlineQueue];
+  state.offlineQueue = [];
+  for(const item of items){
+    if(item.type==='sighting'){
+      let photo_url = null, photo_thumb_url = null;
+      if(item.photoAssetsLocal){
+        const uploaded = await uploadPhotoAssets(item.photoAssetsLocal);
+        if(uploaded){ photo_url = uploaded.photo_url; photo_thumb_url = uploaded.photo_thumb_url; }
+      }
+      let video_url = null;
+      if(item.videoBlobLocal){
+        video_url = await uploadVideoBlob(item.videoBlobLocal);
+      }
+      await db.from('sightings').insert({
+        lodge_id: state.profile.lodge_id,
+        user_id: state.session.user.id,
+        species_id: item.speciesId,
+        species_text: item.species,
+        description: item.desc || null,
+        photo_url,
+        photo_thumb_url,
+        video_url,
+        video_trim_start: video_url ? (item.videoTrimStartLocal || 0) : null,
+        has_photo: !!photo_url,
+        location_lat: item.locationLocal ? item.locationLocal.lat : null,
+        location_lng: item.locationLocal ? item.locationLocal.lng : null,
+        observed_at: item.observedAt || new Date().toISOString(),
+      });
+    } else if(item.type==='checkin'){
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(pos=>{
+          completeCheckin(pos.coords.latitude, pos.coords.longitude);
+        }, null, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+      }
+    }
+  }
+  await loadSightings();
+  await loadWallet();
+  showToast(`Conexão restabelecida — ${items.length} item(ns) sincronizado(s)!`);
+  render();
+}
+window.addEventListener('online', ()=>{ state.online = true; syncQueue(); });
+window.addEventListener('offline', ()=>{ state.online = false; render(); });
+
+/* =====================================================================
+   INICIALIZAÇÃO
+   ===================================================================== */
+state.online = navigator.onLine;
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{ /* opcional, não bloqueia o app */ });
+}
+
+(async function initSession(){
+  const { data } = await db.auth.getSession();
+  if(data.session){
+    await completeLogin(data.session, data.session.user);
+  } else {
+    render();
+  }
+})();
+</script>
+</body>
+</html>
