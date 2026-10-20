@@ -6,6 +6,11 @@
 <meta name="theme-color" content="#0a0e0c">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="EcoSafari Go">
 <title>EcoSafari Go</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,6 +57,19 @@
   .notch{position:absolute; top:14px; left:50%; transform:translateX(-50%); width:120px; height:26px; background:#000; border-radius:16px; z-index:20;}
   .statusbar{display:flex; justify-content:space-between; align-items:center; padding:16px 24px 4px 24px; font-size:13px; font-weight:600; color:var(--text);}
   .statusbar .right{display:flex; gap:5px; align-items:center; font-size:12px;}
+
+  /* ===== MODO APP (tela cheia) — substitui a moldura de celular do protótipo ===== */
+  html,body{background:var(--bg); height:100%; overscroll-behavior:none;}
+  .stage{display:block; min-height:0; height:100vh; height:100dvh; padding:0;}
+  .phone{width:100%; max-width:560px; height:100dvh; margin:0 auto; padding:0; border-radius:0; background:var(--bg); box-shadow:none;}
+  .phone{height:100vh; height:100dvh;}
+  [data-theme="light"] .phone{box-shadow:none;}
+  .screen{border-radius:0;}
+  .notch, .statusbar{display:none !important;}
+  .screen > .topbar{padding-top:calc(env(safe-area-inset-top, 0px) + 12px);}
+  .login-wrap{padding-top:calc(env(safe-area-inset-top, 0px) + 20px) !important;}
+  .screen .content{padding-bottom:calc(90px + env(safe-area-inset-bottom, 0px));}
+  @media (min-width:600px){ .phone{border-left:1px solid var(--card-border); border-right:1px solid var(--card-border);} }
   .topbar{display:flex; align-items:center; justify-content:space-between; padding:6px 18px 14px 18px;}
   .brand{display:flex; align-items:center; gap:8px; font-weight:700; color:var(--green); font-size:16px; font-family:"Fraunces", serif;}
   .brand .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--green); display:flex;align-items:center;justify-content:center;font-size:11px;}
@@ -125,7 +143,7 @@
   .btn-ghost{width:100%; background:transparent; color:var(--green); border:1px solid var(--green); border-radius:10px; padding:11px; font-weight:700; font-size:13.5px; cursor:pointer; margin-top:8px;}
   .geo-status{font-size:12px; color:var(--text-dim); margin-top:10px; text-align:center; min-height:16px;}
 
-  .navbar{position:absolute; bottom:0; left:0; right:0; background:var(--card); border-top:1px solid var(--card-border); display:flex; padding:10px 0 18px 0; border-radius:0 0 32px 32px;}
+  .navbar{position:absolute; bottom:0; left:0; right:0; background:var(--card); border-top:1px solid var(--card-border); display:flex; padding:10px 0 calc(12px + env(safe-area-inset-bottom, 0px)) 0; border-radius:0; z-index:5;}
   .nav-item{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; color:var(--text-dim); font-size:9.5px;}
   .nav-item.active{color:var(--green);}
   .nav-item svg{width:20px;height:20px;}
@@ -143,7 +161,7 @@
 
   .modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,0.55); z-index:30; display:flex; align-items:flex-end; opacity:0; pointer-events:none; transition:opacity .2s;}
   .modal-overlay.open{opacity:1; pointer-events:auto;}
-  .modal{width:100%; max-height:92%; overflow-y:auto; background:var(--card); border-top:1px solid var(--card-border); border-radius:22px 22px 0 0; padding:20px 20px 26px 20px; transform:translateY(20px); transition:transform .2s;}
+  .modal{width:100%; max-height:92%; overflow-y:auto; background:var(--card); border-top:1px solid var(--card-border); border-radius:22px 22px 0 0; padding:20px 20px calc(26px + env(safe-area-inset-bottom, 0px)) 20px; transform:translateY(20px); transition:transform .2s;}
   .modal-overlay.open .modal{transform:translateY(0);}
   .modal h3{margin:0 0 14px 0; color:var(--text); font-size:15px;}
   .modal .field input{width:100%; background:var(--input-bg); border:1px solid var(--card-border); border-radius:10px; padding:11px 12px; color:var(--text); font-size:13px; outline:none;}
@@ -154,7 +172,7 @@
   .loc-attached-chip svg{width:14px;height:14px;}
   .no-photo-tag{background:rgba(139,153,148,0.14); color:var(--text-dim); font-size:10px; font-weight:700; padding:2px 8px; border-radius:6px;}
 
-  .toast{position:absolute; top:64px; left:50%; transform:translateX(-50%) translateY(-14px); background:var(--card); color:var(--text); font-weight:600; font-size:12.5px; line-height:1.45; padding:12px 16px; border-radius:14px; opacity:0; transition:all .25s; z-index:40; width:84%; max-width:300px; text-align:center; box-shadow:0 10px 26px rgba(0,0,0,0.28); border:1px solid var(--card-border); border-left:3px solid var(--green); pointer-events:none;}
+  .toast{position:absolute; top:calc(env(safe-area-inset-top, 0px) + 60px); left:50%; transform:translateX(-50%) translateY(-14px); background:var(--card); color:var(--text); font-weight:600; font-size:12.5px; line-height:1.45; padding:12px 16px; border-radius:14px; opacity:0; transition:all .25s; z-index:40; width:84%; max-width:300px; text-align:center; box-shadow:0 10px 26px rgba(0,0,0,0.28); border:1px solid var(--card-border); border-left:3px solid var(--green); pointer-events:none;}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
   @keyframes fadeInUp{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);}}
   @keyframes coinPop{0%{transform:scale(1);} 35%{transform:scale(1.35); color:var(--amber);} 100%{transform:scale(1);}}
