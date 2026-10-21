@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoSafari Go — Painel da Plataforma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg: #0a0e0c;
+    --bg-2: #0d1210;
+    --card: #141918;
+    --card-border: #1f2624;
+    --green: #1fdf9a;
+    --green-dim: rgba(31,223,154,0.12);
+    --blue: #5aa9e6;
+    --amber: #f5b942;
+    --amber-dim: rgba(245,185,66,0.12);
+    --danger: #ff6b6b;
+    --text: #eef2f0;
+    --text-dim: #8b9994;
+    --radius: 14px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--text); -webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.brand-font{font-family:'Fraunces',serif;}
+  a{color:inherit;}
+  ::selection{background:var(--green); color:#04140d;}
+
+  /* ---------- LOGIN ---------- */
+  .login-screen{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;}
+  .login-card{width:100%; max-width:380px; background:var(--card); border:1px solid var(--card-border); border-radius:20px; padding:36px 32px;}
+  .login-logo{text-align:center; margin-bottom:28px;}
+  .login-logo .circle{width:52px; height:52px; border-radius:50%; border:2.5px solid var(--green); display:flex; align-items:center; justify-content:center; font-size:24px; margin:0 auto 12px auto;}
+  .login-logo h1{font-size:19px; margin:0; color:var(--text);}
+  .login-logo p{font-size:12px; color:var(--text-dim); margin:6px 0 0 0;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:11px; color:var(--text-dim); margin-bottom:6px; font-weight:600; letter-spacing:0.03em;}
+  .field input{width:100%; background:var(--bg-2); border:1px solid var(--card-border); border-radius:10px; padding:12px 13px; color:var(--text); font-size:13.5px; outline:none; font-family:inherit;}
+  .field input:focus{border-color:var(--green);}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--green); color:#04140d; border:none; border-radius:10px; padding:12px 18px; font-weight:700; font-size:13.5px; cursor:pointer; font-family:inherit;}
+  .btn:disabled{opacity:0.5; cursor:default;}
+  .btn.full{width:100%;}
+  .btn-ghost{background:transparent; border:1px solid var(--card-border); color:var(--text-dim);}
+  .error-msg{color:var(--danger); font-size:12px; margin:-4px 0 12px 0; min-height:14px;}
+
+  /* ---------- APP SHELL ---------- */
+  .shell{display:flex; min-height:100vh;}
+  .sidebar{width:240px; flex-shrink:0; background:var(--bg-2); border-right:1px solid var(--card-border); padding:22px 14px; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;}
+  .sidebar-brand{display:flex; align-items:center; gap:9px; padding:0 8px 20px 8px; font-weight:700; color:var(--green); font-size:15px;}
+  .sidebar-brand .dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--green); display:flex;align-items:center;justify-content:center; font-size:11px; flex-shrink:0;}
+  .nav-item{display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:9px; color:var(--text-dim); font-size:13px; font-weight:600; cursor:pointer; margin-bottom:2px; transition:background .15s;}
+  .nav-item:hover{background:rgba(255,255,255,0.03);}
+  .nav-item.active{background:var(--green-dim); color:var(--green);}
+  .nav-item svg{width:17px;height:17px; flex-shrink:0;}
+  .sidebar-footer{margin-top:auto; padding-top:14px; border-top:1px solid var(--card-border);}
+  .sidebar-user{font-size:11.5px; color:var(--text-dim); padding:0 8px 10px 8px; word-break:break-all;}
+
+  .main{flex:1; min-width:0; padding:26px 32px 60px 32px;}
+  .main-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:12px;}
+  .main-header h1{font-size:22px; margin:0;}
+  .main-header p{color:var(--text-dim); font-size:12.5px; margin:4px 0 0 0;}
+
+  .date-range{display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--card-border); border-radius:10px; padding:8px 12px;}
+  .date-range input{background:transparent; border:none; color:var(--text); font-size:12.5px; font-family:inherit; outline:none;}
+  .date-range span{color:var(--text-dim); font-size:11px;}
+
+  .kpi-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:14px; margin-bottom:28px;}
+  .kpi-card{background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius); padding:18px;}
+  .kpi-card .val{font-size:26px; font-weight:800; color:var(--green); font-family:'Fraunces',serif;}
+  .kpi-card .lbl{font-size:11.5px; color:var(--text-dim); margin-top:4px; text-transform:uppercase; letter-spacing:0.03em;}
+  .kpi-card.amber .val{color:var(--amber);}
+  .kpi-card.blue .val{color:var(--blue);}
+
+  .panel{background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius); padding:20px; margin-bottom:22px;}
+  .panel-title{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-dim); margin:0 0 16px 0; display:flex; justify-content:space-between; align-items:center;}
+
+  table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  th{text-align:left; color:var(--text-dim); font-weight:600; font-size:10.5px; text-transform:uppercase; letter-spacing:0.03em; padding:8px 10px; border-bottom:1px solid var(--card-border);}
+  td{padding:10px; border-bottom:1px solid var(--card-border); color:var(--text);}
+  tr:last-child td{border-bottom:none;}
+  .tag{display:inline-block; padding:2px 8px; border-radius:6px; font-size:10px; font-weight:700;}
+  .tag.free{background:rgba(139,153,148,0.15); color:var(--text-dim);}
+  .tag.pro{background:var(--green-dim); color:var(--green);}
+  .tag.premium{background:var(--amber-dim); color:var(--amber);}
+
+  .chart-wrap{position:relative; height:260px;}
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+  @media (max-width: 900px){ .grid-2{grid-template-columns:1fr;} .sidebar{position:fixed; z-index:20; transform:translateX(-100%); transition:transform .2s;} .sidebar.open{transform:translateX(0);} .main{padding:20px;} }
+
+  .empty-state{text-align:center; color:var(--text-dim); font-size:12.5px; padding:30px 10px;}
+  .loading{text-align:center; color:var(--text-dim); font-size:12.5px; padding:40px;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  a.btn, button.btn{text-decoration:none;}
+  input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);}
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script>
+/* =====================================================================
+   CONEXÃO COM O SUPABASE (mesmo projeto do app — troque pelos seus dados)
+   ===================================================================== */
+const SUPABASE_URL = 'https://wahmsrsnastxtqrxuufp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhaG1zcnNuYXN0eHRxcnh1dWZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxNTY3NDUsImV4cCI6MjA5OTczMjc0NX0.FvZdVGkwt76s2cMjvap1gvRJx8awHUonGXpPwb8gbpk';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const state = {
+  session: null,
+  isPlatformAdmin: false,
+  screen: 'overview',
+  dateFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0,10),
+  dateTo: new Date().toISOString().slice(0,10),
+  data: {},
+  charts: {},
+  chatMessages: [],
+  chatLoading: false,
+};
+
+const AI_ASSISTANT_URL = SUPABASE_URL + '/functions/v1/platform-ai-assistant';
+
+const root = document.getElementById('root');
+
+function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function unesc(v){ return String(v == null ? '' : v).replace(/&(amp|lt|gt|quot|#39);/g, (m,k)=>({amp:'&',lt:'<',gt:'>',quot:'"','#39':"'"}[k])); }
+/* Escapa todo texto vindo do banco antes de ir para a tela (nomes de
+   pousadas, e-mails, espécies etc. são digitados por terceiros). */
+function deepEsc(v){
+  if(Array.isArray(v)) return v.map(deepEsc);
+  if(v && typeof v === 'object'){ const o = {}; for(const k in v) o[k] = deepEsc(v[k]); return o; }
+  return typeof v === 'string' ? esc(v) : v;
+}
+function fmtNum(n){ return (n||0).toLocaleString('pt-BR'); }
+function fmtMoney(n){ return (n||0).toLocaleString('pt-BR', {style:'currency', currency:'USD'}); }
+function fmtDate(d){ return d ? new Date(d).toLocaleDateString('pt-BR') : '—'; }
+function planTag(code){
+  const cls = code === 'premium' ? 'premium' : (code === 'pro' ? 'pro' : 'free');
+  const label = code === 'premium' ? 'Premium' : (code === 'pro' ? 'Pro' : 'Free');
+  return `<span class="tag ${cls}">${label}</span>`;
+}
+
+/* =====================================================================
+   LOGIN
+   ===================================================================== */
+function renderLogin(){
+  root.innerHTML = `
+    <div class="login-screen">
+      <div class="login-card">
+        <div class="login-logo">
+          <div class="circle">🌿</div>
+          <h1>Painel da Plataforma</h1>
+          <p>Acesso restrito — administração EcoSafari Go</p>
+        </div>
+        <div class="field"><label>E-MAIL</label><input id="lg-email" type="email" placeholder="seuemail@ecosafarigo.com"></div>
+        <div class="field"><label>SENHA</label><input id="lg-pass" type="password" placeholder="••••••••"></div>
+        <div class="error-msg" id="lg-error"></div>
+        <button class="btn full" id="lg-btn">Entrar</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('lg-btn').onclick = async ()=>{
+    const email = document.getElementById('lg-email').value.trim();
+    const pass = document.getElementById('lg-pass').value;
+    const errBox = document.getElementById('lg-error');
+    errBox.textContent = '';
+    if(!email || !pass){ errBox.textContent = 'Preencha e-mail e senha.'; return; }
+
+    const btn = document.getElementById('lg-btn');
+    btn.disabled = true; btn.textContent = 'Entrando...';
+    const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
+    btn.disabled = false; btn.textContent = 'Entrar';
+
+    if(error){
+      console.error('Erro de login:', error.message);
+      if(/failed to fetch|network/i.test(error.message)){
+        errBox.textContent = 'Não foi possível conectar ao Supabase. Verifique a URL/chave no topo do arquivo.';
+      } else if(/email not confirmed/i.test(error.message)){
+        errBox.textContent = 'E-mail ainda não confirmado.';
+      } else {
+        errBox.textContent = 'E-mail ou senha inválidos. (' + error.message + ')';
+      }
+      return;
+    }
+    await completeLogin(data.session);
+  };
+}
+
+async function completeLogin(session){
+  state.session = session;
+  const { data: adminRow } = await db.from('platform_admins').select('user_id').eq('user_id', session.user.id).maybeSingle();
+  if(!adminRow){
+    root.innerHTML = `
+      <div class="login-screen">
+        <div class="login-card" style="text-align:center;">
+          <div style="font-size:32px; margin-bottom:10px;">🔒</div>
+          <h1 style="font-size:16px;">Acesso não autorizado</h1>
+          <p style="color:var(--text-dim); font-size:12.5px; margin-top:8px;">Esta conta não tem permissão para ver o painel da plataforma.</p>
+          <button class="btn-ghost btn full" style="margin-top:20px;" onclick="logout()">Sair</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  state.isPlatformAdmin = true;
+
+  // Verificação em duas etapas
+  try{
+    const { data: aal } = await db.auth.mfa.getAuthenticatorAssuranceLevel();
+    const { data: st } = await db.from('platform_settings').select('value').eq('key','staff_mfa_required').maybeSingle();
+    const required = st && st.value === 'true';
+    if(aal && aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2'){ renderMfaChallenge(); return; }
+    if(required && (!aal || aal.currentLevel !== 'aal2')){
+      root.innerHTML = `<div class="login-screen"><div class="login-card" style="text-align:center;">
+        <div style="font-size:32px; margin-bottom:10px;">🔐</div><h1 style="font-size:16px;">Ative a verificação em duas etapas</h1>
+        <p style="color:var(--text-dim); font-size:12.5px; margin-top:8px;">O painel da plataforma exige 2FA. Entre no app EcoSafari Go com esta conta, vá em Perfil › Segurança › Verificação em duas etapas, e depois volte aqui.</p>
+        <button class="btn-ghost btn full" style="margin-top:20px;" onclick="logout()">Sair</button></div></div>`;
+      return;
+    }
+  }catch(_){}
+
+  await loadAllData();
+  renderShell();
+}
+
+function renderMfaChallenge(){
+  root.innerHTML = `<div class="login-screen"><div class="login-card">
+    <div class="login-logo"><div class="circle">🔐</div><h1>Verificação em duas etapas</h1><p>Digite o código de 6 dígitos do seu app autenticador.</p></div>
+    <div class="field"><label>CÓDIGO</label><input id="mfa-code" inputmode="numeric" maxlength="6" placeholder="000000" style="letter-spacing:6px; text-align:center; font-size:18px;"></div>
+    <div class="error-msg" id="mfa-error"></div>
+    <button class="btn full" id="mfa-btn">Confirmar</button>
+    <button class="btn-ghost btn full" style="margin-top:8px;" onclick="logout()">Sair</button></div></div>`;
+  const go = async ()=>{
+    const code = document.getElementById('mfa-code').value.trim();
+    const { data } = await db.auth.mfa.listFactors();
+    const f = (data && data.totp || []).find(x => x.status === 'verified');
+    if(!f){ document.getElementById('mfa-error').textContent = 'Nenhum autenticador cadastrado.'; return; }
+    const { error } = await db.auth.mfa.challengeAndVerify({ factorId: f.id, code });
+    if(error){ document.getElementById('mfa-error').textContent = 'Código incorreto ou expirado.'; return; }
+    const { data: sess } = await db.auth.getSession();
+    state.session = sess.session;
+    await loadAllData(); renderShell();
+  };
+  document.getElementById('mfa-btn').onclick = go;
+  document.getElementById('mfa-code').onkeydown = e => { if(e.key === 'Enter') go(); };
+}
+
+async function logout(){
+  await db.auth.signOut();
+  state.session = null;
+  state.isPlatformAdmin = false;
+  renderLogin();
+}
+
+/* =====================================================================
+   ESTRUTURA PRINCIPAL (barra lateral + navegação)
+   ===================================================================== */
+const NAV_ITEMS = [
+  { key:'overview', label:'Visão Geral', icon:'📊' },
+  { key:'assistant', label:'Assistente IA', icon:'✨' },
+  { key:'lodges', label:'Pousadas', icon:'🏡' },
+  { key:'guests', label:'Hóspedes', icon:'👤' },
+  { key:'species', label:'Espécies', icon:'🐆' },
+  { key:'coin', label:'JaguarCoin', icon:'🪙' },
+  { key:'financial', label:'Financeiro', icon:'💰' },
+  { key:'health', label:'Saúde da Base', icon:'⚕️' },
+  { key:'site', label:'Site Institucional', icon:'🌐' },
+  { key:'audit', label:'Auditoria', icon:'🛡️' },
+];
+
+function renderShell(){
+  root.innerHTML = `
+    <div class="shell">
+      <div class="sidebar">
+        <div class="sidebar-brand"><span class="dot">🌿</span> EcoSafari Go</div>
+        ${NAV_ITEMS.map(item => `
+          <div class="nav-item ${state.screen===item.key?'active':''}" onclick="setScreen('${item.key}')">
+            <span>${item.icon}</span> ${item.label}
+          </div>
+        `).join('')}
+        <div class="sidebar-footer">
+          <div class="sidebar-user">${state.session.user.email}</div>
+          <button class="btn-ghost btn full" onclick="logout()">Sair</button>
+        </div>
+      </div>
+      <div class="main" id="main"></div>
+    </div>
+  `;
+  renderScreen();
+}
+
+function setScreen(key){
+  state.screen = key;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  renderShell();
+}
+
+function renderScreen(){
+  const main = document.getElementById('main');
+  if(state.screen === 'overview') main.innerHTML = viewOverview();
+  else if(state.screen === 'assistant') { main.innerHTML = viewAssistant(); bindAssistant(); return; }
+  else if(state.screen === 'lodges') main.innerHTML = viewLodges();
+  else if(state.screen === 'guests') main.innerHTML = viewGuests();
+  else if(state.screen === 'species') main.innerHTML = viewSpecies();
+  else if(state.screen === 'coin') main.innerHTML = viewCoin();
+  else if(state.screen === 'financial') main.innerHTML = viewFinancial();
+  else if(state.screen === 'health') main.innerHTML = viewHealth();
+  else if(state.screen === 'site') main.innerHTML = viewSite();
+  else if(state.screen === 'audit') main.innerHTML = viewAudit();
+  bindScreenCharts();
+}
+
+/* =====================================================================
+   VISÃO GERAL
+   ===================================================================== */
+function viewOverview(){
+  const d = state.data;
+  const totalLodges = d.lodges.length;
+  const lodgesInRange = d.lodges.filter(l => l.created_at >= state.dateFrom && l.created_at <= state.dateTo + 'T23:59:59').length;
+  const paidSubs = d.lodges.filter(l => l.plan_code !== 'free').length;
+
+  return `
+    <div class="main-header">
+      <div>
+        <h1>Visão Geral</h1>
+        <p>Panorama de toda a plataforma EcoSafari Go</p>
+      </div>
+      <div class="date-range">
+        <input type="date" id="date-from" value="${state.dateFrom}"> <span>até</span> <input type="date" id="date-to" value="${state.dateTo}">
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="val">${fmtNum(totalLodges)}</div><div class="lbl">Pousadas cadastradas</div></div>
+      <div class="kpi-card blue"><div class="val">${fmtNum(lodgesInRange)}</div><div class="lbl">Novas no período</div></div>
+      <div class="kpi-card amber"><div class="val">${fmtNum(paidSubs)}</div><div class="lbl">Assinantes pagos</div></div>
+      <div class="kpi-card"><div class="val">${fmtNum(d.coinEconomy.em_circulacao)}</div><div class="lbl">JaguarCoin em circulação</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-title">Pousadas com mais publicações</div>
+        <div class="chart-wrap"><canvas id="chart-top-posts"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Hóspedes por país</div>
+        <div class="chart-wrap"><canvas id="chart-countries"></canvas></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Pousadas cadastradas recentemente</div>
+      ${d.lodges.length===0 ? '<div class="empty-state">Nenhuma pousada cadastrada ainda.</div>' : `
+      <table>
+        <thead><tr><th>Pousada</th><th>Plano</th><th>Cadastrada em</th><th>Avistamentos</th><th>Hóspedes</th></tr></thead>
+        <tbody>
+          ${d.lodges.slice(0,8).map(l=>`
+            <tr>
+              <td>${l.name}</td>
+              <td>${planTag(l.plan_code)}</td>
+              <td>${fmtDate(l.created_at)}</td>
+              <td>${fmtNum(l.total_avistamentos)}</td>
+              <td>${fmtNum(l.total_hospedes_ativos)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      `}
+    </div>
+  `;
+}
+
+async function loadAllData(){
+  const [lodges, topPosts, topGuests, returning, countries, species, coinEconomy, subs, cashflow, subRevenue,
+         churnRisk, funnel, siteSummary, siteTopPages, siteDaily, aiActions] = await Promise.all([
+    db.from('platform_lodge_overview').select('*').order('created_at', {ascending:false}),
+    db.from('platform_top_lodges_by_posts').select('*').limit(10),
+    db.from('platform_top_lodges_by_guests').select('*').limit(10),
+    db.from('platform_returning_guests').select('*').limit(15),
+    db.from('platform_guests_by_country').select('*'),
+    db.from('platform_species_by_region').select('*').limit(20),
+    db.from('platform_coin_circulation').select('*').maybeSingle(),
+    db.from('platform_subscribers_summary').select('*'),
+    db.from('platform_cashflow_projection').select('*'),
+    db.from('platform_subscription_revenue').select('*'),
+    db.from('platform_churn_risk').select('*').limit(10),
+    db.from('platform_conversion_funnel').select('*').maybeSingle(),
+    db.from('site_analytics_summary').select('*').maybeSingle(),
+    db.from('site_analytics_top_pages').select('*').limit(10),
+    db.from('site_analytics_daily').select('*').order('dia', {ascending:true}).limit(30),
+    db.from('platform_ai_actions_log').select('*').eq('status','proposed').order('created_at', {ascending:false}),
+  ]);
+
+  state.data = {
+    lodges: lodges.data || [],
+    topPosts: topPosts.data || [],
+    topGuests: topGuests.data || [],
+    returning: returning.data || [],
+    countries: countries.data || [],
+    species: species.data || [],
+    coinEconomy: coinEconomy.data || {total_emitido:0,total_resgatado:0,total_expirado:0,em_circulacao:0},
+    subs: subs.data || [],
+    cashflow: cashflow.data || [],
+    subRevenue: subRevenue.data || [],
+    churnRisk: churnRisk.data || [],
+    funnel: funnel.data || {total_solicitacoes:0,total_aprovadas:0,pousadas_com_reserva:0,pousadas_pagantes:0},
+    siteSummary: siteSummary.data || {total_pageviews:0,total_sessoes:0,total_cliques_whatsapp:0,duracao_media_segundos:0},
+    siteTopPages: siteTopPages.data || [],
+    siteDaily: siteDaily.data || [],
+    aiActions: aiActions.data || [],
+  };
+  const [audit, lodgeNames] = await Promise.all([
+    db.from('audit_log').select('*').order('created_at', { ascending:false }).limit(150),
+    db.from('lodges').select('id,name'),
+  ]);
+  state.data.audit = audit.data || [];
+  state.data.lodgeNames = {};
+  (lodgeNames.data || []).forEach(l => { state.data.lodgeNames[l.id] = l.name; });
+  state.data = deepEsc(state.data);
+
+  [lodges,topPosts,topGuests,returning,countries,species,coinEconomy,subs,cashflow,subRevenue,churnRisk,funnel,siteSummary,siteTopPages,siteDaily,aiActions].forEach(r=>{
+    if(r.error) console.error('Erro ao carregar dado do dashboard:', r.error.message);
+  });
+}
+
+/* =====================================================================
+   POUSADAS
+   ===================================================================== */
+function viewLodges(){
+  const d = state.data;
+  return `
+    <div class="main-header">
+      <div><h1>Pousadas</h1><p>Todas as pousadas cadastradas na plataforma, com contato e métricas</p></div>
+    </div>
+    <div class="panel">
+      ${d.lodges.length===0 ? '<div class="empty-state">Nenhuma pousada cadastrada ainda.</div>' : `
+      <table>
+        <thead><tr><th>Pousada</th><th>Plano</th><th>Contato</th><th>Avistamentos</th><th>Hóspedes</th><th>Reservas</th><th>Check-ins</th><th>Cadastrada em</th></tr></thead>
+        <tbody>
+          ${d.lodges.map(l=>`
+            <tr>
+              <td><b>${l.name}</b><br><span style="color:var(--text-dim); font-size:11px;">${l.slug}</span></td>
+              <td>${planTag(l.plan_code)}</td>
+              <td>${l.contact_email || '—'}<br><span style="color:var(--text-dim); font-size:11px;">${l.contact_phone||''}</span></td>
+              <td>${fmtNum(l.total_avistamentos)}</td>
+              <td>${fmtNum(l.total_hospedes_ativos)}</td>
+              <td>${fmtNum(l.total_reservas)}</td>
+              <td>${fmtNum(l.total_checkins)}</td>
+              <td>${fmtDate(l.created_at)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      `}
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-title">Mais publicações</div>
+        ${d.topPosts.length===0 ? '<div class="empty-state">Sem dados ainda.</div>' : `
+        <table><thead><tr><th>Pousada</th><th>Avistamentos</th></tr></thead>
+        <tbody>${d.topPosts.map(l=>`<tr><td>${l.name}</td><td>${fmtNum(l.total_avistamentos)}</td></tr>`).join('')}</tbody></table>
+        `}
+      </div>
+      <div class="panel">
+        <div class="panel-title">Mais hóspedes recebidos</div>
+        ${d.topGuests.length===0 ? '<div class="empty-state">Sem dados ainda.</div>' : `
+        <table><thead><tr><th>Pousada</th><th>Hóspedes</th></tr></thead>
+        <tbody>${d.topGuests.map(l=>`<tr><td>${l.name}</td><td>${fmtNum(l.total_hospedes)}</td></tr>`).join('')}</tbody></table>
+        `}
+      </div>
+    </div>
+  `;
+}
+
+/* =====================================================================
+   HÓSPEDES
+   ===================================================================== */
+function viewGuests(){
+  const d = state.data;
+  return `
+    <div class="main-header">
+      <div><h1>Hóspedes</h1><p>Quem mais retorna, e de onde vêm os hóspedes da plataforma</p></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-title">Hóspedes que mais retornam</div>
+        ${d.returning.length===0 ? '<div class="empty-state">Ninguém com mais de uma estadia ainda.</div>' : `
+        <table>
+          <thead><tr><th>Nome</th><th>E-mail</th><th>Estadias</th></tr></thead>
+          <tbody>${d.returning.map(g=>`<tr><td>${g.full_name||'—'}</td><td>${g.email||'—'}</td><td>${fmtNum(g.total_estadias)}</td></tr>`).join('')}</tbody>
+        </table>
+        `}
+      </div>
+      <div class="panel">
+        <div class="panel-title">Hóspedes por país</div>
+        <div class="chart-wrap"><canvas id="chart-countries-2"></canvas></div>
+      </div>
+    </div>
+  `;
+}
+
+/* =====================================================================
+   ESPÉCIES
+   ===================================================================== */
+function viewSpecies(){
+  const d = state.data;
+  return `
+    <div class="main-header">
+      <div><h1>Espécies</h1><p>Onde cada espécie foi mais avistada, por pousada/região</p></div>
+    </div>
+    <div class="panel">
+      ${d.species.length===0 ? '<div class="empty-state">Nenhum avistamento aprovado ainda.</div>' : `
+      <table>
+        <thead><tr><th>Espécie</th><th>Pousada</th><th>Endereço</th><th>Avistamentos</th></tr></thead>
+        <tbody>
+          ${d.species.map(s=>`
+            <tr><td><b>${s.species_text}</b></td><td>${s.pousada}</td><td style="color:var(--text-dim); font-size:11.5px;">${s.address||'—'}</td><td>${fmtNum(s.total)}</td></tr>
+          `).join('')}
+        </tbody>
+      </table>
+      `}
+    </div>
+  `;
+}
+
+/* =====================================================================
+   JAGUARCOIN
+   ===================================================================== */
+function viewCoin(){
+  const c = state.data.coinEconomy;
+  return `
+    <div class="main-header">
+      <div><h1>Economia de JaguarCoin</h1><p>Quanto foi emitido, resgatado, expirado e quanto está em circulação — em toda a plataforma</p></div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="val">${fmtNum(c.total_emitido)}</div><div class="lbl">Total emitido</div></div>
+      <div class="kpi-card blue"><div class="val">${fmtNum(c.total_resgatado)}</div><div class="lbl">Total resgatado</div></div>
+      <div class="kpi-card amber"><div class="val">${fmtNum(c.total_expirado)}</div><div class="lbl">Total expirado</div></div>
+      <div class="kpi-card"><div class="val">${fmtNum(c.em_circulacao)}</div><div class="lbl">Em circulação agora</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Emitido vs. Resgatado vs. Expirado</div>
+      <div class="chart-wrap"><canvas id="chart-coin"></canvas></div>
+    </div>
+  `;
+}
+
+/* =====================================================================
+   FINANCEIRO
+   ===================================================================== */
+function viewFinancial(){
+  const d = state.data;
+  const mrr = d.subRevenue.reduce((sum,r)=>sum + (parseFloat(r.monthly_price_usd)||0), 0);
+  const cashflowInRange = d.cashflow.filter(c => c.mes >= state.dateFrom.slice(0,7)+'-01' && c.mes <= state.dateTo);
+  const totalProjetado = cashflowInRange.reduce((s,c)=>s + (parseFloat(c.valor_total_agendado)||0), 0);
+  const totalComissao = cashflowInRange.reduce((s,c)=>s + (parseFloat(c.comissao_projetada)||0), 0);
+
+  return `
+    <div class="main-header">
+      <div><h1>Financeiro</h1><p>Receita de assinatura (MRR) e projeção de comissão sobre reservas agendadas</p></div>
+      <div class="date-range">
+        <input type="date" id="date-from" value="${state.dateFrom}"> <span>até</span> <input type="date" id="date-to" value="${state.dateTo}">
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="val">${fmtMoney(mrr)}</div><div class="lbl">MRR (assinaturas/mês)</div></div>
+      <div class="kpi-card blue"><div class="val">${fmtMoney(totalProjetado)}</div><div class="lbl">Valor agendado no período</div></div>
+      <div class="kpi-card amber"><div class="val">${fmtMoney(totalComissao)}</div><div class="lbl">Comissão projetada no período</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Assinaturas ativas (MRR por pousada)</div>
+      ${d.subRevenue.length===0 ? '<div class="empty-state">Nenhuma pousada paga ainda.</div>' : `
+      <table>
+        <thead><tr><th>Pousada</th><th>Plano</th><th>Status</th><th>Renova em</th><th>Mensalidade</th></tr></thead>
+        <tbody>${d.subRevenue.map(s=>`
+          <tr><td>${s.name}</td><td>${planTag(s.plan_code)}</td><td>${s.plan_status}</td><td>${fmtDate(s.plan_renews_at)}</td><td>${fmtMoney(s.monthly_price_usd)}</td></tr>
+        `).join('')}</tbody>
+      </table>
+      `}
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Projeção de comissão por reserva agendada (por pousada/mês)</div>
+      <div class="section-sub" style="color:var(--text-dim); font-size:11.5px; margin-bottom:14px;">Só aparece aqui se a pousada preencher o valor da estadia ao criar a reserva no Painel Administrativo dela.</div>
+      ${cashflowInRange.length===0 ? '<div class="empty-state">Nenhuma reserva com valor preenchido neste período.</div>' : `
+      <table>
+        <thead><tr><th>Pousada</th><th>Mês</th><th>Reservas</th><th>Valor agendado</th><th>Comissão (${(d.cashflow[0]?.commission_rate*100||10).toFixed(0)}%)</th></tr></thead>
+        <tbody>${cashflowInRange.map(c=>`
+          <tr><td>${c.pousada}</td><td>${new Date(c.mes).toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}</td><td>${fmtNum(c.qtd_reservas)}</td><td>${fmtMoney(c.valor_total_agendado)}</td><td>${fmtMoney(c.comissao_projetada)}</td></tr>
+        `).join('')}</tbody>
+      </table>
+      `}
+    </div>
+  `;
+}
+
+/* =====================================================================
+   ASSISTENTE DE IA
+   ===================================================================== */
+function viewAssistant(){
+  const pending = state.data.aiActions || [];
+  return `
+    <div class="main-header">
+      <div><h1>Assistente IA</h1><p>Pergunte qualquer coisa sobre a plataforma. Para ações que alteram dado, ela propõe e espera sua confirmação.</p></div>
+    </div>
+
+    ${pending.length > 0 ? `
+      <div class="panel" style="border-color:var(--amber);">
+        <div class="panel-title" style="color:var(--amber);">⚠️ Ações aguardando sua confirmação (${pending.length})</div>
+        ${pending.map(a=>`
+          <div style="background:var(--bg-2); border:1px solid var(--card-border); border-radius:10px; padding:14px; margin-bottom:10px;">
+            <div style="font-weight:700; font-size:13px; margin-bottom:4px;">${a.action_type}</div>
+            <div style="color:var(--text-dim); font-size:11.5px; margin-bottom:8px;">${a.ai_reasoning || ''}</div>
+            <pre style="background:var(--bg); border-radius:8px; padding:8px; font-size:11px; color:var(--blue); overflow-x:auto; margin:0 0 10px 0;">${JSON.stringify(a.action_payload, null, 2)}</pre>
+            <div style="display:flex; gap:8px;">
+              <button class="btn" style="padding:8px 14px; font-size:12px;" onclick="confirmAiAction('${a.id}')">Confirmar</button>
+              <button class="btn-ghost btn" style="padding:8px 14px; font-size:12px;" onclick="rejectAiAction('${a.id}')">Rejeitar</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
+
+    <div class="panel" style="display:flex; flex-direction:column; height:60vh;">
+      <div id="chat-messages" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px; padding:4px;">
+        ${state.chatMessages.length===0 ? `
+          <div class="empty-state">Exemplos: "Quais pousadas estão sem atividade há mais de 30 dias?" · "Quantas pousadas se cadastraram este mês?" · "Coloque a pousada Vagalume no plano Premium"</div>
+        ` : state.chatMessages.map(m=>`
+          <div style="align-self:${m.role==='user'?'flex-end':'flex-start'}; max-width:80%; background:${m.role==='user'?'var(--green-dim)':'var(--bg-2)'}; border:1px solid var(--card-border); border-radius:12px; padding:10px 14px; font-size:13px; white-space:pre-wrap;">${esc(m.text)}</div>
+        `).join('')}
+        ${state.chatLoading ? `<div style="align-self:flex-start; color:var(--text-dim); font-size:12.5px;">Consultando...</div>` : ''}
+      </div>
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        <input id="chat-input" placeholder="Pergunte algo sobre a plataforma..." style="flex:1; background:var(--bg-2); border:1px solid var(--card-border); border-radius:10px; padding:12px 14px; color:var(--text); font-size:13px; font-family:inherit; outline:none;">
+        <button class="btn" id="chat-send-btn">Enviar</button>
+      </div>
+    </div>
+  `;
+}
+
+function bindAssistant(){
+  const input = document.getElementById('chat-input');
+  const btn = document.getElementById('chat-send-btn');
+  const send = async ()=>{
+    const text = input.value.trim();
+    if(!text || state.chatLoading) return;
+    input.value = '';
+    state.chatMessages.push({ role:'user', text });
+    state.chatLoading = true;
+    renderScreen();
+    document.getElementById('chat-messages').scrollTop = 999999;
+
+    try{
+      const res = await fetch(AI_ASSISTANT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'Authorization': 'Bearer ' + state.session.access_token },
+        body: JSON.stringify({
+          user_id: state.session.user.id,
+          messages: state.chatMessages.map(m=>({ role: m.role==='user'?'user':'assistant', content: m.text })),
+        }),
+      });
+      const json = await res.json();
+      state.chatMessages.push({ role:'assistant', text: json.reply || json.error || 'Sem resposta.' });
+    }catch(err){
+      state.chatMessages.push({ role:'assistant', text: 'Erro ao falar com a assistente: ' + err.message });
+    }
+    state.chatLoading = false;
+    renderScreen();
+    document.getElementById('chat-messages').scrollTop = 999999;
+  };
+  btn.onclick = send;
+  input.onkeydown = (e)=>{ if(e.key==='Enter') send(); };
+}
+
+async function confirmAiAction(id){
+  const { data, error } = await db.rpc('confirm_ai_action', { p_action_id: id });
+  if(error){ alert('Erro: ' + error.message); return; }
+  await loadAllData();
+  renderScreen();
+}
+
+async function rejectAiAction(id){
+  const { error } = await db.rpc('reject_ai_action', { p_action_id: id });
+  if(error){ alert('Erro: ' + error.message); return; }
+  await loadAllData();
+  renderScreen();
+}
+
+/* =====================================================================
+   SAÚDE DA BASE (churn / funil de conversão)
+   ===================================================================== */
+function viewHealth(){
+  const f = state.data.funnel;
+  const churn = state.data.churnRisk;
+  return `
+    <div class="main-header">
+      <div><h1>Saúde da Base</h1><p>Funil de conversão e pousadas pagantes com risco de cancelamento (sem atividade recente)</p></div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="val">${fmtNum(f.total_solicitacoes)}</div><div class="lbl">Solicitações recebidas</div></div>
+      <div class="kpi-card blue"><div class="val">${fmtNum(f.total_aprovadas)}</div><div class="lbl">Aprovadas</div></div>
+      <div class="kpi-card"><div class="val">${fmtNum(f.pousadas_com_reserva)}</div><div class="lbl">Com 1+ reserva</div></div>
+      <div class="kpi-card amber"><div class="val">${fmtNum(f.pousadas_pagantes)}</div><div class="lbl">Pagantes</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">⚠️ Pousadas pagantes com atividade mais antiga (risco de cancelamento)</div>
+      ${churn.length===0 ? '<div class="empty-state">Nenhuma pousada paga ainda, ou todas com atividade recente.</div>' : `
+      <table>
+        <thead><tr><th>Pousada</th><th>Plano</th><th>Contato</th><th>Última atividade</th></tr></thead>
+        <tbody>${churn.map(c=>`
+          <tr><td>${c.name}</td><td>${planTag(c.plan_code)}</td><td>${c.contact_email||'—'}</td><td>${fmtDate(c.ultima_atividade)}</td></tr>
+        `).join('')}</tbody>
+      </table>
+      `}
+    </div>
+  `;
+}
+
+/* =====================================================================
+   SITE INSTITUCIONAL
+   ===================================================================== */
+function viewSite(){
+  const s = state.data.siteSummary;
+  const pages = state.data.siteTopPages;
+  const conversao = s.total_pageviews > 0 ? ((s.total_cliques_whatsapp / s.total_pageviews) * 100).toFixed(1) : '0.0';
+  return `
+    <div class="main-header">
+      <div><h1>Site Institucional</h1><p>Tráfego do site fora do app — visitas, cliques para WhatsApp e tempo de permanência</p></div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="val">${fmtNum(s.total_pageviews)}</div><div class="lbl">Visualizações</div></div>
+      <div class="kpi-card blue"><div class="val">${fmtNum(s.total_sessoes)}</div><div class="lbl">Sessões (visitas)</div></div>
+      <div class="kpi-card amber"><div class="val">${fmtNum(s.total_cliques_whatsapp)}</div><div class="lbl">Cliques p/ WhatsApp</div></div>
+      <div class="kpi-card"><div class="val">${conversao}%</div><div class="lbl">Taxa de conversão p/ WhatsApp</div></div>
+      <div class="kpi-card"><div class="val">${s.duracao_media_segundos ? Math.round(s.duracao_media_segundos/60)+'min' : '—'}</div><div class="lbl">Tempo médio no site</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Tráfego ao longo do tempo</div>
+      <div class="chart-wrap"><canvas id="chart-site-daily"></canvas></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Páginas mais visitadas</div>
+      ${pages.length===0 ? '<div class="empty-state">Ainda sem dados — instale o snippet de rastreamento no seu site (arquivo site-tracker-snippet.html).</div>' : `
+      <table><thead><tr><th>Página</th><th>Visualizações</th></tr></thead>
+      <tbody>${pages.map(p=>`<tr><td>${p.page_url}</td><td>${fmtNum(p.visualizacoes)}</td></tr>`).join('')}</tbody></table>
+      `}
+    </div>
+  `;
+}
+
+
+/* =====================================================================
+   AUDITORIA
+   ===================================================================== */
+const AUDIT_TABLE_LABELS = { benefits:'Benefício', reservations:'Reserva', lodges:'Pousada', lodge_reward_settings:'Recompensas',
+  sightings:'Avistamento', redemptions:'Voucher', profiles:'Papel de usuário', lodge_invites:'Convite de equipe',
+  platform_admins:'Admin da plataforma', platform_settings:'Configuração' };
+function viewAudit(){
+  const rows = state.data.audit || [];
+  const filter = (state.auditFilter || '').toLowerCase();
+  const shown = rows.filter(a => !filter || JSON.stringify(a).toLowerCase().includes(filter));
+  const diff = a => {
+    const o = a.old_data || {}, n = a.new_data || {};
+    if(a.action === 'INSERT') return 'criado';
+    if(a.action === 'DELETE') return 'removido';
+    const keys = Object.keys(n).filter(k => JSON.stringify(n[k]) !== JSON.stringify(o[k]) && !['updated_at','created_at'].includes(k));
+    return keys.slice(0,4).map(k => `${k}: ${o[k] ?? '—'} → ${n[k] ?? '—'}`).join(' · ') || 'alterado';
+  };
+  return `
+    <div class="main-header">
+      <div><h1>Auditoria</h1><p>Toda alteração administrativa em todas as pousadas — quem fez, o quê e quando. Não pode ser editado.</p></div>
+      <input id="audit-filter" placeholder="Filtrar (e-mail, pousada, código...)" value="${state.auditFilter || ''}" style="background:var(--card); border:1px solid var(--card-border); border-radius:10px; padding:10px 12px; color:var(--text); font-size:12.5px; min-width:260px;">
+    </div>
+    <div class="panel">
+      ${shown.length === 0 ? '<div class="empty-state">Nenhum registro.</div>' : `
+      <table>
+        <thead><tr><th>Quando</th><th>Quem</th><th>Pousada</th><th>O quê</th><th>Detalhe</th></tr></thead>
+        <tbody>${shown.map(a => `
+          <tr>
+            <td style="white-space:nowrap;">${new Date(unesc(a.created_at)).toLocaleString('pt-BR')}</td>
+            <td>${a.actor_email || 'sistema'}</td>
+            <td>${(a.lodge_id && state.data.lodgeNames[a.lodge_id]) || '—'}</td>
+            <td>${AUDIT_TABLE_LABELS[a.table_name] || a.table_name} <span class="tag ${a.action==='DELETE'?'free':'pro'}">${a.action}</span></td>
+            <td style="color:var(--text-dim); font-size:11.5px;">${diff(a)}</td>
+          </tr>`).join('')}</tbody>
+      </table>`}
+    </div>`;
+}
+
+/* =====================================================================
+   GRÁFICOS
+   ===================================================================== */
+function destroyChart(key){
+  if(state.charts[key]){ state.charts[key].destroy(); delete state.charts[key]; }
+}
+
+function bindScreenCharts(){
+  Object.keys(state.charts).forEach(destroyChart);
+
+  const auditFilter = document.getElementById('audit-filter');
+  if(auditFilter) auditFilter.oninput = (e)=>{ state.auditFilter = e.target.value; const pos = e.target.selectionStart; renderScreen(); const f = document.getElementById('audit-filter'); f.focus(); f.setSelectionRange(pos,pos); };
+  const dateFromInput = document.getElementById('date-from');
+  const dateToInput = document.getElementById('date-to');
+  if(dateFromInput) dateFromInput.onchange = (e)=>{ state.dateFrom = e.target.value; renderScreen(); };
+  if(dateToInput) dateToInput.onchange = (e)=>{ state.dateTo = e.target.value; renderScreen(); };
+
+  const chartDefaults = {
+    color: '#8b9994',
+    font: { family: 'Inter' },
+  };
+  Chart.defaults.color = chartDefaults.color;
+  Chart.defaults.font.family = chartDefaults.font.family;
+
+  const topPostsCanvas = document.getElementById('chart-top-posts');
+  if(topPostsCanvas){
+    const d = state.data.topPosts.slice(0,6);
+    state.charts.topPosts = new Chart(topPostsCanvas, {
+      type: 'bar',
+      data: { labels: d.map(l=>unesc(l.name)), datasets: [{ data: d.map(l=>l.total_avistamentos), backgroundColor:'#1fdf9a', borderRadius:6 }] },
+      options: { plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false}}, y:{grid:{color:'#1f2624'}} } }
+    });
+  }
+
+  ['chart-countries','chart-countries-2'].forEach(id=>{
+    const canvas = document.getElementById(id);
+    if(canvas){
+      const d = state.data.countries.slice(0,8);
+      state.charts[id] = new Chart(canvas, {
+        type: 'doughnut',
+        data: { labels: d.map(c=>unesc(c.pais)), datasets: [{ data: d.map(c=>c.total_hospedes), backgroundColor:['#1fdf9a','#5aa9e6','#f5b942','#ff6b6b','#8b9994','#7ac3ff','#ffd27a','#c792ea'] }] },
+        options: { plugins:{legend:{position:'bottom', labels:{boxWidth:10, font:{size:10.5}}}} }
+      });
+    }
+  });
+
+  const coinCanvas = document.getElementById('chart-coin');
+  if(coinCanvas){
+    const c = state.data.coinEconomy;
+    state.charts.coin = new Chart(coinCanvas, {
+      type: 'bar',
+      data: {
+        labels: ['Emitido','Resgatado','Expirado','Em circulação'],
+        datasets: [{ data:[c.total_emitido, c.total_resgatado, c.total_expirado, c.em_circulacao], backgroundColor:['#1fdf9a','#5aa9e6','#f5b942','#eef2f0'], borderRadius:6 }]
+      },
+      options: { plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false}}, y:{grid:{color:'#1f2624'}} } }
+    });
+  }
+
+  const siteDailyCanvas = document.getElementById('chart-site-daily');
+  if(siteDailyCanvas){
+    const d = state.data.siteDaily;
+    state.charts.siteDaily = new Chart(siteDailyCanvas, {
+      type: 'line',
+      data: {
+        labels: d.map(r=>new Date(r.dia).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})),
+        datasets: [
+          { label:'Visualizações', data: d.map(r=>r.pageviews), borderColor:'#1fdf9a', backgroundColor:'rgba(31,223,154,0.1)', tension:0.3, fill:true },
+          { label:'Cliques WhatsApp', data: d.map(r=>r.cliques_whatsapp), borderColor:'#f5b942', backgroundColor:'rgba(245,185,66,0.1)', tension:0.3, fill:true },
+        ]
+      },
+      options: { plugins:{legend:{position:'bottom', labels:{boxWidth:10,font:{size:10.5}}}}, scales:{ x:{grid:{display:false}}, y:{grid:{color:'#1f2624'}} } }
+    });
+  }
+}
+
+/* =====================================================================
+   INICIALIZAÇÃO
+   ===================================================================== */
+(async function init(){
+  const { data } = await db.auth.getSession();
+  if(data.session){
+    await completeLogin(data.session);
+  } else {
+    renderLogin();
+  }
+})();
+</script>
+
+</body>
+</html>
