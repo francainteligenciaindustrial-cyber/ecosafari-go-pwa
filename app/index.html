@@ -146,7 +146,7 @@
   .btn-ghost{width:100%; background:transparent; color:var(--green); border:1px solid var(--green); border-radius:10px; padding:11px; font-weight:700; font-size:13.5px; cursor:pointer; margin-top:8px;}
   .geo-status{font-size:12px; color:var(--text-dim); margin-top:10px; text-align:center; min-height:16px;}
 
-  .navbar{position:absolute; bottom:0; left:0; right:0; background:var(--card); border-top:1px solid var(--card-border); display:flex; padding:10px 0 calc(12px + env(safe-area-inset-bottom, 0px)) 0; border-radius:0; z-index:5;}
+  .navbar{position:absolute; bottom:0; left:0; right:0; background:var(--card); border-top:1px solid var(--card-border); display:flex; padding:8px 0 calc(8px + env(safe-area-inset-bottom, 0px)) 0; border-radius:0; z-index:5;}
   .nav-item{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; color:var(--text-dim); font-size:9.5px;}
   .nav-item.active{color:var(--green);}
   .nav-item svg{width:20px;height:20px;}
@@ -224,6 +224,72 @@
 
   .policy-text{font-size:12px; color:var(--text-dim); line-height:1.6;}
   .policy-text h4{color:var(--text); font-size:13px; margin:14px 0 4px 0;}
+  /* ===== PERFIL SOCIAL (estilo Instagram + capa) ===== */
+  .pf{margin:0 -16px;}
+  .pf-cover{position:relative; height:158px; background:linear-gradient(135deg,#0c3a2b 0%,#14a874 55%,#7fe7c4 120%); overflow:hidden;}
+  .pf-cover img{width:100%; height:100%; object-fit:cover; display:block;}
+  .pf-cover-btn{position:absolute; top:12px; width:36px; height:36px; border-radius:50%; background:rgba(0,0,0,.45); color:#fff; border:none; display:flex; align-items:center; justify-content:center; font-size:16px; cursor:pointer; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  .pf-cover-btn.l{left:12px;} .pf-cover-btn.r{right:12px;} .pf-cover-btn.r2{right:56px;}
+  .pf-head{display:flex; align-items:flex-end; gap:14px; padding:0 16px; margin-top:-42px; position:relative;}
+  .pf-avatar{width:92px; height:92px; border-radius:50%; border:4px solid var(--bg); background:var(--card-border); flex-shrink:0; position:relative; display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:800; color:var(--text-dim);}
+  .pf-avatar img{width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;}
+  .pf-avatar.verified{box-shadow:0 0 0 2px var(--green);}
+  .pf-avatar .pf-edit{position:absolute; right:-2px; bottom:2px; width:26px; height:26px; border-radius:50%; background:var(--green); color:#04130d; border:3px solid var(--bg); display:flex; align-items:center; justify-content:center; font-size:12px; cursor:pointer;}
+  .pf-stats{display:flex; flex:1; justify-content:space-around; padding-bottom:6px;}
+  .pf-stat{text-align:center; cursor:pointer; min-width:0;}
+  .pf-stat b{display:block; font-size:17px; color:var(--text); font-weight:800;}
+  .pf-stat span{font-size:11.5px; color:var(--text-dim);}
+  .pf-body{padding:10px 16px 0 16px;}
+  .pf-name{font-size:16px; font-weight:800; color:var(--text); display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+  .pf-user{font-size:12.5px; color:var(--text-dim); margin-top:1px;}
+  .pf-bio{font-size:13px; color:var(--text); line-height:1.45; margin-top:8px; white-space:pre-wrap; word-break:break-word;}
+  .pf-link{display:inline-flex; align-items:center; gap:5px; font-size:12.5px; color:var(--blue); margin-top:6px; text-decoration:none; font-weight:600; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .pf-actions{display:flex; gap:8px; margin:14px 0 4px 0;}
+  .pf-btn{flex:1; border:1px solid var(--card-border); background:var(--card); color:var(--text); font-weight:700; font-size:13px; padding:9px 10px; border-radius:10px; cursor:pointer; font-family:inherit;}
+  .pf-btn.primary{background:var(--green); border-color:var(--green); color:#04130d;}
+  .pf-btn.icon{flex:0 0 42px; padding:9px 0;}
+  .pf-hl{display:flex; gap:14px; overflow-x:auto; padding:14px 16px 4px 16px; scrollbar-width:none;}
+  .pf-hl::-webkit-scrollbar{display:none;}
+  .pf-hl-item{flex:0 0 auto; width:68px; text-align:center; cursor:pointer;}
+  .pf-hl-ring{width:64px; height:64px; border-radius:50%; padding:2.5px; background:linear-gradient(135deg,var(--green),#f5b942); margin:0 auto;}
+  .pf-hl-ring.off{background:var(--card-border);}
+  .pf-hl-ring.on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--green);}
+  .pf-hl-ring > div{width:100%; height:100%; border-radius:50%; border:2.5px solid var(--bg); background:var(--card); overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:22px;}
+  .pf-hl-ring img,.pf-hl-ring video{width:100%; height:100%; object-fit:cover; display:block;}
+  .pf-hl-label{font-size:10.5px; color:var(--text-dim); margin-top:5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .pf-tabs{display:flex; border-top:1px solid var(--card-border); margin-top:12px;}
+  .pf-tab{flex:1; text-align:center; padding:11px 0 9px 0; color:var(--text-dim); border-bottom:2px solid transparent; cursor:pointer; font-size:11px; font-weight:700; letter-spacing:.03em; display:flex; flex-direction:column; align-items:center; gap:2px;}
+  .pf-tab svg{width:21px; height:21px;}
+  .pf-tab.active{color:var(--text); border-bottom-color:var(--text);}
+  .pf-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:2px;}
+  .pf-cell{position:relative; aspect-ratio:1/1; background:var(--card); overflow:hidden; cursor:pointer;}
+  .pf-cell img,.pf-cell video{width:100%; height:100%; object-fit:cover; display:block;}
+  .pf-cell .pf-ic{position:absolute; top:6px; right:6px; color:#fff; font-size:13px; text-shadow:0 1px 4px rgba(0,0,0,.7);}
+  .pf-cell .pf-ic.l{right:auto; left:6px;}
+  .pf-cell .pf-ph{width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:26px; color:var(--text-dim); padding:6px; text-align:center;}
+  .pf-empty{text-align:center; padding:38px 24px; color:var(--text-dim); font-size:13px; line-height:1.5;}
+  .pf-empty .big{font-size:34px; margin-bottom:6px;}
+  .pf-more{margin:14px 16px;}
+  .pf-private{text-align:center; padding:40px 24px; color:var(--text-dim); font-size:13px; line-height:1.5; border-top:1px solid var(--card-border); margin-top:12px;}
+  .pf-sheet textarea{width:100%; min-height:84px; resize:vertical; background:var(--input-bg); border:1px solid var(--card-border); color:var(--text); border-radius:10px; padding:11px 12px; font-family:inherit; font-size:14px; box-sizing:border-box;}
+  .pf-sheet .pf-counter{font-size:10.5px; color:var(--text-dim); text-align:right; margin-top:3px;}
+  .pf-row{display:flex; align-items:center; gap:12px; padding:10px 2px; border-bottom:1px solid var(--card-border);}
+  .pf-row:last-child{border-bottom:none;}
+  .pf-row .pf-mini{width:44px; height:44px; border-radius:50%; background:var(--card-border); flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--text-dim); cursor:pointer;}
+  .pf-row .pf-mini img{width:100%; height:100%; object-fit:cover;}
+  .pf-row .pf-who{flex:1; min-width:0; cursor:pointer;}
+  .pf-row .pf-who b{display:block; color:var(--text); font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .pf-row .pf-who span{color:var(--text-dim); font-size:12px;}
+  .pf-row .pf-btn{flex:0 0 auto; padding:7px 14px; font-size:12px;}
+  .pf-view-media{width:100%; max-height:60vh; background:#000; display:block; object-fit:contain;}
+  .pf-public-bar{display:flex; align-items:center; justify-content:space-between; padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px 16px; border-bottom:1px solid var(--card-border); background:var(--card);}
+  .pf-public-bar .brand{font-weight:800; color:var(--text); font-size:15px;}
+  .pf-public-cta{margin:18px 16px; padding:16px; border:1px solid var(--card-border); background:var(--card); border-radius:14px; text-align:center;}
+  .pf-public-cta p{color:var(--text-dim); font-size:12.5px; line-height:1.5; margin:0 0 12px 0;}
+  .stay-banner{display:flex; align-items:center; gap:10px; padding:12px 14px; margin:10px 0 4px 0; background:var(--green-dim); border:1px solid var(--green); border-radius:12px; font-size:12.5px; color:var(--text);}
+  .stay-banner b{color:var(--green);}
+  .stay-banner button{margin-left:auto; flex-shrink:0; background:var(--green); color:#04130d; border:none; border-radius:8px; padding:7px 12px; font-weight:800; font-size:12px; cursor:pointer;}
+
 </style>
 </head>
 <body>
@@ -342,7 +408,7 @@ const SPECIES_LIST = [
 
 const LANG = {
   pt: {
-    nav_avistamentos:'Avistamentos', nav_checkin:'Check-In', nav_alertas:'Alertas', nav_perfil:'Perfil',
+    nav_avistamentos:'Avistamentos', nav_checkin:'Check-In', nav_mapa:'Mapa', nav_alertas:'Alertas', nav_perfil:'Perfil',
     app_tagline:'Compartilhe avistamentos. Ganhe JaguarCoin.',
     offline_label:'Sem conexão', offline_pending:'{n} item(ns) aguardando envio',
     login_email_label:'E-MAIL', login_password_label:'SENHA',
@@ -424,7 +490,7 @@ const LANG = {
     user_profile_sightings_count:'{n} avistamento(s) validado(s)', user_profile_empty:'Este hóspede ainda não tem avistamentos validados.',
   },
   en: {
-    nav_avistamentos:'Sightings', nav_checkin:'Check-In', nav_alertas:'Alerts', nav_perfil:'Profile',
+    nav_avistamentos:'Sightings', nav_checkin:'Check-In', nav_mapa:'Map', nav_alertas:'Alerts', nav_perfil:'Profile',
     app_tagline:'Share sightings. Earn JaguarCoin.',
     offline_label:'No connection', offline_pending:'{n} item(s) waiting to send',
     login_email_label:'EMAIL', login_password_label:'PASSWORD',
@@ -506,7 +572,7 @@ const LANG = {
     user_profile_sightings_count:'{n} validated sighting(s)', user_profile_empty:'This guest has no validated sightings yet.',
   },
   es: {
-    nav_avistamentos:'Avistamientos', nav_checkin:'Check-In', nav_alertas:'Alertas', nav_perfil:'Perfil',
+    nav_avistamentos:'Avistamientos', nav_checkin:'Check-In', nav_mapa:'Mapa', nav_alertas:'Alertas', nav_perfil:'Perfil',
     app_tagline:'Comparte avistamientos. Gana JaguarCoin.',
     offline_label:'Sin conexión', offline_pending:'{n} elemento(s) esperando envío',
     login_email_label:'CORREO', login_password_label:'CONTRASEÑA',
@@ -588,7 +654,7 @@ const LANG = {
     user_profile_sightings_count:'{n} avistamiento(s) validado(s)', user_profile_empty:'Este huésped aún no tiene avistamientos validados.',
   },
   de: {
-    nav_avistamentos:'Sichtungen', nav_checkin:'Check-In', nav_alertas:'Meldungen', nav_perfil:'Profil',
+    nav_avistamentos:'Sichtungen', nav_checkin:'Check-In', nav_mapa:'Karte', nav_alertas:'Meldungen', nav_perfil:'Profil',
     app_tagline:'Teile Sichtungen. Verdiene JaguarCoin.',
     offline_label:'Keine Verbindung', offline_pending:'{n} Element(e) warten auf Übertragung',
     login_email_label:'E-MAIL', login_password_label:'PASSWORT',
@@ -670,7 +736,7 @@ const LANG = {
     user_profile_sightings_count:'{n} bestätigte Sichtung(en)', user_profile_empty:'Dieser Gast hat noch keine bestätigten Sichtungen.',
   },
   fr: {
-    nav_avistamentos:'Observations', nav_checkin:'Check-In', nav_alertas:'Alertes', nav_perfil:'Profil',
+    nav_avistamentos:'Observations', nav_checkin:'Check-In', nav_mapa:'Carte', nav_alertas:'Alertes', nav_perfil:'Profil',
     app_tagline:'Partagez vos observations. Gagnez des JaguarCoin.',
     offline_label:'Hors ligne', offline_pending:'{n} élément(s) en attente d\'envoi',
     login_email_label:'E-MAIL', login_password_label:'MOT DE PASSE',
@@ -752,7 +818,7 @@ const LANG = {
     user_profile_sightings_count:'{n} observation(s) validée(s)', user_profile_empty:"Ce client n'a pas encore d'observations validées.",
   },
   ru: {
-    nav_avistamentos:'Наблюдения', nav_checkin:'Check-In', nav_alertas:'Оповещения', nav_perfil:'Профиль',
+    nav_avistamentos:'Наблюдения', nav_checkin:'Check-In', nav_mapa:'Карта', nav_alertas:'Оповещения', nav_perfil:'Профиль',
     app_tagline:'Делитесь наблюдениями. Получайте JaguarCoin.',
     offline_label:'Нет соединения', offline_pending:'{n} элемент(ов) ожидают отправки',
     login_email_label:'ПОЧТА', login_password_label:'ПАРОЛЬ',
@@ -887,6 +953,8 @@ const state = {
   languagePickerOpen: false,
   speciesPickerOpen: false,
   viewingUser: null,
+  pf: null, pfEdit: null, pfList: null, pfSearch: null, pfView: null, prevScreen: null,
+  skipGate: false, deepLinkUser: null, publicView: false,
   checkinDone: false,
   geoStatus: '',
   modalOpen: false,
@@ -1000,7 +1068,7 @@ async function loadSightings(loadMore = false){
   const userIds = [...new Set(rows.map(r=>r.user_id))];
   let profilesById = {};
   if(userIds.length){
-    const { data: profs } = await db.from('profiles').select('id, full_name, verified_observer, avatar_url').in('id', userIds);
+    const { data: profs } = await db.rpc('get_profiles_basic', { p_ids: userIds });
     (profs||[]).forEach(p => { profilesById[p.id] = p; });
   }
 
@@ -1028,7 +1096,7 @@ async function loadSightings(loadMore = false){
     const commentUserIds = [...new Set((comments||[]).map(c=>c.user_id))];
     let commentProfiles = {};
     if(commentUserIds.length){
-      const { data: cp } = await db.from('profiles').select('id, full_name').in('id', commentUserIds);
+      const { data: cp } = await db.rpc('get_profiles_basic', { p_ids: commentUserIds });
       (cp||[]).forEach(p => { commentProfiles[p.id] = p.full_name; });
     }
     (comments||[]).forEach(c=>{
@@ -1214,6 +1282,7 @@ function icon(name){
     pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
     user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>',
     wifioff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 1l22 22"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>',
+    map: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6v15l7-3 8 3 7-3V3l-7 3-8-3z"/><path d="M8 3v15M16 6v15"/></svg>',
     share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>',
     star: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
   };
@@ -1227,10 +1296,12 @@ function icon(name){
 function render(){
   document.body.setAttribute('data-theme', state.theme);
   const el = document.getElementById('screen');
+  if(state.screen==='login' && state.publicView && !state.session){ el.innerHTML = publicProfileScreenHTML(); return; }
   if(state.screen==='login' && !state.onboardingDone){ el.innerHTML = onboardingView(); return; }
   if(state.screen==='login'){ el.innerHTML = loginView(); attachLogin(); return; }
   if(state.consentRequired){ el.innerHTML = consentView(); bindDynamic(); return; }
   if(state.mfaGate){ el.innerHTML = mfaView(); bindDynamic(); return; }
+  if(gateActive()){ el.innerHTML = gateView(); bindDynamic(); return; }
 
   el.innerHTML = `
     ${ENV==='teste' ? '<div style="background:#f5b942; color:#1a1405; font-size:10.5px; font-weight:800; text-align:center; padding:calc(env(safe-area-inset-top,0px) + 3px) 0 3px 0; letter-spacing:.06em;">AMBIENTE DE TESTE — dados não são reais</div>' : ''}
@@ -1248,12 +1319,13 @@ function render(){
     <div class="content" id="content">${state.loading ? loadingView() : ''}</div>
     <div class="navbar">
       ${navItem('avistamentos','camera',t('nav_avistamentos'))}
-      ${navItem('checkin','check',t('nav_checkin'))}
+      ${navItem('mapa','map',t('nav_mapa'))}
       ${navItem('alertas','bell',t('nav_alertas'))}
       ${navItem('perfil','user',t('nav_perfil'))}
     </div>
     ${modalHTML()}
     ${tripDiaryModalHTML()}
+    ${profileModalsHTML()}
     <div class="toast" id="toast"></div>
   `;
   if(!state.loading){
@@ -1267,8 +1339,16 @@ function loadingView(){
 }
 
 function navItem(key,ic,label){
-  return `<div class="nav-item ${state.screen===key?'active':''}" onclick="setScreen('${key}')">${icon(ic)}<span>${label}</span></div>`;
+  const inFeed = state.screen === 'avistamentos';
+  const active = key === 'perfil' ? ['perfil','settings','checkin','userProfile'].includes(state.screen)
+    : key === 'mapa' ? (inFeed && state.feedView === 'map')
+    : key === 'avistamentos' ? (inFeed && state.feedView !== 'map')
+    : state.screen === key;
+  const click = key === 'perfil' ? 'openMyProfile()' : key === 'mapa' ? 'openMapTab()' : key === 'avistamentos' ? 'openFeedTab()' : `setScreen('${key}')`;
+  return `<div class="nav-item ${active?'active':''}" onclick="${click}" role="button" aria-label="${label}">${icon(ic)}<span>${label}</span></div>`;
 }
+function openFeedTab(){ state.feedView = 'list'; state.screen = 'avistamentos'; render(); }
+function openMapTab(){ state.feedView = 'map'; state.screen = 'avistamentos'; render(); }
 
 function offlineBanner(){
   if(state.online) return '';
@@ -1661,6 +1741,7 @@ async function finishLogin(){
     refreshWebPushState().then(()=>{ if(state.screen==='perfil' || state.screen==='alertas') render(); });
     await queueRefreshState();
     syncQueue();
+    if(state.deepLinkUser){ const u = state.deepLinkUser; state.deepLinkUser = null; clearDeepLinkFromUrl(); openUserByUsername(u); }
   }catch(err){
     reportError(err);
     state.loading = false;
@@ -1746,11 +1827,15 @@ function viewFor(screen){
   if(screen==='checkin') return checkinView();
   if(screen==='alertas') return alertasView();
   if(screen==='wallet') return walletView();
-  if(screen==='userProfile') return userProfileView();
-  if(screen==='perfil') return state.adminMode ? adminView() : (state.guideMode ? guideView() : perfilView());
+  if(screen==='userProfile') return socialProfileView();
+  if(screen==='perfil' || screen==='settings'){
+    if(state.adminMode) return adminView();
+    if(state.guideMode) return guideView();
+    return screen==='perfil' ? socialProfileView() : settingsView();
+  }
   return '';
 }
-function setScreen(s){ state.screen = s; render(); }
+function setScreen(s){ if(s==='perfil'){ openMyProfile(); return; } state.screen = s; render(); }
 function goWallet(){ state.screen='wallet'; render(); }
 async function openNotifications(){
   state.hasUnreadAlerts = false;
@@ -1766,6 +1851,7 @@ async function openNotifications(){
 function avistamentosView(){
   return `
     ${offlineBanner()}
+    ${stayBannerHTML()}
     <div style="display:flex; gap:8px; margin:10px 0 4px 0;">
       <button class="btn-ghost" style="margin:0; flex:1; padding:8px; font-size:11.5px; position:relative; ${state.feedScope==='lodge'?'background:var(--green-dim); border-color:var(--green); color:var(--green);':''}" onclick="setFeedScope('lodge')">🏡 Minha Pousada${state.newPostsLodge>0?` <span class="feed-badge">${state.newPostsLodge>10?'10+':state.newPostsLodge}</span>`:''}</button>
       <button class="btn-ghost" style="margin:0; flex:1; padding:8px; font-size:11.5px; position:relative; ${state.feedScope==='global'?'background:var(--green-dim); border-color:var(--green); color:var(--green);':''}" onclick="setFeedScope('global')">🌎 Global${state.newPostsGlobal>0?` <span class="feed-badge">${state.newPostsGlobal>10?'10+':state.newPostsGlobal}</span>`:''}</button>
@@ -1978,29 +2064,26 @@ function shareBranded(id){
 /* =====================================================================
    CHECK-IN
    ===================================================================== */
+function stayHeaderHTML(){
+  const lodge = state.profile && state.profile.lodge_name;
+  return `
+    <span class="back-link" onclick="openMyProfile()">${pfT('back')}</span>
+    <div class="section-title" style="margin-top:2px;">${pfT('stay_title')}</div>
+    <div class="section-sub">${lodge ? `${pfT('stay_current')} <b style="color:var(--text);">${esc(lodge)}</b>. ${pfT('stay_change')}` : pfT('stay_none')}</div>`;
+}
 function checkinView(){
   const r = state.reservation;
   if(!r || !state.profile.verified_guest){
     return `
       ${offlineBanner()}
-      <div class="section-title">${t('checkin_section_title')}</div>
-      <div class="section-sub">Digite o código da sua reserva (enviado pela pousada) para liberar o check-in e a publicação de avistamentos.</div>
-      <div class="card" style="padding:18px;">
-        <div class="field"><label>CÓDIGO DA RESERVA</label><input id="voucher-code" placeholder="Ex: ARL-000081" style="text-transform:uppercase;"></div>
-        <div id="voucher-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
-        <button class="btn-primary" id="voucher-btn">Validar código</button>
-      </div>
-      <div class="section-sub" style="text-align:center; margin:14px 0 6px 0;">— ou —</div>
-      <div class="card" style="padding:18px;">
-        <div class="field"><label>CÓDIGO DE ACESSO DA POUSADA</label><input id="lodge-code" placeholder="Código exibido na recepção" style="text-transform:uppercase;"></div>
-        <div id="lodge-code-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
-        <button class="btn-ghost" id="lodge-code-btn" style="margin-top:0;">Validar código da pousada</button>
-      </div>
+      ${stayHeaderHTML()}
+      ${stayFormHTML()}
     `;
   }
   return `
     ${offlineBanner()}
-    <div class="section-title">${t('checkin_section_title')}</div>
+    <span class="back-link" onclick="openMyProfile()">${pfT('back')}</span>
+    <div class="section-title" style="margin-top:2px;">${pfT('stay_title')}</div>
     <div class="section-sub">${t('checkin_desc')}</div>
     <div class="card checkin-card">
       <span class="badge-pill">RESERVA #${r.reservation_code}</span>
@@ -2054,6 +2137,7 @@ async function claimReservationCode(){
 
   await loadReservation();
   await loadAll();
+  state.skipGate = false; state.screen = 'checkin'; render();
   showToast('Código validado! Agora você já pode publicar avistamentos.');
 }
 
@@ -2084,6 +2168,7 @@ async function claimLodgeAccessCode(){
   }
 
   await loadAll();
+  state.skipGate = false; state.screen = 'avistamentos'; render();
   showToast('Acesso liberado! Agora você já pode publicar avistamentos.');
 }
 
@@ -2147,7 +2232,7 @@ function alertasView(){
         <div style="font-size:28px; margin-bottom:8px;">🔔</div>
         <div style="color:var(--text); font-weight:700; font-size:13px; margin-bottom:4px;">${t('alerts_empty_title')}</div>
         <div style="color:var(--text-dim); font-size:12px; line-height:1.5; margin-bottom:14px;">${t('alerts_empty_desc')}</div>
-        <button class="btn-ghost" onclick="setScreen('perfil')">${t('alerts_choose_species')}</button>
+        <button class="btn-ghost" onclick="setScreen('settings')">${t('alerts_choose_species')}</button>
       </div>
     ` : ''}
     ${state.alerts.map(a=>`
@@ -2215,38 +2300,19 @@ function computeBadgeDisplay(){
   return all.map(b => ({...b, done: earnedCodes.has(b.code)}));
 }
 
-function perfilView(){
+function settingsView(){
   const badges = computeBadgeDisplay();
   const languages = [
     {code:'pt', label:'Português'}, {code:'en', label:'English'}, {code:'es', label:'Español'},
     {code:'de', label:'Deutsch'}, {code:'fr', label:'Français'}, {code:'ru', label:'Русский'},
   ];
   return `
-    <div class="section-title">${t('profile_title')}</div>
-    <div class="card" style="padding:14px; display:flex; align-items:center; gap:12px;">
-      <div style="position:relative; width:52px; height:52px; flex-shrink:0;">
-        ${state.profile && state.profile.avatar_url ? `
-          <img src="${state.profile.avatar_url}" style="width:52px; height:52px; border-radius:50%; object-fit:cover; display:block;" alt="Foto de perfil">
-        ` : `
-          <div class="avatar" style="width:52px; height:52px; font-size:18px;">${(state.loggedUser||'?').slice(0,2).toUpperCase()}</div>
-        `}
-        <div onclick="document.getElementById('avatar-input').click()" style="position:absolute; bottom:-2px; right:-2px; width:22px; height:22px; background:var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid var(--bg); font-size:11px;">✏️</div>
-        <input type="file" accept="image/*" id="avatar-input" style="display:none">
-      </div>
-      <div>
-        <div style="color:var(--text); font-weight:700; font-size:14px;">${esc(state.loggedUser || 'Visitante')} ${state.profile && state.profile.verified_observer ? `<span class="verified-tag" title="${t('verified_label')}">${icon('star')}</span>` : ''}</div>
-        <div style="color:var(--text-dim); font-size:11.5px; margin-top:2px;">${state.profile && state.profile.lodge_name || 'Pousada'}</div>
-      </div>
-    </div>
-
-    <div class="section-title">${t('profile_achievements')}</div>
-    <div class="badge-grid">
-      ${badges.map(b=>`
-        <div class="badge-chip ${b.done?'':'locked'}">
-          <div class="ic">${b.ic}</div>
-          <div class="nm">${b.name}</div>
-        </div>
-      `).join('')}
+    <span class="back-link" onclick="openMyProfile()">${pfT('back')}</span>
+    <div class="section-title" style="margin-top:2px;">${pfT('settings')}</div>
+    <div class="card" style="padding:6px 14px;">
+      <div class="settings-row" onclick="setScreen('checkin')"><span>🏡 ${pfT('my_stay')}${state.profile && state.profile.lodge_name ? ` · <span style="color:var(--text-dim);">${esc(state.profile.lodge_name)}</span>` : ''}</span><span class="chev">›</span></div>
+      <div class="settings-row" onclick="openMyProfile(); setTimeout(openEditProfile, 400)"><span>✏️ ${pfT('edit_profile')}</span><span class="chev">›</span></div>
+      <div class="settings-row" onclick="openMyProfile(); setTimeout(openSearchPeople, 400)"><span>🔍 ${pfT('search_people')}</span><span class="chev">›</span></div>
     </div>
 
     <div class="section-title" style="margin-top:16px;">${t('profile_appearance_title')}</div>
@@ -2288,17 +2354,6 @@ function perfilView(){
         </div>
       `).join('') : ''}
     </div>
-
-    <div class="section-title" style="margin-top:16px;">${t('profile_ranking_title')}</div>
-    ${state.ranking.length ? state.ranking.map((r,i)=>`
-      <div class="rank-row ${r.name===state.profile.full_name?'me':''}">
-        <div class="rank-pos">${i+1}º</div>
-        <div class="rank-name">${r.name}</div>
-        <div class="rank-pts">${r.points} pts</div>
-      </div>
-    `).join('') : `
-      <div class="card" style="padding:16px; text-align:center; color:var(--text-dim); font-size:12px;">${t('profile_ranking_empty')}</div>
-    `}
 
     ${perfilSecurityPrivacyHTML()}
 
@@ -2359,6 +2414,7 @@ async function logout(){
   await db.auth.signOut();
   state.consentRequired = false; state.mfaGate = null; state.mfaEnroll = null; state.mfaFactors = [];
   state.adminMode = false; state.guideMode = false;
+  state.pf = null; state.pfEdit = null; state.pfList = null; state.pfSearch = null; state.pfView = null; state.skipGate = false; state.publicView = false;
   disableAnalytics();
   state.screen = 'login';
   state.loggedUser = null;
@@ -2377,7 +2433,7 @@ async function deleteAccount(){
   // Anonimiza os dados pessoais AGORA (o conteúdo publicado continua existindo,
   // como "patrimônio" do EcoSafari Go, sem nome/e-mail vinculado a ele).
   await db.from('profiles').update({
-    full_name: 'Ex-hóspede', avatar_url: null,
+    full_name: 'Ex-hóspede', avatar_url: null, cover_url: null, bio: null, link_url: null, username: null, profile_public: false,
   }).eq('id', userId);
 
   // Registra o pedido para a exclusão definitiva do login (isso exige a
@@ -2879,79 +2935,6 @@ async function guideDecision(sightingId, approve){
 }
 
 /* =====================================================================
-   PERFIL PÚBLICO DE OUTRO HÓSPEDE
-   ===================================================================== */
-function openUserProfile(userId){
-  state.viewingUser = userId;
-  state.screen = 'userProfile';
-  state.userProfileData = null;
-  render();
-  loadUserProfile(userId);
-}
-
-async function loadUserProfile(userId){
-  const { data: profile } = await db.from('profiles').select('full_name, verified_observer, avatar_url').eq('id', userId).single();
-  const { data: posts } = await db
-    .from('sightings')
-    .select('*')
-    .eq('user_id', userId)
-    .eq('status', 'approved')
-    .order('created_at', { ascending:false });
-  state.userProfileData = {
-    name: esc(profile ? profile.full_name : 'Hóspede'),
-    verified: profile ? !!profile.verified_observer : false,
-    avatarUrl: profile ? profile.avatar_url : null,
-    posts: (posts||[]).map(r=>({
-      species:esc(r.species_text), desc:esc(r.description||''), photo:r.photo_url, thumb: r.photo_thumb_url || r.photo_url, videoUrl: r.video_url, videoTrimStart: r.video_trim_start || 0, observedAt: r.observed_at || r.created_at,
-      date: new Date(r.created_at).toLocaleDateString('pt-BR') + ' às ' + new Date(r.created_at).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), loc:'Araras Eco Lodge'
-    })),
-  };
-  if(state.screen === 'userProfile') render();
-}
-
-function userProfileView(){
-  if(!state.userProfileData){
-    return `<span class="back-link" onclick="setScreen('avistamentos')">${t('wallet_back')}</span>${loadingView()}`;
-  }
-  const { name, verified, avatarUrl, posts } = state.userProfileData;
-  const initials = name.split(' ').map(w=>w[0]).slice(0,2).join('');
-  return `
-    <span class="back-link" onclick="setScreen('avistamentos')">${t('wallet_back')}</span>
-    <div class="card" style="padding:20px; text-align:center;">
-      ${avatarUrl ? `
-        <img src="${avatarUrl}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;margin:0 auto 10px auto;display:block;${verified?'box-shadow:0 0 0 2px var(--green);':''}" alt="">
-      ` : `
-        <div class="avatar ${verified?'verified':''}" style="width:56px;height:56px;font-size:20px;margin:0 auto 10px auto;">${initials}</div>
-      `}
-      <div style="font-weight:700; color:var(--text); font-size:15px;">${name}</div>
-      ${verified ? `<div class="verified-tag" style="margin-top:6px; font-size:11.5px; gap:5px;">${icon('star')} ${t('verified_label')}</div>` : ''}
-      <div style="color:var(--text-dim); font-size:11.5px; margin-top:8px;">${t('user_profile_sightings_count',{n:posts.length})}</div>
-    </div>
-
-    <div class="section-title" style="margin-top:16px;">${t('user_profile_posts_title')}</div>
-    ${posts.length===0 ? `
-      <div class="card" style="padding:24px; text-align:center; color:var(--text-dim); font-size:12px;">${t('user_profile_empty')}</div>
-    ` : posts.map(s=>`
-      <div class="card">
-        ${s.videoUrl ? `
-          <video src="${s.videoUrl}" controls playsinline preload="metadata" style="width:100%; max-height:280px; background:#000; display:block;" onloadedmetadata="this.currentTime=${s.videoTrimStart||0}" ontimeupdate="if(${s.videoTrimStart||0}>0 && this.currentTime-${s.videoTrimStart||0}>=30){this.pause();}"></video>
-        ` : s.photo ? `
-          <div class="post-photo-wrap">
-            <div class="post-photo-bg" style="background-image:url('${s.thumb}')"></div>
-            <img class="post-photo" src="${s.thumb}" alt="Foto do avistamento: ${s.species}" loading="lazy">
-          </div>
-        ` : ''}
-        <div class="post-body">
-          <div class="species">${s.species}</div>
-          <div class="desc">${s.desc}</div>
-          <div style="color:var(--text-dim); font-size:11px; margin-top:6px;">${s.date} · 📍 ${s.loc}</div>
-        </div>
-      </div>
-    `).join('')}
-  `;
-}
-
-/* =====================================================================
    MODAL: NOVO AVISTAMENTO
    ===================================================================== */
 function modalHTML(){
@@ -3037,6 +3020,8 @@ function bindDynamic(){
 
   const avInput = document.getElementById('avatar-input');
   if(avInput) avInput.onchange = handleAvatarUpload;
+  const covInput = document.getElementById('cover-input');
+  if(covInput) covInput.onchange = handleCoverUpload;
 
   const gdvb = document.getElementById('gd-voucher-btn');
   if(gdvb) gdvb.onclick = validateVoucher;
@@ -3196,7 +3181,8 @@ function renderModalOnly(){
 
 function openModal(){
   if(!state.profile || !state.profile.verified_guest){
-    showToast('Valide o código da sua reserva na aba Check-in antes de publicar.');
+    state.skipGate = false; render();
+    showToast(pfT('validate_first'));
     return;
   }
   state.modalOpen = true; state.photoData = null; state.photoAssets = null; state.photoWarning = ''; state.modalLocation = null; state.speciesSuggestion = null;
@@ -3288,6 +3274,7 @@ function handleAvatarUpload(e){
         const { error: updErr } = await db.from('profiles').update({ avatar_url: url }).eq('id', state.session.user.id);
         if(updErr){ showToast('Não foi possível salvar a foto: ' + updErr.message); return; }
         state.profile.avatar_url = url;
+        afterAvatarChanged(url);
         render();
         showToast('Foto de perfil atualizada!');
       }catch(err){
@@ -3653,7 +3640,7 @@ async function confirmMfaEnroll(){
   await loadMfaStatus();
   showToast('Verificação em duas etapas ativada.');
   track('mfa_enabled');
-  if(wasForced) await finishLogin(); else { state.screen = 'perfil'; render(); }
+  if(wasForced) await finishLogin(); else { state.screen = 'settings'; render(); }
 }
 async function verifyMfaLogin(){
   const code = (document.getElementById('mfa-code').value || '').trim();
@@ -3669,7 +3656,7 @@ async function verifyMfaLogin(){
   await finishLogin();
 }
 function openMfaEnroll(){ state.mfaGate = 'voluntary'; state.mfaEnroll = null; render(); }
-function cancelMfaEnroll(){ state.mfaGate = null; state.mfaEnroll = null; state.screen = 'perfil'; render(); }
+function cancelMfaEnroll(){ state.mfaGate = null; state.mfaEnroll = null; state.screen = 'settings'; render(); }
 async function disableMfa(){
   if(state.settings && state.settings.staff_mfa_required === 'true' && isStaffProfile()){
     showToast('Contas da equipe precisam manter a verificação em duas etapas.'); return;
@@ -4157,10 +4144,675 @@ if('serviceWorker' in navigator){
   });
 }
 
+/* =====================================================================
+   PERFIL SOCIAL — estilo Instagram, com foto de capa e link público
+   ---------------------------------------------------------------------
+   - Perfil próprio (aba Perfil) e de outras pessoas (toque no autor).
+   - Link público: <endereço do app>?u=usuario  (abre sem login).
+   - Seguir/seguidores, destaques por espécie, grade de publicações.
+   - Tudo que vem do banco passa por esc() antes de ir para a tela.
+   ===================================================================== */
+const PF_TEXT = {
+  pt: {
+    posts:'publicações', followers:'seguidores', following:'seguindo', species:'espécies',
+    edit_profile:'Editar perfil', share_profile:'Compartilhar perfil', follow:'Seguir', following_btn:'Seguindo',
+    tab_posts:'Publicações', tab_videos:'Vídeos', tab_achievements:'Conquistas',
+    new_item:'Novo', settings:'Configurações', back:'‹ Voltar', admin_panel:'Painel administrativo',
+    empty_posts_own:'Você ainda não tem publicações aprovadas. Registre um animal ou planta que encontrar no passeio!',
+    empty_posts_other:'Ainda não há publicações aprovadas.', empty_videos:'Nenhum vídeo ainda.',
+    private_notice:'Este perfil é privado.', member_since:'No EcoSafari Go desde',
+    name:'Nome', username:'@usuário', bio:'Bio', bio_ph:'Conte um pouco sobre você e o que gosta de observar', link:'Link do perfil',
+    link_ph:'https://instagram.com/seuperfil', link_hint:'Aparece no seu perfil. Pode ser seu Instagram, site ou o que preferir.',
+    public_switch:'Perfil público', public_hint:'Desligado: só seu nome e foto aparecem para os outros.',
+    save:'Salvar', cancel:'Cancelar', saving:'Salvando...', saved:'Perfil atualizado!',
+    change_cover:'Alterar foto de capa', remove_cover:'Remover capa', change_photo:'Alterar foto de perfil',
+    your_link:'Seu link do EcoSafari Go', link_tip:'Cole na bio do seu Instagram para os seguidores verem seus avistamentos.',
+    copy_link:'Copiar link', link_copied:'Link copiado!', share_text:'Veja meus avistamentos no EcoSafari Go',
+    search_people:'Buscar pessoas', search_ph:'Nome ou @usuário', no_results:'Nenhuma pessoa encontrada.',
+    login_to_follow:'Entre para seguir', enter:'Entrar', create_account:'Criar conta grátis',
+    public_cta:'Registre animais e plantas, ganhe moedas e troque por experiências na pousada. Entre para seguir este perfil.',
+    profile_not_found:'Perfil não encontrado.', error_load:'Não foi possível carregar o perfil.', retry:'Tentar de novo',
+    load_more:'Carregar mais', loading:'Carregando...', followers_title:'Seguidores', following_title:'Seguindo',
+    no_followers:'Ninguém por aqui ainda.', uploading:'Enviando foto...', cover_saved:'Capa atualizada!', cover_removed:'Capa removida.',
+    gate_title:'Valide sua estadia', gate_sub:'Informe o código recebido da pousada para publicar avistamentos e ganhar moedas. Você só precisa fazer isso uma vez por hospedagem.',
+    gate_skip:'Explorar sem validar por enquanto', gate_logout:'Sair',
+    stay_title:'Minha hospedagem', stay_current:'Você está hospedado em', stay_change:'Mudou de pousada ou fez uma nova reserva? Valide o novo código abaixo.',
+    stay_none:'Você ainda não validou uma estadia.',
+    banner_text:'Valide sua estadia para publicar e ganhar moedas.', banner_btn:'Validar',
+    validate_first:'Valide sua estadia para publicar avistamentos.',
+    my_stay:'Minha hospedagem', verified:'Observador verificado',
+  },
+  en: {
+    posts:'posts', followers:'followers', following:'following', species:'species',
+    edit_profile:'Edit profile', share_profile:'Share profile', follow:'Follow', following_btn:'Following',
+    tab_posts:'Posts', tab_videos:'Videos', tab_achievements:'Achievements',
+    new_item:'New', settings:'Settings', back:'‹ Back', admin_panel:'Admin panel',
+    empty_posts_own:"You don't have approved posts yet. Record an animal or plant you find on your tour!",
+    empty_posts_other:'No approved posts yet.', empty_videos:'No videos yet.',
+    private_notice:'This profile is private.', member_since:'On EcoSafari Go since',
+    name:'Name', username:'@username', bio:'Bio', bio_ph:'Tell us a bit about yourself and what you like to observe', link:'Profile link',
+    link_ph:'https://instagram.com/yourprofile', link_hint:'Shown on your profile. Your Instagram, website, anything you like.',
+    public_switch:'Public profile', public_hint:'Off: only your name and photo are visible to others.',
+    save:'Save', cancel:'Cancel', saving:'Saving...', saved:'Profile updated!',
+    change_cover:'Change cover photo', remove_cover:'Remove cover', change_photo:'Change profile photo',
+    your_link:'Your EcoSafari Go link', link_tip:'Paste it in your Instagram bio so followers can see your sightings.',
+    copy_link:'Copy link', link_copied:'Link copied!', share_text:'See my wildlife sightings on EcoSafari Go',
+    search_people:'Find people', search_ph:'Name or @username', no_results:'No people found.',
+    login_to_follow:'Log in to follow', enter:'Log in', create_account:'Create free account',
+    public_cta:'Record wildlife, earn coins and trade them for experiences at your lodge. Log in to follow this profile.',
+    profile_not_found:'Profile not found.', error_load:"Couldn't load the profile.", retry:'Try again',
+    load_more:'Load more', loading:'Loading...', followers_title:'Followers', following_title:'Following',
+    no_followers:'Nobody here yet.', uploading:'Uploading photo...', cover_saved:'Cover updated!', cover_removed:'Cover removed.',
+    gate_title:'Validate your stay', gate_sub:"Enter the code you received from the lodge to post sightings and earn coins. You only do this once per stay.",
+    gate_skip:'Explore without validating for now', gate_logout:'Log out',
+    stay_title:'My stay', stay_current:"You're staying at", stay_change:'Changed lodge or made a new booking? Validate the new code below.',
+    stay_none:"You haven't validated a stay yet.",
+    banner_text:'Validate your stay to post and earn coins.', banner_btn:'Validate',
+    validate_first:'Validate your stay to post sightings.',
+    my_stay:'My stay', verified:'Verified observer',
+  },
+  es: {
+    posts:'publicaciones', followers:'seguidores', following:'siguiendo', species:'especies',
+    edit_profile:'Editar perfil', share_profile:'Compartir perfil', follow:'Seguir', following_btn:'Siguiendo',
+    tab_posts:'Publicaciones', tab_videos:'Videos', tab_achievements:'Logros',
+    new_item:'Nuevo', settings:'Ajustes', back:'‹ Volver', admin_panel:'Panel administrativo',
+    empty_posts_own:'Aún no tienes publicaciones aprobadas. ¡Registra un animal o planta que encuentres en el paseo!',
+    empty_posts_other:'Aún no hay publicaciones aprobadas.', empty_videos:'Aún no hay videos.',
+    private_notice:'Este perfil es privado.', member_since:'En EcoSafari Go desde',
+    name:'Nombre', username:'@usuario', bio:'Bio', bio_ph:'Cuéntanos un poco sobre ti y lo que te gusta observar', link:'Enlace del perfil',
+    link_ph:'https://instagram.com/tuperfil', link_hint:'Aparece en tu perfil. Tu Instagram, sitio web o lo que prefieras.',
+    public_switch:'Perfil público', public_hint:'Apagado: solo se ven tu nombre y foto.',
+    save:'Guardar', cancel:'Cancelar', saving:'Guardando...', saved:'¡Perfil actualizado!',
+    change_cover:'Cambiar foto de portada', remove_cover:'Quitar portada', change_photo:'Cambiar foto de perfil',
+    your_link:'Tu enlace de EcoSafari Go', link_tip:'Pégalo en la bio de tu Instagram para que tus seguidores vean tus avistamientos.',
+    copy_link:'Copiar enlace', link_copied:'¡Enlace copiado!', share_text:'Mira mis avistamientos en EcoSafari Go',
+    search_people:'Buscar personas', search_ph:'Nombre o @usuario', no_results:'No se encontraron personas.',
+    login_to_follow:'Entra para seguir', enter:'Entrar', create_account:'Crear cuenta gratis',
+    public_cta:'Registra animales y plantas, gana monedas y cámbialas por experiencias en el alojamiento. Entra para seguir este perfil.',
+    profile_not_found:'Perfil no encontrado.', error_load:'No se pudo cargar el perfil.', retry:'Reintentar',
+    load_more:'Cargar más', loading:'Cargando...', followers_title:'Seguidores', following_title:'Siguiendo',
+    no_followers:'Aún no hay nadie.', uploading:'Subiendo foto...', cover_saved:'¡Portada actualizada!', cover_removed:'Portada eliminada.',
+    gate_title:'Valida tu estadía', gate_sub:'Ingresa el código que recibiste del alojamiento para publicar avistamientos y ganar monedas. Solo lo haces una vez por estadía.',
+    gate_skip:'Explorar sin validar por ahora', gate_logout:'Salir',
+    stay_title:'Mi estadía', stay_current:'Estás alojado en', stay_change:'¿Cambiaste de alojamiento o hiciste una nueva reserva? Valida el nuevo código abajo.',
+    stay_none:'Aún no has validado una estadía.',
+    banner_text:'Valida tu estadía para publicar y ganar monedas.', banner_btn:'Validar',
+    validate_first:'Valida tu estadía para publicar avistamientos.',
+    my_stay:'Mi estadía', verified:'Observador verificado',
+  },
+};
+function pfT(key){
+  const d = PF_TEXT[state.lang] || PF_TEXT.en;
+  return d[key] != null ? d[key] : (PF_TEXT.en[key] != null ? PF_TEXT.en[key] : key);
+}
+
+/* ---------- utilidades ---------- */
+function appBaseUrl(){ return location.origin + location.pathname.replace(/index\.html$/, ''); }
+function profileUrl(username){ return appBaseUrl() + '?u=' + encodeURIComponent(username); }
+function safeHttpUrl(u){
+  try{ const x = new URL(u); return (x.protocol === 'https:' || x.protocol === 'http:') ? x.href : ''; }catch(_){ return ''; }
+}
+function linkLabel(u){
+  try{ const x = new URL(u); return (x.hostname.replace(/^www\./, '') + (x.pathname !== '/' ? x.pathname : '')).replace(/\/$/, ''); }catch(_){ return u; }
+}
+function fmtCount(n){
+  n = Number(n) || 0;
+  if(n >= 1e6) return (n / 1e6).toFixed(1).replace('.0', '') + ' mi';
+  if(n >= 1e4) return Math.round(n / 1000) + ' mil';
+  if(n >= 1000) return (n / 1000).toFixed(1).replace('.0', '') + ' mil';
+  return String(n);
+}
+function speciesShort(s){ return String(s || '').split(' (')[0]; }
+function initialsOf(name){ return String(name || '?').trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase() || '?'; }
+function pfAvatarInner(card){
+  return card.avatar_url ? `<img src="${esc(card.avatar_url)}" alt="">` : esc(initialsOf(card.full_name));
+}
+
+/* ---------- carregamento ---------- */
+async function loadSocialProfile(userId, opts){
+  opts = opts || {};
+  const same = state.pf && state.pf.userId === userId;
+  if(!same) state.pf = { userId, card:null, posts:[], tab:'posts', filter:null, loading:true, error:false, more:false, anon:!!opts.anon };
+  else { state.pf.loading = true; state.pf.error = false; state.pf.anon = !!opts.anon; }
+  try{
+    const [c, p] = await Promise.all([
+      db.rpc('get_profile_card', { p_user_id: userId }),
+      db.rpc('get_profile_posts', { p_user_id: userId, p_limit: 60, p_offset: 0 }),
+    ]);
+    if(c.error) throw c.error;
+    if(!state.pf || state.pf.userId !== userId) return;
+    state.pf.card = c.data;
+    state.pf.posts = p.data || [];
+    state.pf.more = (p.data || []).length === 60;
+    if(!c.data) state.pf.error = 'notfound';
+  }catch(err){
+    reportError(err);
+    if(state.pf && state.pf.userId === userId) state.pf.error = true;
+  }
+  if(state.pf && state.pf.userId === userId){ state.pf.loading = false; render(); }
+}
+async function loadMorePosts(){
+  const pf = state.pf; if(!pf || !pf.card) return;
+  const { data } = await db.rpc('get_profile_posts', { p_user_id: pf.userId, p_limit: 60, p_offset: pf.posts.length });
+  pf.posts = pf.posts.concat(data || []);
+  pf.more = (data || []).length === 60;
+  render();
+}
+function openMyProfile(){
+  state.adminMode = false; state.guideMode = false;
+  state.screen = 'perfil';
+  if(state.session) loadSocialProfile(state.session.user.id);
+  render();
+}
+function openUserProfile(userId){
+  if(state.session && userId === state.session.user.id){ openMyProfile(); return; }
+  state.prevScreen = state.screen === 'userProfile' ? (state.prevScreen || 'avistamentos') : state.screen;
+  state.screen = 'userProfile';
+  state.pfList = null; state.pfSearch = null;
+  loadSocialProfile(userId);
+  render();
+}
+function backFromProfile(){
+  state.pf = state.pf && state.pf.card && state.pf.card.is_me ? state.pf : null;
+  const back = state.prevScreen && state.prevScreen !== 'userProfile' ? state.prevScreen : 'avistamentos';
+  state.screen = back; render();
+}
+async function openUserByUsername(username){
+  const { data } = await db.rpc('get_profile_card', { p_username: username });
+  if(!data){ showToast(pfT('profile_not_found')); return; }
+  openUserProfile(data.id);
+}
+
+/* ---------- link público (visitante sem login) ---------- */
+function readDeepLink(){
+  try{
+    const u = new URLSearchParams(location.search).get('u');
+    if(u && /^[A-Za-z0-9._]{3,30}$/.test(u)) state.deepLinkUser = u.toLowerCase();
+  }catch(_){}
+}
+function clearDeepLinkFromUrl(){
+  try{ const url = new URL(location.href); url.searchParams.delete('u'); history.replaceState(null, '', url.pathname + (url.search || '') + url.hash); }catch(_){}
+}
+async function loadPublicProfile(username){
+  state.pf = { userId:null, card:null, posts:[], tab:'posts', filter:null, loading:true, error:false, more:false, anon:true };
+  render();
+  try{
+    const { data: card, error } = await db.rpc('get_profile_card', { p_username: username });
+    if(error) throw error;
+    if(!card){ state.pf.error = 'notfound'; state.pf.loading = false; render(); return; }
+    state.pf.userId = card.id; state.pf.card = card;
+    const { data: posts } = await db.rpc('get_profile_posts', { p_user_id: card.id, p_limit: 60, p_offset: 0 });
+    state.pf.posts = posts || [];
+    state.pf.more = (posts || []).length === 60;
+  }catch(err){ reportError(err); state.pf.error = true; }
+  state.pf.loading = false; render();
+}
+function publicProfileScreenHTML(){
+  return `
+    <div class="pf-public-bar">
+      <div class="brand">🌿 EcoSafari Go</div>
+      <button class="pf-btn primary" style="flex:0 0 auto; padding:8px 16px;" onclick="leavePublicProfile()">${pfT('enter')}</button>
+    </div>
+    <div class="content" id="content" style="padding:0 16px 40px 16px;">
+      ${socialProfileHTML(state.pf)}
+      <div class="pf-public-cta">
+        <p>${pfT('public_cta')}</p>
+        <button class="btn-primary" onclick="leavePublicProfile()">${pfT('create_account')}</button>
+      </div>
+    </div>`;
+}
+function leavePublicProfile(){
+  state.publicView = false; state.pf = null;
+  state.screen = 'login'; render();
+}
+
+/* ---------- tela do perfil ---------- */
+function socialProfileView(){ return socialProfileHTML(state.pf); }
+
+function socialProfileHTML(pf){
+  if(!pf || (pf.loading && !pf.card)) return loadingView();
+  if(pf.error && !pf.card){
+    return `<div class="pf-empty"><div class="big">🌿</div>${pf.error === 'notfound' ? pfT('profile_not_found') : pfT('error_load')}
+      ${pf.error === true && pf.userId ? `<br><br><button class="btn-ghost" onclick="loadSocialProfile('${esc(pf.userId)}')">${pfT('retry')}</button>` : ''}
+      ${state.screen === 'userProfile' ? `<br><br><span class="back-link" onclick="backFromProfile()">${pfT('back')}</span>` : ''}</div>`;
+  }
+  const c = pf.card;
+  const own = !!c.is_me;
+  const anon = !!pf.anon;
+  const name = esc(c.full_name || 'Hóspede');
+  const posts = pf.posts || [];
+  const videos = posts.filter(p => p.video_url);
+
+  const coverBtns = own
+    ? `<button class="pf-cover-btn r" onclick="state.screen='settings'; render();" aria-label="${pfT('settings')}">⚙️</button>
+       <button class="pf-cover-btn r2" onclick="openSearchPeople()" aria-label="${pfT('search_people')}">🔍</button>
+       <button class="pf-cover-btn l" onclick="document.getElementById('cover-input').click()" aria-label="${pfT('change_cover')}">📷</button>`
+    : (anon ? '' : `<button class="pf-cover-btn l" onclick="backFromProfile()" aria-label="${pfT('back')}">‹</button>`);
+
+  const actions = own ? `
+      <button class="pf-btn" onclick="openEditProfile()">${pfT('edit_profile')}</button>
+      <button class="pf-btn" onclick="shareProfile()">${pfT('share_profile')}</button>`
+    : `
+      <button class="pf-btn ${c.is_following ? '' : 'primary'}" onclick="${anon ? 'leavePublicProfile()' : 'toggleFollowProfile()'}" id="pf-follow-btn">${anon ? pfT('login_to_follow') : (c.is_following ? pfT('following_btn') : pfT('follow'))}</button>
+      <button class="pf-btn" onclick="shareProfile()">${pfT('share_profile')}</button>`;
+
+  const adminBtn = own && state.profile && state.profile.role === 'admin'
+    ? `<button class="pf-btn" style="margin-top:8px; width:100%;" onclick="setAdminMode(true)">🛠 ${pfT('admin_panel')}</button>` : '';
+
+  // destaques = espécies já registradas (a mais recente de cada uma)
+  const seen = {}; const hl = [];
+  posts.forEach(p => { const k = p.species_text || ''; if(k && !seen[k]){ seen[k] = 1; hl.push(p); } });
+  pf._hl = hl;
+  const highlights = (own || hl.length) ? `
+    <div class="pf-hl">
+      ${own ? `<div class="pf-hl-item" onclick="openModal()"><div class="pf-hl-ring off"><div style="font-size:26px; color:var(--green);">＋</div></div><div class="pf-hl-label">${pfT('new_item')}</div></div>` : ''}
+      ${hl.slice(0, 14).map(p => `
+        <div class="pf-hl-item" onclick="setProfileFilterIdx(${hl.indexOf(p)})">
+          <div class="pf-hl-ring ${pf.filter === p.species_text ? 'on' : ''}"><div>
+            ${p.photo_thumb_url || p.photo_url ? `<img src="${esc(p.photo_thumb_url || p.photo_url)}" alt="" loading="lazy">` : (p.video_url ? `<video src="${esc(p.video_url)}#t=${Number(p.video_trim_start || 0) + 0.1}" preload="metadata" muted playsinline></video>` : '🦜')}
+          </div></div>
+          <div class="pf-hl-label">${esc(speciesShort(p.species_text))}</div>
+        </div>`).join('')}
+    </div>` : '';
+
+  const tabs = [
+    { k:'posts', svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>', label:pfT('tab_posts') },
+    { k:'videos', svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor"/></svg>', label:pfT('tab_videos') },
+  ];
+  if(own) tabs.push({ k:'achievements', svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>', label:pfT('tab_achievements') });
+
+  let list = pf.tab === 'videos' ? videos : posts;
+  if(pf.filter) list = list.filter(p => p.species_text === pf.filter);
+  pf._list = list;
+
+  let bodyContent;
+  if(c.is_private){
+    bodyContent = `<div class="pf-private"><div style="font-size:30px; margin-bottom:6px;">🔒</div>${pfT('private_notice')}</div>`;
+  } else if(pf.tab === 'achievements' && own){
+    bodyContent = achievementsTabHTML();
+  } else if(!list.length){
+    bodyContent = `<div class="pf-empty"><div class="big">${pf.tab === 'videos' ? '🎥' : '📷'}</div>${pf.tab === 'videos' ? pfT('empty_videos') : (own ? pfT('empty_posts_own') : pfT('empty_posts_other'))}</div>`;
+  } else {
+    bodyContent = `<div class="pf-grid">${list.map((p, i) => `
+      <div class="pf-cell" onclick="openPostViewer(${i})">
+        ${p.photo_thumb_url || p.photo_url ? `<img src="${esc(p.photo_thumb_url || p.photo_url)}" alt="${esc(p.species_text)}" loading="lazy">`
+          : p.video_url ? `<video src="${esc(p.video_url)}#t=${Number(p.video_trim_start || 0) + 0.1}" preload="metadata" muted playsinline></video>`
+          : `<div class="pf-ph">${esc(speciesShort(p.species_text))}</div>`}
+        ${p.video_url ? '<span class="pf-ic">▶</span>' : ''}${p.is_rare ? '<span class="pf-ic l">⭐</span>' : ''}
+      </div>`).join('')}</div>
+      ${pf.more && !pf.filter ? `<button class="btn-ghost pf-more" onclick="loadMorePosts()">${pfT('load_more')}</button>` : ''}`;
+  }
+
+  const link = c.link_url && !c.is_private ? safeHttpUrl(c.link_url) : '';
+
+  return `
+    <div class="pf">
+      <div class="pf-cover">
+        ${c.cover_url && !c.is_private ? `<img src="${esc(c.cover_url)}" alt="">` : ''}
+        ${coverBtns}
+      </div>
+      <div class="pf-head">
+        <div class="pf-avatar ${c.verified_observer ? 'verified' : ''}">
+          ${pfAvatarInner(c)}
+          ${own ? `<div class="pf-edit" onclick="document.getElementById('avatar-input').click()" role="button" aria-label="${pfT('change_photo')}">✏️</div>` : ''}
+        </div>
+        <div class="pf-stats">
+          <div class="pf-stat" onclick="setProfileTab('posts')"><b>${fmtCount(c.posts)}</b><span>${pfT('posts')}</span></div>
+          <div class="pf-stat" onclick="openFollowList('followers')"><b>${fmtCount(c.followers)}</b><span>${pfT('followers')}</span></div>
+          <div class="pf-stat" onclick="openFollowList('following')"><b>${fmtCount(c.following)}</b><span>${pfT('following')}</span></div>
+        </div>
+      </div>
+      <div class="pf-body">
+        <div class="pf-name">${name}${c.verified_observer ? `<span class="verified-tag" title="${pfT('verified')}">${icon('star')}</span>` : ''}</div>
+        <div class="pf-user">@${esc(c.username || '')}${!c.is_private && c.species ? ` · 🦜 ${c.species} ${pfT('species')}` : ''}</div>
+        ${c.bio && !c.is_private ? `<div class="pf-bio">${esc(c.bio)}</div>` : ''}
+        ${link ? `<a class="pf-link" href="${esc(link)}" target="_blank" rel="noopener nofollow ugc">🔗 ${esc(linkLabel(link))}</a>` : ''}
+        <div class="pf-actions">${actions}</div>
+        ${adminBtn}
+      </div>
+      ${c.is_private ? '' : highlights}
+      ${c.is_private ? '' : `<div class="pf-tabs">${tabs.map(t => `<div class="pf-tab ${pf.tab === t.k ? 'active' : ''}" onclick="setProfileTab('${t.k}')" role="button" aria-label="${t.label}">${t.svg}</div>`).join('')}</div>`}
+      ${bodyContent}
+      ${own ? `<input type="file" accept="image/*" id="avatar-input" style="display:none"><input type="file" accept="image/*" id="cover-input" style="display:none">` : ''}
+    </div>`;
+}
+
+function achievementsTabHTML(){
+  const badges = computeBadgeDisplay();
+  return `
+    <div style="padding:14px 16px 0 16px;">
+      <div class="badge-grid">
+        ${badges.map(b => `<div class="badge-chip ${b.done ? '' : 'locked'}"><div class="ic">${b.ic}</div><div class="nm">${b.name}</div></div>`).join('')}
+      </div>
+      <div class="section-title" style="margin-top:16px;">${t('profile_ranking_title')}</div>
+      ${state.ranking.length ? state.ranking.map((r, i) => `
+        <div class="rank-row ${r.name === (state.profile && state.profile.full_name) ? 'me' : ''}">
+          <div class="rank-pos">${i + 1}º</div><div class="rank-name">${r.name}</div><div class="rank-pts">${r.points} pts</div>
+        </div>`).join('') : `<div class="card" style="padding:16px; text-align:center; color:var(--text-dim); font-size:12px;">${t('profile_ranking_empty')}</div>`}
+    </div>`;
+}
+
+function setProfileTab(k){ if(state.pf){ state.pf.tab = k; state.pf.filter = null; render(); } }
+function setProfileFilterIdx(i){
+  const p = state.pf && state.pf._hl && state.pf._hl[i]; if(p) setProfileFilter(p.species_text);
+}
+function setProfileFilter(sp){
+  if(!state.pf) return;
+  state.pf.filter = state.pf.filter === sp ? null : sp;
+  if(state.pf.tab === 'achievements') state.pf.tab = 'posts';
+  render();
+}
+
+/* ---------- seguir / compartilhar ---------- */
+async function toggleFollowProfile(){
+  const pf = state.pf; if(!pf || !pf.card || pf.card.is_me) return;
+  const c = pf.card;
+  const was = !!c.is_following;
+  c.is_following = !was; c.followers = Math.max(0, (c.followers || 0) + (was ? -1 : 1));
+  render();
+  const { data, error } = await db.rpc('toggle_follow', { p_user_id: c.id });
+  if(error){
+    c.is_following = was; c.followers = Math.max(0, c.followers + (was ? 1 : -1));
+    render(); showToast(error.message); return;
+  }
+  track(data ? 'follow' : 'unfollow');
+}
+async function shareProfile(){
+  const c = state.pf && state.pf.card; if(!c || !c.username) return;
+  const url = profileUrl(c.username);
+  try{
+    if(navigator.share){ await navigator.share({ title: (c.full_name || 'EcoSafari Go') + ' (@' + c.username + ')', text: pfT('share_text'), url }); track('profile_shared'); return; }
+  }catch(e){ if(e && e.name === 'AbortError') return; }
+  copyProfileLink(url);
+}
+async function copyProfileLink(url){
+  try{ await navigator.clipboard.writeText(url); showToast(pfT('link_copied')); }
+  catch(_){ window.prompt(pfT('your_link'), url); }
+}
+
+/* ---------- editar perfil ---------- */
+function openEditProfile(){
+  const c = state.pf && state.pf.card; if(!c) return;
+  state.pfEdit = { full_name: c.full_name || '', username: c.username || '', bio: c.bio || '', link_url: c.link_url || '', profile_public: c.profile_public !== false };
+  render();
+}
+function stashEditDraft(){
+  if(!state.pfEdit) return;
+  const g = id => document.getElementById(id);
+  if(g('pe-name')) state.pfEdit = { full_name: g('pe-name').value, username: g('pe-user').value, bio: g('pe-bio').value, link_url: g('pe-link').value, profile_public: g('pe-public').checked };
+}
+function closeEditProfile(){ state.pfEdit = null; render(); }
+function editProfileModalHTML(){
+  if(!state.pfEdit) return '';
+  const d = state.pfEdit; const c = (state.pf && state.pf.card) || {};
+  const url = c.username ? profileUrl(c.username) : '';
+  return `
+    <div class="modal-overlay open" style="z-index:60;">
+      <div class="modal pf-sheet" style="max-height:92dvh; overflow-y:auto;">
+        <h3>${pfT('edit_profile')}</h3>
+        <div style="display:flex; gap:8px; margin-bottom:14px;">
+          <button class="btn-ghost" style="margin:0; flex:1; padding:9px; font-size:12px;" onclick="stashEditDraft(); document.getElementById('avatar-input').click()">📷 ${pfT('change_photo')}</button>
+          <button class="btn-ghost" style="margin:0; flex:1; padding:9px; font-size:12px;" onclick="stashEditDraft(); document.getElementById('cover-input').click()">🖼 ${pfT('change_cover')}</button>
+        </div>
+        ${c.cover_url ? `<button class="btn-ghost" style="margin:0 0 14px 0; padding:7px; font-size:11.5px;" onclick="stashEditDraft(); removeCover()">${pfT('remove_cover')}</button>` : ''}
+        <div class="field"><label>${pfT('name')}</label><input id="pe-name" maxlength="60" value="${esc(d.full_name)}" autocomplete="name"></div>
+        <div class="field"><label>${pfT('username')}</label><input id="pe-user" maxlength="30" value="${esc(d.username)}" autocapitalize="none" autocorrect="off" spellcheck="false"></div>
+        <div class="field"><label>${pfT('bio')}</label>
+          <textarea id="pe-bio" maxlength="200" placeholder="${esc(pfT('bio_ph'))}" oninput="document.getElementById('pe-count').textContent=this.value.length+'/200'">${esc(d.bio)}</textarea>
+          <div class="pf-counter" id="pe-count">${(d.bio || '').length}/200</div></div>
+        <div class="field"><label>${pfT('link')}</label><input id="pe-link" maxlength="300" value="${esc(d.link_url)}" placeholder="${esc(pfT('link_ph'))}" inputmode="url" autocapitalize="none" autocorrect="off">
+          <div style="font-size:10.5px; color:var(--text-dim); margin-top:4px;">${pfT('link_hint')}</div></div>
+        <div class="toggle-row" style="margin:4px 0 2px 0;">
+          <div><div style="color:var(--text); font-size:13px;">${pfT('public_switch')}</div><div style="color:var(--text-dim); font-size:10.5px; margin-top:2px;">${pfT('public_hint')}</div></div>
+          <label style="position:relative; display:inline-block; width:44px; height:26px; flex-shrink:0;">
+            <input type="checkbox" id="pe-public" ${d.profile_public ? 'checked' : ''} style="opacity:0; width:100%; height:100%; position:absolute; margin:0; cursor:pointer; z-index:2;" onchange="this.nextElementSibling.style.background=this.checked?'var(--green)':'var(--card-border)'; this.nextElementSibling.firstElementChild.style.left=this.checked?'20px':'2px'">
+            <span style="position:absolute; inset:0; border-radius:13px; background:${d.profile_public ? 'var(--green)' : 'var(--card-border)'}; transition:.2s;"><span style="position:absolute; top:2px; left:${d.profile_public ? '20px' : '2px'}; width:22px; height:22px; border-radius:50%; background:#fff; transition:.2s;"></span></span>
+          </label>
+        </div>
+        ${url ? `<div style="margin:14px 0 4px 0; padding:11px 12px; background:var(--green-dim); border:1px solid var(--green); border-radius:10px;">
+          <div style="font-size:11px; font-weight:800; color:var(--green); margin-bottom:4px;">${pfT('your_link')}</div>
+          <div style="font-size:12px; color:var(--text); word-break:break-all;">${esc(url)}</div>
+          <div style="font-size:10.5px; color:var(--text-dim); margin:5px 0 8px 0;">${pfT('link_tip')}</div>
+          <button class="btn-ghost" style="margin:0; padding:7px; font-size:12px;" onclick="copyProfileLink('${esc(url)}')">${pfT('copy_link')}</button></div>` : ''}
+        <div id="pe-msg" style="color:var(--danger); font-size:12px; min-height:16px; margin:10px 0 4px 0;"></div>
+        <button class="btn-primary" id="pe-save" onclick="saveProfileEdit()">${pfT('save')}</button>
+        <button class="btn-ghost" onclick="closeEditProfile()">${pfT('cancel')}</button>
+      </div>
+    </div>`;
+}
+async function saveProfileEdit(){
+  const g = id => document.getElementById(id);
+  const msg = g('pe-msg'), btn = g('pe-save');
+  msg.textContent = '';
+  btn.disabled = true; btn.textContent = pfT('saving');
+  const { data, error } = await db.rpc('update_my_profile', {
+    p_full_name: g('pe-name').value, p_username: g('pe-user').value, p_bio: g('pe-bio').value,
+    p_link_url: g('pe-link').value, p_profile_public: g('pe-public').checked,
+  });
+  btn.disabled = false; btn.textContent = pfT('save');
+  if(error){ msg.textContent = error.message; return; }
+  if(state.pf && state.pf.card) state.pf.card = Object.assign({}, state.pf.card, data);
+  if(state.profile) Object.assign(state.profile, { full_name: data.full_name, username: data.username, bio: data.bio, link_url: data.link_url, profile_public: data.profile_public });
+  state.pfEdit = null;
+  render(); showToast(pfT('saved')); track('profile_edited');
+}
+
+/* ---------- foto de capa ---------- */
+function cropToCanvas(img, w, h){
+  const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+  const scale = Math.max(w / img.width, h / img.height);
+  const sw = w / scale, sh = h / scale;
+  canvas.getContext('2d').drawImage(img, (img.width - sw) / 2, (img.height - sh) / 2, sw, sh, 0, 0, w, h);
+  return canvas;
+}
+function handleCoverUpload(e){
+  const f = e.target.files[0]; e.target.value = '';
+  if(!f) return;
+  stashEditDraft();
+  showToast(pfT('uploading'));
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = async () => {
+      try{
+        const canvas = cropToCanvas(img, 1200, 480);
+        const { blob, type, ext } = await canvasToBlobAsync(canvas, 0.85);
+        const path = `${state.session.user.id}/cover_${Date.now()}.${ext}`;
+        const { error: upErr } = await db.storage.from('user-covers').upload(path, blob, { contentType: type, upsert: true });
+        if(upErr){ showToast(upErr.message); return; }
+        const url = db.storage.from('user-covers').getPublicUrl(path).data.publicUrl;
+        const { error: updErr } = await db.from('profiles').update({ cover_url: url }).eq('id', state.session.user.id);
+        if(updErr){ showToast(updErr.message); return; }
+        if(state.pf && state.pf.card) state.pf.card.cover_url = url;
+        if(state.profile) state.profile.cover_url = url;
+        render(); showToast(pfT('cover_saved'));
+      }catch(err){ reportError(err); showToast(pfT('error_load')); }
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(f);
+}
+async function removeCover(){
+  const { error } = await db.from('profiles').update({ cover_url: null }).eq('id', state.session.user.id);
+  if(error){ showToast(error.message); return; }
+  if(state.pf && state.pf.card) state.pf.card.cover_url = null;
+  render(); showToast(pfT('cover_removed'));
+}
+/* a foto de perfil também atualiza o cartão do perfil aberto */
+function afterAvatarChanged(url){
+  if(state.pf && state.pf.card && state.pf.card.is_me) state.pf.card.avatar_url = url;
+}
+
+/* ---------- seguidores / seguindo ---------- */
+async function openFollowList(kind){
+  const pf = state.pf; if(!pf || !pf.card || pf.card.is_private) return;
+  if(pf.anon){ leavePublicProfile(); return; }
+  state.pfList = { kind, rows: [], loading: true, userId: pf.userId };
+  render();
+  const { data, error } = await db.rpc('list_follows', { p_user_id: pf.userId, p_kind: kind, p_limit: 100, p_offset: 0 });
+  if(!state.pfList) return;
+  state.pfList.loading = false; state.pfList.rows = error ? [] : (data || []);
+  render();
+}
+function closeFollowList(){ state.pfList = null; render(); }
+function followRowsHTML(rows, meId){
+  if(!rows.length) return `<div class="pf-empty" style="padding:24px;">${pfT('no_followers')}</div>`;
+  return rows.map(r => `
+    <div class="pf-row">
+      <div class="pf-mini" onclick="closePfModals(); openUserProfile('${esc(r.id)}')">${r.avatar_url ? `<img src="${esc(r.avatar_url)}" alt="">` : esc(initialsOf(r.full_name))}</div>
+      <div class="pf-who" onclick="closePfModals(); openUserProfile('${esc(r.id)}')"><b>${esc(r.full_name || '')}</b><span>@${esc(r.username || '')}</span></div>
+      ${r.id !== meId ? `<button class="pf-btn ${r.i_follow ? '' : 'primary'}" onclick="toggleFollowRow('${esc(r.id)}')">${r.i_follow ? pfT('following_btn') : pfT('follow')}</button>` : ''}
+    </div>`).join('');
+}
+async function toggleFollowRow(userId){
+  const lists = [state.pfList && state.pfList.rows, state.pfSearch && state.pfSearch.rows].filter(Boolean);
+  let row = null; lists.forEach(l => l.forEach(r => { if(r.id === userId) row = r; }));
+  if(!row) return;
+  const was = !!(row.i_follow !== undefined ? row.i_follow : row.following);
+  row.i_follow = !was; row.following = !was;
+  refreshPfModalLists();
+  const { error } = await db.rpc('toggle_follow', { p_user_id: userId });
+  if(error){ row.i_follow = was; row.following = was; refreshPfModalLists(); showToast(error.message); }
+}
+function refreshPfModalLists(){
+  const me = state.session && state.session.user.id;
+  const a = document.getElementById('pf-list-body'); if(a && state.pfList) a.innerHTML = followRowsHTML(state.pfList.rows, me);
+  const b = document.getElementById('pf-search-results'); if(b && state.pfSearch) b.innerHTML = searchRowsHTML();
+}
+function closePfModals(){ state.pfList = null; state.pfSearch = null; state.pfView = null; render(); }
+function followListModalHTML(){
+  const l = state.pfList; if(!l) return '';
+  return `
+    <div class="modal-overlay open" style="z-index:60;" onclick="if(event.target===this) closeFollowList()">
+      <div class="modal pf-sheet" style="max-height:82dvh; overflow-y:auto;">
+        <h3>${l.kind === 'followers' ? pfT('followers_title') : pfT('following_title')}</h3>
+        <div id="pf-list-body">${l.loading ? loadingView() : followRowsHTML(l.rows, state.session && state.session.user.id)}</div>
+        <button class="btn-ghost" onclick="closeFollowList()">${pfT('cancel')}</button>
+      </div>
+    </div>`;
+}
+
+/* ---------- buscar pessoas ---------- */
+let _pfSearchTimer = null;
+function openSearchPeople(){ state.pfSearch = { q:'', rows:[] }; render(); setTimeout(() => { const i = document.getElementById('pf-search-input'); if(i) i.focus(); }, 50); }
+function closeSearchPeople(){ state.pfSearch = null; render(); }
+function searchRowsHTML(){
+  const s = state.pfSearch; if(!s) return '';
+  if(s.q.trim().length < 2) return '';
+  if(s.loading) return `<div class="pf-empty" style="padding:18px;">${pfT('loading')}</div>`;
+  if(!s.rows.length) return `<div class="pf-empty" style="padding:18px;">${pfT('no_results')}</div>`;
+  return followRowsHTML(s.rows.map(r => Object.assign({ i_follow: !!r.following }, r)), state.session && state.session.user.id);
+}
+function onSearchPeople(v){
+  if(!state.pfSearch) return;
+  state.pfSearch.q = v;
+  clearTimeout(_pfSearchTimer);
+  if(v.trim().length < 2){ state.pfSearch.rows = []; refreshPfModalLists(); return; }
+  _pfSearchTimer = setTimeout(async () => {
+    state.pfSearch.loading = true; refreshPfModalLists();
+    const { data } = await db.rpc('search_profiles', { p_q: v });
+    if(!state.pfSearch || state.pfSearch.q !== v) return;
+    state.pfSearch.loading = false; state.pfSearch.rows = data || [];
+    refreshPfModalLists();
+  }, 300);
+}
+function searchModalHTML(){
+  if(!state.pfSearch) return '';
+  return `
+    <div class="modal-overlay open" style="z-index:60;" onclick="if(event.target===this) closeSearchPeople()">
+      <div class="modal pf-sheet" style="max-height:82dvh; overflow-y:auto;">
+        <h3>${pfT('search_people')}</h3>
+        <div class="field"><input id="pf-search-input" placeholder="${esc(pfT('search_ph'))}" oninput="onSearchPeople(this.value)" autocapitalize="none" autocorrect="off" value="${esc(state.pfSearch.q)}"></div>
+        <div id="pf-search-results">${searchRowsHTML()}</div>
+        <button class="btn-ghost" onclick="closeSearchPeople()">${pfT('cancel')}</button>
+      </div>
+    </div>`;
+}
+
+/* ---------- visualizar uma publicação da grade ---------- */
+function openPostViewer(i){
+  const pf = state.pf; if(!pf || !pf._list || !pf._list[i]) return;
+  state.pfView = pf._list[i]; render();
+}
+function closePostViewer(){ state.pfView = null; render(); }
+function postViewerHTML(){
+  const p = state.pfView; if(!p) return '';
+  const c = (state.pf && state.pf.card) || {};
+  const trim = Number(p.video_trim_start || 0);
+  const when = new Date(p.observed_at || p.created_at);
+  return `
+    <div class="modal-overlay open" style="z-index:60;" onclick="if(event.target===this) closePostViewer()">
+      <div class="modal pf-sheet" style="padding:0; overflow:hidden; max-height:92dvh; overflow-y:auto;">
+        <div class="pf-row" style="padding:12px 14px;">
+          <div class="pf-mini" style="cursor:default;">${pfAvatarInner(c)}</div>
+          <div class="pf-who" style="cursor:default;"><b>${esc(c.full_name || '')}</b><span>@${esc(c.username || '')}</span></div>
+          <button class="pf-btn" style="flex:0 0 auto; padding:6px 12px;" onclick="closePostViewer()">✕</button>
+        </div>
+        ${p.video_url
+          ? `<video class="pf-view-media" src="${esc(p.video_url)}" controls playsinline preload="metadata" onloadedmetadata="this.currentTime=${trim}" ontimeupdate="if(${trim}>0 && this.currentTime-${trim}>=30){this.pause();}"></video>`
+          : p.photo_url ? `<img class="pf-view-media" src="${esc(p.photo_url)}" alt="${esc(p.species_text)}">` : ''}
+        <div style="padding:12px 16px 16px 16px;">
+          <div style="font-weight:800; color:var(--text); font-size:15px;">${esc(p.species_text)} ${p.is_rare ? '<span title="Raro">⭐</span>' : ''}</div>
+          ${p.description ? `<div style="color:var(--text); font-size:13px; line-height:1.45; margin-top:6px; white-space:pre-wrap; word-break:break-word;">${esc(p.description)}</div>` : ''}
+          <div style="color:var(--text-dim); font-size:11.5px; margin-top:8px;">❤️ ${p.likes_count || 0} · ${when.toLocaleDateString('pt-BR')} ${when.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' })}</div>
+        </div>
+      </div>
+    </div>`;
+}
+function profileModalsHTML(){ return editProfileModalHTML() + followListModalHTML() + searchModalHTML() + postViewerHTML(); }
+
+/* =====================================================================
+   VALIDAR ESTADIA (primeiro acesso) e MINHA HOSPEDAGEM
+   ===================================================================== */
+function isGuestAccount(){ return !!(state.profile && (!state.profile.role || state.profile.role === 'guest')); }
+function needsStayValidation(){
+  return !!(state.profile && isGuestAccount() && !state.profile.verified_guest);
+}
+function gateActive(){ return needsStayValidation() && !state.skipGate; }
+function skipGate(){ state.skipGate = true; if(state.screen !== 'userProfile') state.screen = 'avistamentos'; render(); }
+
+function stayFormHTML(){
+  return `
+    <div class="card" style="padding:18px;">
+      <div class="field"><label>CÓDIGO DA RESERVA</label><input id="voucher-code" placeholder="Ex: ARL-000081" style="text-transform:uppercase;"></div>
+      <div id="voucher-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
+      <button class="btn-primary" id="voucher-btn">Validar código</button>
+    </div>
+    <div class="section-sub" style="text-align:center; margin:14px 0 6px 0;">— ou —</div>
+    <div class="card" style="padding:18px;">
+      <div class="field"><label>CÓDIGO DE ACESSO DA POUSADA</label><input id="lodge-code" placeholder="Código exibido na recepção" style="text-transform:uppercase;"></div>
+      <div id="lodge-code-msg" style="font-size:11.5px; margin-bottom:10px; min-height:14px;"></div>
+      <button class="btn-ghost" id="lodge-code-btn" style="margin-top:0;">Validar código da pousada</button>
+    </div>`;
+}
+function gateView(){
+  return `
+    ${ENV === 'teste' ? '<div style="background:#f5b942; color:#1a1405; font-size:10.5px; font-weight:800; text-align:center; padding:3px 0;">AMBIENTE DE TESTE</div>' : ''}
+    <div class="login-wrap" style="justify-content:flex-start; overflow-y:auto; padding-top:calc(env(safe-area-inset-top,0px) + 28px);">
+      <div class="login-logo">
+        <div class="circle">🏡</div>
+        <h1>${pfT('gate_title')}</h1>
+        <p>${pfT('gate_sub')}</p>
+      </div>
+      ${stayFormHTML()}
+      <button class="btn-ghost" onclick="skipGate()">${pfT('gate_skip')}</button>
+      <button class="btn-ghost" style="border-color:transparent; color:var(--text-dim);" onclick="logout()">${pfT('gate_logout')}</button>
+    </div>`;
+}
+function stayBannerHTML(){
+  if(!needsStayValidation()) return '';
+  return `<div class="stay-banner">🏡 <span>${pfT('banner_text')}</span><button onclick="state.skipGate=false; render();">${pfT('banner_btn')}</button></div>`;
+}
+
+
+readDeepLink();
 (async function initSession(){
   const { data } = await db.auth.getSession();
   if(data.session){
     await completeLogin(data.session, data.session.user);
+  } else if(state.deepLinkUser){
+    state.publicView = true;
+    loadPublicProfile(state.deepLinkUser);
   } else {
     render();
   }
