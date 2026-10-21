@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#000000">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-maskable-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -434,7 +434,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
    para voltar). Enquanto o projeto de teste não estiver preenchido
    abaixo, o app sempre usa produção.
    ===================================================================== */
-const APP_VERSION = '2.4.0';
+const APP_VERSION = '2.5.0';
 const CONFIG = {
   environments: {
     producao: {
@@ -1257,14 +1257,14 @@ async function loadSightings(loadMore = false){
 
 async function setFeedScope(scope){
   if(state.feedScope === scope) return;
-  state.feedScope = scope;
+  state.feedScope = scope; state._resetScroll = true;
   state.feedPage = 0;
   state.sightings = [];
   if(scope === 'lodge') state.newPostsLodge = 0;
   if(scope === 'global') state.newPostsGlobal = 0;
   render();
   await loadSightings(false);
-  document.getElementById('content').innerHTML = avistamentosView();
+  refreshFeedKeepScroll();
 }
 
 function subscribeToNewSightings(){
@@ -1299,13 +1299,13 @@ function subscribeToNewSightings(){
 
 function renderTopBarBadgesOnly(){
   if(state.screen === 'avistamentos'){
-    document.getElementById('content').innerHTML = avistamentosView();
+    refreshFeedKeepScroll();
   }
 }
 
 async function loadMoreSightings(){
   await loadSightings(true);
-  document.getElementById('content').innerHTML = avistamentosView();
+  refreshFeedKeepScroll();
 }
 
 async function loadWallet(){
@@ -1424,6 +1424,9 @@ function render(){
   prepareJoinForVerifiedGuest();
   if(gateActive()){ el.innerHTML = gateView(); bindDynamic(); return; }
 
+  const _prev = document.getElementById('content');
+  const _top = (_prev && state._lastScreen === state.screen && !state._resetScroll) ? _prev.scrollTop : 0;
+  state._lastScreen = state.screen; state._resetScroll = false;
   el.innerHTML = `
     ${ENV==='teste' ? '<div style="background:#f5b942; color:#1a1405; font-size:10.5px; font-weight:800; text-align:center; padding:calc(env(safe-area-inset-top,0px) + 3px) 0 3px 0; letter-spacing:.06em;">AMBIENTE DE TESTE — dados não são reais</div>' : ''}
     <div class="statusbar">
@@ -1450,7 +1453,9 @@ function render(){
     <div class="toast" id="toast"></div>
   `;
   if(!state.loading){
-    document.getElementById('content').innerHTML = viewFor(state.screen);
+    const _c = document.getElementById('content');
+    _c.innerHTML = viewFor(state.screen);
+    if(_top) _c.scrollTop = _top;
   }
   bindDynamic();
 }
@@ -2074,11 +2079,20 @@ function renderCommentPanel(s){
   `;
 }
 
+/* Redesenha o feed SEM voltar ao topo (curtir, abrir comentários etc.).
+   Trocar o innerHTML zera a altura por um instante e o navegador joga a rolagem para 0. */
+function refreshFeedKeepScroll(){
+  const c = document.getElementById('content'); if(!c) return;
+  const top = c.scrollTop;
+  c.innerHTML = avistamentosView();
+  c.scrollTop = top;                                  // a leitura abaixo força o layout, então o valor é aceito
+  requestAnimationFrame(() => { if(c.scrollTop !== top) c.scrollTop = top; });
+}
 async function toggleLike(id){
   const s = findSighting(id); if(!s) return;
   s.liked = !s.liked;
   s.likes += s.liked ? 1 : -1;
-  document.getElementById('content').innerHTML = avistamentosView();
+  refreshFeedKeepScroll();
   const { error } = await db.rpc('toggle_sighting_like', { p_sighting_id: id });
   if(error) console.error('like', error.message);
 }
@@ -2086,13 +2100,13 @@ async function toggleLike(id){
 function toggleComments(id){
   const s = findSighting(id); if(!s) return;
   s.commentsOpen = !s.commentsOpen;
-  document.getElementById('content').innerHTML = avistamentosView();
+  refreshFeedKeepScroll();
 }
 
 function setShowAllComments(id, val){
   const s = findSighting(id); if(!s) return;
   s.showAllComments = val;
-  document.getElementById('content').innerHTML = avistamentosView();
+  refreshFeedKeepScroll();
 }
 
 async function toggleCommentLike(sightingId, commentId){
@@ -2100,7 +2114,7 @@ async function toggleCommentLike(sightingId, commentId){
   const c = s.comments.find(c=>c.id===commentId); if(!c) return;
   c.likedByMe = !c.likedByMe;
   c.likes = (c.likes||0) + (c.likedByMe ? 1 : -1);
-  document.getElementById('content').innerHTML = avistamentosView();
+  refreshFeedKeepScroll();
   const { error } = await db.rpc('toggle_comment_like', { p_comment_id: commentId });
   if(error) console.error('comment like', error.message);
 }
@@ -2121,7 +2135,7 @@ async function addComment(sightingId){
   const s = findSighting(sightingId);
   s.comments.push({ id:data.id, user: esc(state.profile.full_name || 'Você'), text: esc(text), likes:0, likedByMe:false });
   s.showAllComments = true;
-  document.getElementById('content').innerHTML = avistamentosView();
+  refreshFeedKeepScroll();
 }
 
 function reportPost(id){
@@ -2147,7 +2161,7 @@ function shareLocation(id){
   }
 
   s.locationShared = true;
-  document.getElementById('content').innerHTML = avistamentosView();
+  refreshFeedKeepScroll();
 }
 
 function shareBranded(id){
@@ -2495,6 +2509,7 @@ function settingsView(){
     <div class="card" style="padding:6px 14px;">
       <div class="settings-row" onclick="openPolicy('privacy')"><span>${t('profile_privacy_policy')}</span><span class="chev">›</span></div>
       <div class="settings-row" onclick="openPolicy('permissions')"><span>${t('profile_permissions')}</span><span class="chev">›</span></div>
+      <div class="settings-row" onclick="openBlockedList()"><span>${pfT('blocked_list')}</span><span class="chev">›</span></div>
       <div class="settings-row" onclick="setGuideMode(true)"><span>${t('profile_guide_mode')}</span><span class="chev">›</span></div>
       ${state.profile && state.profile.role === 'admin' ? `<div class="settings-row" onclick="setAdminMode(true)"><span>Painel Administrativo</span><span class="chev">›</span></div>` : ''}
     </div>
@@ -2557,26 +2572,6 @@ async function logout(){
   state.signupOpen = false;
   state.forgotPasswordOpen = false;
   render();
-}
-
-async function deleteAccount(){
-  if(!confirm(t('profile_delete_confirm'))) return;
-
-  const userId = state.session.user.id;
-
-  // Anonimiza os dados pessoais AGORA (o conteúdo publicado continua existindo,
-  // como "patrimônio" do EcoSafari Go, sem nome/e-mail vinculado a ele).
-  await db.from('profiles').update({
-    full_name: 'Ex-hóspede', avatar_url: null, cover_url: null, bio: null, link_url: null, username: null, profile_public: false,
-  }).eq('id', userId);
-
-  // Registra o pedido para a exclusão definitiva do login (isso exige a
-  // Admin API do Supabase, que só roda em backend/Edge Function — ver
-  // explicação completa no chat).
-  await db.from('account_deletion_requests').insert({ user_id: userId });
-
-  showToast('Seus dados pessoais foram removidos. A exclusão definitiva do login será concluída pela equipe.');
-  await logout();
 }
 
 function openPolicy(which){ state.policyModal = which; render(); }
@@ -3965,7 +3960,7 @@ async function openMonthlyReport(){
 }
 
 /* ---------- Mapa de avistamentos ---------- */
-function setFeedView(v){ state.feedView = v; document.getElementById('content').innerHTML = avistamentosView(); }
+function setFeedView(v){ state.feedView = v; refreshFeedKeepScroll(); }
 function feedViewToggleHTML(){ return ''; }   // Avistamentos e Mapa já estão na barra de baixo
 function feedMapHTML(){
   setTimeout(initSightingsMap, 0);
@@ -4487,13 +4482,16 @@ function socialProfileHTML(pf){
        <button class="pf-cover-btn l" onclick="document.getElementById('cover-input').click()" aria-label="${pfT('change_cover')}">📷</button>`
     : (anon ? '' : `<button class="pf-cover-btn l" onclick="backFromProfile()" aria-label="${pfT('back')}">‹</button>`);
 
-  const actions = own ? `
+  let actions = own ? `
       <button class="pf-btn" onclick="openEditProfile()">${pfT('edit_profile')}</button>
       <button class="pf-btn" onclick="shareProfile()">${pfT('share_profile')}</button>`
     : `
       <button class="pf-btn ${c.is_following ? '' : 'primary'}" onclick="${anon ? 'leavePublicProfile()' : 'toggleFollowProfile()'}" id="pf-follow-btn">${anon ? pfT('login_to_follow') : (c.is_following ? pfT('following_btn') : pfT('follow'))}</button>
       <button class="pf-btn" onclick="shareProfile()">${pfT('share_profile')}</button>
-      ${anon ? '' : `<button class="pf-btn icon" onclick="openReportProfile()" aria-label="${pfT('report')}" title="${pfT('report')}">⚑</button>`}`;
+      ${anon ? '' : `<button class="pf-btn icon" onclick="openProfileMenu()" aria-label="${pfT('more')}" title="${pfT('more')}">⋯</button>`}`;
+  if(!own && c.is_blocked){
+    actions = `<button class="pf-btn primary" onclick="confirmBlock()">${pfT('unblock')}</button><button class="pf-btn icon" onclick="openProfileMenu()" aria-label="${pfT('more')}">⋯</button>`;
+  }
 
   const adminBtn = own && state.profile && state.profile.role === 'admin'
     ? `<button class="pf-btn" style="margin-top:8px; width:100%;" onclick="setAdminMode(true)">🛠 ${pfT('admin_panel')}</button>` : '';
@@ -4526,7 +4524,7 @@ function socialProfileHTML(pf){
 
   let bodyContent;
   if(c.is_private){
-    bodyContent = `<div class="pf-private"><div style="font-size:30px; margin-bottom:6px;">🔒</div>${pfT('private_notice')}</div>`;
+    bodyContent = `<div class="pf-private"><div style="font-size:30px; margin-bottom:6px;">🔒</div>${c.is_blocked ? pfT('blocked_banner') : pfT('private_notice')}</div>`;
   } else if(pf.tab === 'achievements' && own){
     bodyContent = achievementsTabHTML();
   } else if(!list.length){
@@ -4861,7 +4859,7 @@ function postViewerHTML(){
       </div>
     </div>`;
 }
-function profileModalsHTML(){ return editProfileModalHTML() + followListModalHTML() + searchModalHTML() + postViewerHTML() + reportModalHTML() + lodgeQrModalHTML(); }
+function profileModalsHTML(){ return editProfileModalHTML() + followListModalHTML() + searchModalHTML() + postViewerHTML() + reportModalHTML() + lodgeQrModalHTML() + profileMenuModalHTML() + blockedListModalHTML(); }
 
 /* =====================================================================
    VALIDAR ESTADIA (primeiro acesso) e MINHA HOSPEDAGEM
@@ -5432,6 +5430,107 @@ function onScanned(code){
   state.pendingJoin = code;
   track('lodge_qr_scanned');
   if(document.getElementById('lodge-code')) consumePendingJoin(); else { render(); }
+}
+
+/* =====================================================================
+   LOTE 4 — Bloquear usuário, menu do perfil, exclusão real de conta
+   ===================================================================== */
+Object.assign(PF_TEXT.pt, {
+  more:'Mais opções', block:'Bloquear', unblock:'Desbloquear', block_title:'Bloquear @{u}?',
+  block_text:'Vocês deixam de ver as publicações e comentários um do outro, e de se seguir. A pessoa não é avisada.',
+  blocked_done:'Usuário bloqueado.', unblocked_done:'Usuário desbloqueado.', blocked_list:'Contas bloqueadas', blocked_none:'Você não bloqueou ninguém.',
+  blocked_banner:'Você bloqueou este perfil.', menu_report:'Denunciar perfil',
+  delete_done:'Sua conta e seus dados foram excluídos.', delete_fail:'Não foi possível excluir agora. Seus dados pessoais foram removidos e a exclusão do login será concluída pela equipe.',
+});
+Object.assign(PF_TEXT.en, {
+  more:'More options', block:'Block', unblock:'Unblock', block_title:'Block @{u}?',
+  block_text:'You will no longer see each other’s posts and comments, and you will stop following each other. They are not notified.',
+  blocked_done:'User blocked.', unblocked_done:'User unblocked.', blocked_list:'Blocked accounts', blocked_none:'You have not blocked anyone.',
+  blocked_banner:'You blocked this profile.', menu_report:'Report profile',
+  delete_done:'Your account and data were deleted.', delete_fail:'Could not delete right now. Your personal data was removed and login deletion will be completed by our team.',
+});
+Object.assign(PF_TEXT.es, {
+  more:'Más opciones', block:'Bloquear', unblock:'Desbloquear', block_title:'¿Bloquear a @{u}?',
+  block_text:'Dejarán de ver las publicaciones y comentarios del otro y de seguirse. La persona no recibe aviso.',
+  blocked_done:'Usuario bloqueado.', unblocked_done:'Usuario desbloqueado.', blocked_list:'Cuentas bloqueadas', blocked_none:'No has bloqueado a nadie.',
+  blocked_banner:'Bloqueaste este perfil.', menu_report:'Denunciar perfil',
+  delete_done:'Tu cuenta y tus datos fueron eliminados.', delete_fail:'No se pudo eliminar ahora. Tus datos personales fueron removidos y el equipo completará la eliminación del acceso.',
+});
+
+/* menu "⋯" do perfil de outra pessoa */
+function openProfileMenu(){ state.pfMenu = true; render(); }
+function closeProfileMenu(){ state.pfMenu = false; render(); }
+function profileMenuModalHTML(){
+  if(!state.pfMenu) return '';
+  const c = state.pf && state.pf.card; if(!c || c.is_me) return '';
+  return `
+    <div class="modal-overlay open" style="z-index:60;" onclick="if(event.target===this) closeProfileMenu()">
+      <div class="modal pf-sheet">
+        <div class="settings-row" style="color:var(--danger); justify-content:center; font-weight:700;" onclick="closeProfileMenu(); confirmBlock()">${c.is_blocked ? pfT('unblock') : pfT('block')} @${esc(c.username || '')}</div>
+        <div class="settings-row" style="color:var(--danger); justify-content:center; font-weight:700;" onclick="closeProfileMenu(); openReportProfile()">${pfT('menu_report')}</div>
+        <div class="settings-row" style="justify-content:center;" onclick="closeProfileMenu()">${pfT('cancel')}</div>
+      </div>
+    </div>`;
+}
+function confirmBlock(){
+  const c = state.pf && state.pf.card; if(!c) return;
+  if(c.is_blocked){ doToggleBlock(c.id, c.username); return; }
+  if(confirm(pfF('block_title', { u: c.username || '' }) + '\n\n' + pfT('block_text'))) doToggleBlock(c.id, c.username);
+}
+async function doToggleBlock(userId, username){
+  const { data, error } = await db.rpc('toggle_block', { p_user_id: userId });
+  if(error){ showToast(error.message); return; }
+  track(data ? 'user_blocked' : 'user_unblocked');
+  showToast(data ? pfT('blocked_done') : pfT('unblocked_done'));
+  if(state.pfBlocks) state.pfBlocks = state.pfBlocks.filter(r => r.id !== userId);
+  if(data){
+    if(state.screen === 'userProfile'){ backFromProfile(); }
+    loadSightings();                                  // tira as publicações da pessoa do feed
+  } else if(state.pf && state.pf.card && state.pf.card.id === userId){
+    openUserProfile(userId); loadSightings();
+  } else { render(); loadSightings(); }
+}
+
+/* lista em Ajustes */
+async function openBlockedList(){
+  state.pfBlocksOpen = true; state.pfBlocks = null; render();
+  const { data } = await db.rpc('list_blocks');
+  state.pfBlocks = data || []; render();
+}
+function closeBlockedList(){ state.pfBlocksOpen = false; render(); }
+function blockedListModalHTML(){
+  if(!state.pfBlocksOpen) return '';
+  const rows = state.pfBlocks;
+  return `
+    <div class="modal-overlay open" style="z-index:60;" onclick="if(event.target===this) closeBlockedList()">
+      <div class="modal pf-sheet" style="max-height:82dvh; overflow-y:auto;">
+        <h3>${pfT('blocked_list')}</h3>
+        ${rows === null ? loadingView() : rows.length === 0 ? `<div class="pf-empty" style="padding:18px;">${pfT('blocked_none')}</div>` : rows.map(r => `
+          <div class="pf-row">
+            <div class="pf-mini">${r.avatar_url ? `<img src="${esc(r.avatar_url)}" alt="">` : esc((r.full_name || r.username || '?').slice(0, 1).toUpperCase())}</div>
+            <div class="pf-who"><b>${esc(r.full_name || r.username || '')}</b><span>${r.username ? '@' + esc(r.username) : ''}</span></div>
+            <button class="pf-btn" onclick="doToggleBlock('${esc(r.id)}')">${pfT('unblock')}</button>
+          </div>`).join('')}
+        <button class="btn-ghost" onclick="closeBlockedList()">${pfT('cancel')}</button>
+      </div>
+    </div>`;
+}
+
+/* exclusão real: a função do servidor apaga o login e os arquivos; se falhar, mantém o plano antigo */
+async function deleteAccount(){
+  if(!confirm(t('profile_delete_confirm'))) return;
+  const userId = state.session.user.id;
+  let ok = false;
+  try{
+    const { data, error } = await db.functions.invoke('delete-account', { body: {} });
+    ok = !error && data && data.ok;
+  }catch(_){ ok = false; }
+  if(!ok){
+    await db.from('profiles').update({ full_name:'Ex-hóspede', avatar_url:null, cover_url:null, bio:null, link_url:null, username:null, profile_public:false }).eq('id', userId);
+    await db.from('account_deletion_requests').insert({ user_id: userId });
+  }
+  showToast(ok ? pfT('delete_done') : pfT('delete_fail'));
+  await logout();
 }
 
 
