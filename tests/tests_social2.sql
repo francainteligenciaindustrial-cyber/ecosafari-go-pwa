@@ -1,6 +1,7 @@
 reset role;
 update platform_settings set value='false' where key='staff_mfa_required';
-update lodges set shared_access_code='ARL-TESTE1', conservation_partner='Instituto Conservação Pantanal' where id=(select id from lodges limit 1);
+update lodges set conservation_partner='Instituto Conservação Pantanal' where id=(select id from lodges limit 1);
+update lodge_access_codes set code='KTEST2345' where lodge_id=(select id from lodges limit 1);
 -- dono vira admin da plataforma também (para testar as funções restritas)
 insert into platform_admins(user_id) values ('11111111-1111-1111-1111-111111111111') on conflict do nothing;
 -- ana (guest sem pousada) e hosp (guest da pousada)
@@ -12,7 +13,7 @@ set role authenticated;
 select set_config('request.jwt.claim.sub','11111111-1111-1111-1111-111111111111',false);
 select set_config('request.jwt.claims','{"aal":"aal2"}',false);
 do $$ begin
-  begin perform claim_lodge_access_code('ARL-TESTE1'); raise exception 'FALHA staff validou';
+  begin perform claim_lodge_access_code('KTEST2345'); raise exception 'FALHA staff validou';
   exception when others then if sqlerrm like '%Contas da equipe%' then raise notice 'OK C1 equipe nao valida estadia'; else raise; end if; end;
 end $$;
 select set_config('request.jwt.claim.sub','44444444-4444-4444-4444-444444444444',false);
@@ -21,14 +22,14 @@ do $$ declare r json; i int; begin
     r := claim_lodge_access_code('ERRADO'||i);
     if (r->>'ok')::boolean then raise exception 'FALHA aceitou codigo errado'; end if;
   end loop;
-  begin perform claim_lodge_access_code('ARL-TESTE1'); raise exception 'FALHA sem limite';
+  begin perform claim_lodge_access_code('KTEST2345'); raise exception 'FALHA sem limite';
   exception when others then if sqlerrm like '%Muitas tentativas%' then raise notice 'OK C2 bloqueio apos 8 erros (mesmo com codigo certo)'; else raise; end if; end;
 end $$;
 reset role; delete from code_attempts where user_id='44444444-4444-4444-4444-444444444444';
 set role authenticated;
 select set_config('request.jwt.claim.sub','44444444-4444-4444-4444-444444444444',false);
 do $$ declare r json; begin
-  r := claim_lodge_access_code(' arl-teste1 ');
+  r := claim_lodge_access_code(' ktes-t2345 ');
   if not (r->>'ok')::boolean then raise exception 'FALHA codigo certo %', r; end if;
   raise notice 'OK C2 codigo certo aceito (case/espacos)';
 end $$;

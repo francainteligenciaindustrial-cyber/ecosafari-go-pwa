@@ -152,5 +152,5 @@ Sem a chave a função não faz nada (as imagens ficam, e a denúncia é a defes
 ## 18. Testes automáticos do banco (10 min)
 Copie as pastas `sql/` e `tests/` e o arquivo `ci/.github/workflows/testes-banco.yml` (mantendo o caminho `.github/workflows/`) para um repositório do GitHub — pode ser o do app. Em **Actions** os testes rodam a cada alteração. Quando um SQL novo for criado, adicione o teste correspondente em `tests/`.
 
-## 19. QR code da pousada
-Painel do dono → **Código de check-in compartilhado** → **QR code da pousada** → Imprimir. O link tem o formato `…/?j=CODIGO`; ao gerar um novo código, o QR antigo deixa de funcionar — reimprima.
+## 19. Código e QR code da pousada
+Cada pousada recebe sozinha um código de 9 caracteres (ex.: `K7M-4QX-R9B`), sorteado por gerador criptográfico e garantido único no banco. Painel do dono → topo da tela → **Código de check-in da pousada**: mostra o QR, o código, **Imprimir cartaz com QR**, **Copiar link** e **Gerar novo código** (o antigo e os cartazes impressos param de funcionar na hora). O hóspede escaneia dentro do app (botão **Escanear QR code da pousada**), com a câmera do celular (abre o app já validando) ou digita o código.
