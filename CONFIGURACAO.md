@@ -135,3 +135,22 @@ insert into lodge_groups (name, owner_user_id)
 update lodges set group_id = 'ID-DO-GRUPO' where slug in ('pousada-a', 'pousada-b');
 ```
 O dono da rede consulta os números consolidados com `select * from my_group_overview();` (próximo passo: uma tela própria para isso no app).
+
+## 16. CAPTCHA no cadastro e no login — Cloudflare Turnstile (10 min, grátis)
+1. dash.cloudflare.com → **Turnstile** → Add site → domínio do app (`ecosafari-go-pwa.github.io` ou o seu) → modo **Managed**. Guarde a **Site Key** e a **Secret Key**.
+2. Supabase → Authentication → **Attack Protection** → **Enable CAPTCHA protection** → provedor Turnstile → cole a **Secret Key**.
+3. No `index.html` do app, em `CONFIG`, preencha `turnstileSiteKey: 'SUA_SITE_KEY'` e suba para o GitHub.
+> Faça os passos na ordem 1 → 2 → 3. Se ligar o passo 2 sem o passo 3, ninguém consegue entrar.
+
+## 17. Moderação automática de imagens (15 min)
+1. Google Cloud Console → habilite **Cloud Vision API** → crie uma **chave de API** (restrinja à Vision API). Os primeiros 1.000 pedidos por mês são grátis.
+2. Supabase → Edge Functions → Secrets: `GOOGLE_VISION_API_KEY`.
+3. Publique a função: `supabase functions deploy moderate-image --no-verify-jwt`.
+4. Supabase → Database → **Webhooks** → Create: tabela `storage.objects`, evento **Insert**, tipo Supabase Edge Function → `moderate-image`.
+Sem a chave a função não faz nada (as imagens ficam, e a denúncia é a defesa).
+
+## 18. Testes automáticos do banco (10 min)
+Copie as pastas `sql/` e `tests/` e o arquivo `ci/.github/workflows/testes-banco.yml` (mantendo o caminho `.github/workflows/`) para um repositório do GitHub — pode ser o do app. Em **Actions** os testes rodam a cada alteração. Quando um SQL novo for criado, adicione o teste correspondente em `tests/`.
+
+## 19. QR code da pousada
+Painel do dono → **Código de check-in compartilhado** → **QR code da pousada** → Imprimir. O link tem o formato `…/?j=CODIGO`; ao gerar um novo código, o QR antigo deixa de funcionar — reimprima.

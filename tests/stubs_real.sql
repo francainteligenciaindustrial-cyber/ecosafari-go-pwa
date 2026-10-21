@@ -1,0 +1,16 @@
+create schema if not exists auth;
+create table auth.users (id uuid primary key default gen_random_uuid(), email text, raw_user_meta_data jsonb default '{}'::jsonb, created_at timestamptz default now());
+create or replace function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
+create or replace function auth.role() returns text language sql stable as $$ select coalesce(nullif(current_setting('request.jwt.claim.role', true), ''), 'anon') $$;
+create or replace function auth.jwt() returns jsonb language sql stable as $$ select coalesce(nullif(current_setting('request.jwt.claims', true), ''), '{}')::jsonb $$;
+create schema if not exists storage;
+create table storage.buckets (id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);
+create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text, name text, owner uuid);
+alter table storage.objects enable row level security;
+create schema if not exists cron;
+create or replace function cron.schedule(a text, b text, c text) returns bigint language sql as $$ select 1::bigint $$;
+create table cron.job (jobname text);
+create or replace function cron.unschedule(a text) returns boolean language sql as $$ select true $$;
+create publication supabase_realtime;
+do $$ begin create role authenticated; exception when others then null; end $$;
+do $$ begin create role anon; exception when others then null; end $$;

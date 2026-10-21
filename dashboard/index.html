@@ -272,6 +272,7 @@ const NAV_ITEMS = [
   { key:'financial', label:'Financeiro', icon:'💰' },
   { key:'health', label:'Saúde da Base', icon:'⚕️' },
   { key:'site', label:'Site Institucional', icon:'🌐' },
+  { key:'pilot', label:'Piloto e moderação', icon:'🧪' },
   { key:'audit', label:'Auditoria', icon:'🛡️' },
 ];
 
@@ -314,6 +315,7 @@ function renderScreen(){
   else if(state.screen === 'health') main.innerHTML = viewHealth();
   else if(state.screen === 'site') main.innerHTML = viewSite();
   else if(state.screen === 'audit') main.innerHTML = viewAudit();
+  else if(state.screen === 'pilot') main.innerHTML = viewPilot();
   bindScreenCharts();
 }
 
@@ -421,6 +423,9 @@ async function loadAllData(){
     db.from('lodges').select('id,name'),
   ]);
   state.data.audit = audit.data || [];
+  const [pilot, reports] = await Promise.all([ db.rpc('platform_pilot_metrics'), db.rpc('platform_open_profile_reports') ]);
+  state.data.pilot = pilot.data || [];
+  state.data.reports = reports.data || [];
   state.data.lodgeNames = {};
   (lodgeNames.data || []).forEach(l => { state.data.lodgeNames[l.id] = l.name; });
   state.data = deepEsc(state.data);
@@ -771,6 +776,55 @@ function viewSite(){
 const AUDIT_TABLE_LABELS = { benefits:'Benefício', reservations:'Reserva', lodges:'Pousada', lodge_reward_settings:'Recompensas',
   sightings:'Avistamento', redemptions:'Voucher', profiles:'Papel de usuário', lodge_invites:'Convite de equipe',
   platform_admins:'Admin da plataforma', platform_settings:'Configuração' };
+const REPORT_REASON_LABELS = { imagem_impropria:'Imagem imprópria', assedio:'Assédio ou ofensa', falso:'Perfil falso', spam:'Spam', menor:'Envolve menor', outro:'Outro' };
+function pilotHealth(r){
+  const rate = Number(r.taxa_publicacao || 0), val = Number(r.hospedes_validados || 0);
+  if(val < 5) return { cls:'free', txt:'poucos dados' };
+  if(rate >= 40) return { cls:'pro', txt:'saudável' };
+  if(rate >= 20) return { cls:'free', txt:'atenção' };
+  return { cls:'free', txt:'baixa adesão' };
+}
+async function resolveReport(id, status){
+  const { error } = await db.from('profile_reports').update({ status }).eq('id', id);
+  if(error){ alert(error.message); return; }
+  state.data.reports = (state.data.reports || []).filter(r => r.id !== id);
+  renderScreen();
+}
+function viewPilot(){
+  const rows = state.data.pilot || [], reps = state.data.reports || [];
+  const tot = rows.reduce((a,r)=>({v:a.v+Number(r.hospedes_validados||0), p:a.p+Number(r.hospedes_que_publicaram||0), s:a.s+Number(r.avistamentos_aprovados||0)}), {v:0,p:0,s:0});
+  return `
+    <div class="main-header"><div><h1>Piloto e moderação</h1><p>Como cada pousada está usando o app e o que a comunidade denunciou. Meta do piloto: pelo menos 40% dos hóspedes validados publicando.</p></div></div>
+    <div class="panel" style="display:flex; gap:28px; flex-wrap:wrap;">
+      <div><div style="font-size:26px; font-weight:800;">${tot.v}</div><div style="color:var(--text-dim); font-size:12px;">hóspedes validados</div></div>
+      <div><div style="font-size:26px; font-weight:800;">${tot.v ? Math.round(100*tot.p/tot.v) : 0}%</div><div style="color:var(--text-dim); font-size:12px;">publicaram</div></div>
+      <div><div style="font-size:26px; font-weight:800;">${tot.s}</div><div style="color:var(--text-dim); font-size:12px;">avistamentos aprovados</div></div>
+    </div>
+    <div class="panel">
+      <h3 style="margin:0 0 10px 0;">Pousadas</h3>
+      ${rows.length === 0 ? '<div class="empty-state">Nenhuma pousada ainda.</div>' : `
+      <table>
+        <thead><tr><th>Pousada</th><th>Plano</th><th>Hóspedes</th><th>Publicaram</th><th>Taxa</th><th>Aprovados</th><th>Ativos 30d</th><th>Último</th><th>Moedas (emit./resg.)</th><th>Saúde</th></tr></thead>
+        <tbody>${rows.map(r => { const h = pilotHealth(r); return `
+          <tr><td><b>${r.lodge_name}</b></td><td>${r.plan_code || '—'}</td><td>${r.hospedes_validados}</td><td>${r.hospedes_que_publicaram}</td><td>${r.taxa_publicacao}%</td><td>${r.avistamentos_aprovados}</td><td>${r.ativos_30d}</td>
+          <td style="white-space:nowrap;">${r.ultimo_avistamento ? new Date(unesc(r.ultimo_avistamento)).toLocaleDateString('pt-BR') : '—'}</td><td>${r.moedas_emitidas} / ${r.moedas_resgatadas}</td><td><span class="tag ${h.cls}">${h.txt}</span></td></tr>`; }).join('')}</tbody>
+      </table>`}
+    </div>
+    <div class="panel">
+      <h3 style="margin:0 0 10px 0;">Denúncias de perfil em aberto (${reps.length})</h3>
+      ${reps.length === 0 ? '<div class="empty-state">Nenhuma denúncia em aberto.</div>' : `
+      <table>
+        <thead><tr><th>Quando</th><th>Perfil</th><th>Motivo</th><th>Detalhes</th><th>Total no perfil</th><th></th></tr></thead>
+        <tbody>${reps.map(r => `
+          <tr><td style="white-space:nowrap;">${new Date(unesc(r.created_at)).toLocaleString('pt-BR')}</td>
+          <td>${r.reported_name || ''} <span style="color:var(--text-dim); font-size:12px;">@${r.reported_username || ''}</span></td>
+          <td>${REPORT_REASON_LABELS[unesc(r.reason)] || r.reason}</td><td style="color:var(--text-dim); font-size:11.5px; max-width:260px;">${r.details || '—'}</td>
+          <td>${r.reports_on_user}</td>
+          <td style="white-space:nowrap;"><button class="btn-ghost btn" onclick="resolveReport('${esc(r.id)}','reviewed')">Resolvida</button> <button class="btn-ghost btn" onclick="resolveReport('${esc(r.id)}','dismissed')">Descartar</button></td></tr>`).join('')}</tbody>
+      </table>`}
+    </div>`;
+}
+
 function viewAudit(){
   const rows = state.data.audit || [];
   const filter = (state.auditFilter || '').toLowerCase();
