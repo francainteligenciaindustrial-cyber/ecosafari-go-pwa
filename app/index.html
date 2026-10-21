@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0a0e0c">
+<meta name="theme-color" content="#000000">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -12,9 +12,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="EcoSafari Go">
 <title>EcoSafari Go</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg: #0a0e0c;
@@ -50,7 +47,7 @@
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   svg{width:17px; height:17px; flex-shrink:0; vertical-align:middle; display:inline-block;}
   img{max-width:100%; max-height:100%;}
-  html,body{margin:0;padding:0;background:#e9e9e9;font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased; letter-spacing:-0.01em;}
+  html,body{margin:0;padding:0;background:#e9e9e9;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased; letter-spacing:-0.01em;}
   .stage{display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px 0;}
   .phone{width:375px; height:780px; background:#000; border-radius:44px; padding:14px; box-shadow:0 30px 60px rgba(0,0,0,0.35), 0 0 0 2px #1a1a1a; position:relative;}
   .screen{width:100%; height:100%; background:var(--bg); border-radius:32px; overflow:hidden; position:relative; display:flex; flex-direction:column;}
@@ -292,6 +289,117 @@
   .stay-banner b{color:var(--green);}
   .stay-banner button{margin-left:auto; flex-shrink:0; background:var(--green); color:#04130d; border:none; border-radius:8px; padding:7px 12px; font-weight:800; font-size:12px; cursor:pointer;}
 
+  /* =====================================================================
+     DESIGN 2.4 — visual no estilo Instagram
+     (fonte do sistema, tipografia 14/12 px, cantos arredondados, navegação só com ícones)
+     ===================================================================== */
+  :root{
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --r-sm:10px; --r-md:14px; --r-lg:20px;
+    --bg:#000; --card:#000; --card-border:#262626; --text:#f5f5f5; --text-dim:#a8a8a8; --input-bg:#121212;
+    --blue:#4cb5f9; --radius:16px;
+  }
+  [data-theme="light"]{
+    --bg:#fff; --card:#fff; --card-border:#dbdbdb; --text:#262626; --text-dim:#737373; --input-bg:#efefef;
+    --blue:#0095f6; --warn-bg:#fdf1de;
+  }
+  html,body,button,input,textarea,select{font-family:var(--font) !important;}
+  body{font-size:14px; line-height:1.4; letter-spacing:0; font-weight:400;}
+  svg{stroke-width:1.8;}
+  h1,h2,h3{font-family:var(--font) !important;}
+
+  /* topo */
+  .topbar{padding:8px 16px 8px 16px; border-bottom:1px solid var(--card-border);}
+  .brand{font-family:var(--font) !important; font-size:21px; font-weight:800; letter-spacing:-0.03em; color:var(--text); gap:8px;}
+  .brand .dot{width:26px; height:26px; border:none; background:var(--green-dim); font-size:15px;}
+  .coin-pill{border-radius:999px; font-size:13px; font-weight:700; padding:6px 12px;}
+  .bell{color:var(--text);} .bell svg{width:25px; height:25px;}
+
+  /* navegação inferior só com ícones */
+  .navbar{padding:6px 0 calc(6px + env(safe-area-inset-bottom, 0px)) 0; background:var(--bg);}
+  .nav-item{color:var(--text); gap:0; padding:8px 0; opacity:.62;}
+  .nav-item span{display:none;}
+  .nav-item svg{width:26px; height:26px; stroke-width:1.8;}
+  .nav-item.active{color:var(--text); opacity:1;}
+  .nav-item.active svg{stroke-width:2.7;}
+
+  /* títulos e textos */
+  .content{padding:0 16px 96px 16px;}
+  .section-title{font-size:13px; font-weight:700; letter-spacing:.02em; color:var(--text-dim); margin:20px 0 8px 0;}
+  .section-sub{color:var(--text-dim); font-size:13px; line-height:1.45;}
+  .desc{color:var(--text); font-size:14px; line-height:1.4;}
+  .back-link{color:var(--text); font-size:14px; font-weight:600;}
+
+  /* cartões, entradas e botões arredondados */
+  .card{border-radius:var(--radius); border:1px solid var(--card-border); background:var(--card);}
+  .field label{font-size:12px; font-weight:600; color:var(--text-dim);}
+  .field input, .modal .field input{background:var(--input-bg); border:1px solid transparent; border-radius:12px; padding:13px 14px; font-size:14px;}
+  .field input:focus, .modal .field input:focus{border-color:var(--text-dim); background:var(--bg);}
+  .btn-primary{border-radius:12px; padding:12px; font-size:14px; font-weight:700;}
+  .btn-ghost{background:var(--input-bg); color:var(--text); border:none; border-radius:12px; padding:12px; font-size:14px; font-weight:600;}
+  .btn-ghost:active, .btn-primary:active{opacity:.8;}
+  .add-btn{width:32px; height:32px; font-size:20px;}
+  .redeem-btn, .btn-approve, .btn-reject{border-radius:10px; font-size:13px;}
+  .benefit, .rank-row, .guide-item{border-radius:var(--r-md);}
+  .badge-chip{border-radius:var(--r-md);}
+  .settings-row{font-size:14px; padding:14px 2px;}
+  .toggle-row{font-size:14px;}
+  .modal{border-radius:24px 24px 0 0;}
+  .modal h3{font-size:16px; font-weight:700; text-align:center;}
+  .toast{border-radius:14px; font-size:13.5px;}
+  .wallet-hero{border-radius:var(--r-lg);}
+  .photo-drop{border-radius:var(--r-md);}
+  .pf-btn{border-radius:10px; border:none; background:var(--input-bg); font-weight:600; font-size:14px; padding:9px 10px;}
+  .pf-btn.primary{background:var(--green); color:#04130d;}
+  .pf-name{font-size:16px; font-weight:700;} .pf-bio{font-size:14px;} .pf-user{font-size:14px;} .pf-link{font-size:14px;}
+  .pf-stat b{font-size:17px; font-weight:700;} .pf-stat span{font-size:13px;}
+  .pf-sheet textarea{border-radius:12px; font-size:14px;}
+  .stay-banner{border-radius:var(--r-md);}
+
+  /* abas Minha pousada | Global (estilo abas do Instagram) */
+  .feed-tabs{display:flex; border-bottom:1px solid var(--card-border); margin:0 -16px;}
+  .feed-tab{flex:1; text-align:center; padding:13px 0 11px 0; font-size:14px; font-weight:600; color:var(--text-dim); background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; position:relative;}
+  .feed-tab.active{color:var(--text); border-bottom-color:var(--text);}
+  .feed-tab .feed-badge{position:absolute; top:7px; margin-left:3px;}
+
+  /* publicação: mesmo formato do feed do Instagram */
+  .post-card{border:none; border-bottom:1px solid var(--card-border); border-radius:0; margin:0 -16px 4px -16px; padding:6px 0 10px 0; background:var(--bg);}
+  .post-card .post-head{padding:8px 14px;}
+  .post-card .avatar{width:34px; height:34px; font-size:12px; outline:2px solid transparent; outline-offset:2px;}
+  .post-card .avatar.verified{box-shadow:none; outline-color:var(--green); color:var(--text-dim);}
+  .post-card .post-user{font-size:14px; font-weight:600; gap:5px;}
+  .post-card .post-loc{font-size:12px;}
+  .post-card .post-date{font-size:12px; line-height:1.3;}
+  .post-card .post-date span{color:var(--text-dim) !important;}
+  .post-photo-wrap{height:auto; aspect-ratio:4/5; max-height:72vh; border-radius:0;}
+  .post-photo-bg{display:none;}
+  .post-photo{object-fit:cover; position:absolute; inset:0;}
+  .post-card video{max-height:72vh !important;}
+  .post-card .post-body{padding:8px 14px 0 14px;}
+  .post-card .action-row{border:none; padding:2px 0 0 0; gap:2px; flex-wrap:nowrap;}
+  .post-card .action-btn{padding:6px 8px 6px 0; margin-right:6px; font-size:14px; font-weight:600; color:var(--text); gap:6px;}
+  .post-card .action-btn svg{width:26px; height:26px; stroke-width:1.8;}
+  .post-card .action-btn.liked svg{animation:likePop .35s ease;}
+  .post-card .action-btn.shared{color:var(--green);} .post-card .action-btn.shared svg{stroke:var(--green);}
+  .post-card .action-btn.commented{color:var(--text);}
+  .post-card .action-sp{flex:1;}
+  .likes-line{font-size:14px; font-weight:700; color:var(--text); margin:2px 0 4px 0;}
+  .caption{font-size:14px; line-height:1.4; color:var(--text); margin-bottom:4px;}
+  .caption b{font-weight:700; margin-right:5px;}
+  .caption .sp{font-weight:600;}
+  .caption-meta{font-size:12px; color:var(--text-dim); margin-top:4px;}
+  .report-link{margin:0; font-size:12px; color:var(--text-dim); text-decoration:none;}
+  .comment-panel{border-top:none; margin-top:6px; padding-top:2px;}
+  .comment-item{font-size:14px;} .comment-item b{color:var(--text); font-weight:700;}
+  .comment-viewall{font-size:14px;}
+  .comment-input-row input{border-radius:999px; background:var(--input-bg); border:none; padding:10px 14px; font-size:14px;}
+  .comment-input-row button{border-radius:999px; background:none; color:var(--green); font-size:14px; padding:0 8px;}
+  .loc-attached-chip{border-radius:999px;}
+  .status-pending,.status-queued,.no-photo-tag{border-radius:999px;}
+  @keyframes likePop{0%{transform:scale(1);}40%{transform:scale(1.28);}100%{transform:scale(1);}}
+
+  /* desktop: coluna central estreita como no Instagram */
+  @media (min-width:600px){ .phone{max-width:500px;} }
 </style>
 </head>
 <body>
@@ -326,7 +434,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
    para voltar). Enquanto o projeto de teste não estiver preenchido
    abaixo, o app sempre usa produção.
    ===================================================================== */
-const APP_VERSION = '2.3.0';
+const APP_VERSION = '2.4.0';
 const CONFIG = {
   environments: {
     producao: {
@@ -1873,9 +1981,9 @@ function avistamentosView(){
     ${offlineBanner()}
     ${stayBannerHTML()}
     ${bingoCardHTML()}
-    <div style="display:flex; gap:8px; margin:10px 0 4px 0;">
-      <button class="btn-ghost" style="margin:0; flex:1; padding:8px; font-size:11.5px; position:relative; ${state.feedScope==='lodge'?'background:var(--green-dim); border-color:var(--green); color:var(--green);':''}" onclick="setFeedScope('lodge')">🏡 Minha Pousada${state.newPostsLodge>0?` <span class="feed-badge">${state.newPostsLodge>10?'10+':state.newPostsLodge}</span>`:''}</button>
-      <button class="btn-ghost" style="margin:0; flex:1; padding:8px; font-size:11.5px; position:relative; ${state.feedScope==='global'?'background:var(--green-dim); border-color:var(--green); color:var(--green);':''}" onclick="setFeedScope('global')">🌎 Global${state.newPostsGlobal>0?` <span class="feed-badge">${state.newPostsGlobal>10?'10+':state.newPostsGlobal}</span>`:''}</button>
+    <div class="feed-tabs">
+      <button class="feed-tab ${state.feedScope==='lodge'?'active':''}" onclick="setFeedScope('lodge')">🏡 Minha Pousada${state.newPostsLodge>0?` <span class="feed-badge">${state.newPostsLodge>10?'10+':state.newPostsLodge}</span>`:''}</button>
+      <button class="feed-tab ${state.feedScope==='global'?'active':''}" onclick="setFeedScope('global')">🌎 Global${state.newPostsGlobal>0?` <span class="feed-badge">${state.newPostsGlobal>10?'10+':state.newPostsGlobal}</span>`:''}</button>
     </div>
     ${feedViewToggleHTML()}
     <div class="section-title">${t('feed_section_title')} <button class="add-btn" onclick="openModal()">+</button></div>
@@ -1890,7 +1998,7 @@ function avistamentosView(){
       const statusTag = s.status==='pending' ? `<span class="status-pending">${t('status_pending')}</span>` : '';
       const noPhotoTag = (!s.photo && !s.videoUrl) ? `<span class="no-photo-tag">${t('tag_no_photo')}</span>` : '';
       return `
-      <div class="card">
+      <div class="card post-card">
         <div class="post-head" onclick="openUserProfile('${s.userId}')" style="cursor:pointer;">
           <div class="avatar ${s.verified?'verified':''}" style="${s.avatarUrl?'padding:0; overflow:hidden;':''}">${s.avatarUrl ? `<img src="${s.avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">` : s.user.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
           <div>
@@ -1911,17 +2019,19 @@ function avistamentosView(){
           </div>
         ` : ''}
         <div class="post-body">
-          <div class="species">${s.species}</div>
-          <div class="desc">${s.desc}</div>
-          ${s.coords ? `<div class="loc-attached-chip" style="margin-bottom:10px; display:inline-flex;">${icon('pin')} ${s.coords.lat.toFixed(4)}, ${s.coords.lng.toFixed(4)}</div>` : ''}
           <div class="action-row">
-            <button class="action-btn ${s.liked?'liked':''}" onclick="toggleLike('${s.id}')">${icon('heart')} ${s.likes}</button>
-            <button class="action-btn ${s.commentsOpen?'commented':''}" onclick="toggleComments('${s.id}')">${icon('comment')} ${s.comments.length}</button>
-            <button class="action-btn ${s.locationShared?'shared':''}" onclick="shareLocation('${s.id}')">${icon('pin')} ${s.locationShared?t('action_location_shared'):t('action_share_location')}</button>
-            ${s.photo ? `<button class="action-btn" onclick="shareBranded('${s.id}')">${icon('share')} ${t('action_share_photo')}</button>` : ''}
-            <button class="report-link" onclick="reportPost('${s.id}')">${t('action_report')}</button>
+            <button class="action-btn ${s.liked?'liked':''}" onclick="toggleLike('${s.id}')" aria-label="Curtir">${icon('heart')}</button>
+            <button class="action-btn ${s.commentsOpen?'commented':''}" onclick="toggleComments('${s.id}')" aria-label="Comentar">${icon('comment')}${s.comments.length ? ` ${s.comments.length}` : ''}</button>
+            ${s.photo ? `<button class="action-btn" onclick="shareBranded('${s.id}')" aria-label="${t('action_share_photo')}">${icon('share')}</button>` : ''}
+            <span class="action-sp"></span>
+            <button class="action-btn ${s.locationShared?'shared':''}" style="margin-right:0;" onclick="shareLocation('${s.id}')" aria-label="${s.locationShared?t('action_location_shared'):t('action_share_location')}" title="${s.locationShared?t('action_location_shared'):t('action_share_location')}">${icon('pin')}</button>
           </div>
+          <div class="likes-line">${pfF('likes_n', { n: s.likes })}</div>
+          <div class="caption"><b>${s.user}</b><span class="sp">${s.species}</span>${s.desc ? ` — ${s.desc}` : ''}</div>
+          ${s.coords ? `<div class="loc-attached-chip" style="margin:4px 0 6px 0; display:inline-flex;">${icon('pin')} ${s.coords.lat.toFixed(4)}, ${s.coords.lng.toFixed(4)}</div>` : ''}
+          ${!s.commentsOpen && s.comments.length ? `<div class="comment-viewall" onclick="toggleComments('${s.id}')">${t('comment_view_all',{n:s.comments.length})}</div>` : ''}
           ${s.commentsOpen ? renderCommentPanel(s) : ''}
+          <div class="caption-meta"><button class="report-link" onclick="reportPost('${s.id}')">${t('action_report')}</button></div>
         </div>
       </div>
     `;}).join('')}
@@ -3856,13 +3966,7 @@ async function openMonthlyReport(){
 
 /* ---------- Mapa de avistamentos ---------- */
 function setFeedView(v){ state.feedView = v; document.getElementById('content').innerHTML = avistamentosView(); }
-function feedViewToggleHTML(){
-  return `
-    <div style="display:flex; gap:6px; margin:8px 0 0 0;">
-      <button class="btn-ghost" style="margin:0; flex:1; padding:6px; font-size:11px; ${state.feedView!=='map'?'background:var(--green-dim); border-color:var(--green);':''}" onclick="setFeedView('list')">☰ Lista</button>
-      <button class="btn-ghost" style="margin:0; flex:1; padding:6px; font-size:11px; ${state.feedView==='map'?'background:var(--green-dim); border-color:var(--green);':''}" onclick="setFeedView('map')">🗺️ Mapa</button>
-    </div>`;
-}
+function feedViewToggleHTML(){ return ''; }   // Avistamentos e Mapa já estão na barra de baixo
 function feedMapHTML(){
   setTimeout(initSightingsMap, 0);
   const withCoords = state.sightings.filter(s => s.coords && s.status === 'approved').length;
@@ -3922,8 +4026,8 @@ async function openTripDiary(){
   const g = x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#0f1c17'); g.addColorStop(1,'#060908');
   x.fillStyle = g; x.fillRect(0,0,W,H);
   x.strokeStyle = 'rgba(31,223,154,0.35)'; x.lineWidth = 4; x.strokeRect(40,40,W-80,H-80);
-  x.fillStyle = '#1fdf9a'; x.font = '700 40px Fraunces, Georgia, serif'; x.fillText('🌿 EcoSafari Go', 90, 150);
-  x.fillStyle = '#eef2f0'; x.font = '700 76px Fraunces, Georgia, serif'; x.fillText('Meu diário', 90, 260);
+  x.fillStyle = '#1fdf9a'; x.font = '800 40px system-ui, -apple-system, Segoe UI, Roboto, sans-serif'; x.fillText('🌿 EcoSafari Go', 90, 150);
+  x.fillStyle = '#eef2f0'; x.font = '800 76px system-ui, -apple-system, Segoe UI, Roboto, sans-serif'; x.fillText('Meu diário', 90, 260);
   x.fillStyle = '#8b9994'; x.font = '500 34px Inter, Arial, sans-serif';
   x.fillText(`${unesc(state.profile.lodge_name || '')}  ·  ${first.toLocaleDateString('pt-BR')}${+first !== +last ? ' a ' + last.toLocaleDateString('pt-BR') : ''}`, 90, 320);
   x.fillStyle = '#1fdf9a'; x.font = '800 150px Inter, Arial, sans-serif'; x.fillText(String(species.length), 90, 500);
@@ -5202,6 +5306,9 @@ Object.assign(PF_TEXT.es, {
   or_type_code:'o escribe el código del alojamiento', lodge_code_label:'CÓDIGO DEL ALOJAMIENTO', lodge_code_btn:'Validar código del alojamiento', or_reservation:'— o usa el código de tu reserva —',
 });
 
+Object.assign(PF_TEXT.pt, { likes_n:'{n} curtidas' });
+Object.assign(PF_TEXT.en, { likes_n:'{n} likes' });
+Object.assign(PF_TEXT.es, { likes_n:'{n} Me gusta' });
 function fmtAccessCode(c){ return String(c || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase().replace(/(.{3})(?=.)/g, '$1-'); }
 function qrSvg(url){
   try{ if(typeof qrcode !== 'function') return ''; const qr = qrcode(0, 'M'); qr.addData(url); qr.make(); return qr.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); }
